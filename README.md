@@ -36,7 +36,7 @@ This symlinks the `proxy` command to `/usr/local/bin`, making it available syste
 
 ```bash
 proxy start            # Start the tunnel
-proxy start --always   # Start with auto-reconnect watchdog (checks every 30s)
+proxy start -a         # Start with auto-reconnect watchdog (alias for --always)
 proxy stop             # Stop the tunnel (also stops the watchdog)
 proxy status           # Check if the tunnel is running
 proxy log              # View logs

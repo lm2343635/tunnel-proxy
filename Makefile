@@ -1,7 +1,10 @@
-.PHONY: start stop status socks-on socks-off log install
+.PHONY: start start-always stop status socks-on socks-off log install
 
 start:
 	@bash start.sh
+
+start-always:
+	@bash start.sh --always
 
 stop:
 	@bash stop.sh
