@@ -22,20 +22,24 @@ case "${1}" in
         ;;
     socks-on|so)
         source "${INSTALL_DIR}/.env"
-        sudo networksetup -setsocksfirewallproxy "${NETWORK_SERVICE}" 127.0.0.1 "${SOCKS_PORT}"
-        sudo networksetup -setsocksfirewallproxystate "${NETWORK_SERVICE}" on
         git config --global http.proxy socks5h://127.0.0.1:${SOCKS_PORT}
         git config --global https.proxy socks5h://127.0.0.1:${SOCKS_PORT}
-        echo "macOS SOCKS proxy enabled on ${NETWORK_SERVICE} (127.0.0.1:${SOCKS_PORT})"
         echo "Git proxy configured (socks5h://127.0.0.1:${SOCKS_PORT})"
+        if [ "$(uname -s)" = "Darwin" ]; then
+            sudo networksetup -setsocksfirewallproxy "${NETWORK_SERVICE}" 127.0.0.1 "${SOCKS_PORT}"
+            sudo networksetup -setsocksfirewallproxystate "${NETWORK_SERVICE}" on
+            echo "macOS SOCKS proxy enabled on ${NETWORK_SERVICE} (127.0.0.1:${SOCKS_PORT})"
+        fi
         ;;
     socks-off|sf)
         source "${INSTALL_DIR}/.env"
-        sudo networksetup -setsocksfirewallproxystate "${NETWORK_SERVICE}" off
-        git config --global --unset http.proxy
-        git config --global --unset https.proxy
-        echo "macOS SOCKS proxy disabled on ${NETWORK_SERVICE}"
+        git config --global --unset http.proxy 2>/dev/null
+        git config --global --unset https.proxy 2>/dev/null
         echo "Git proxy configuration removed"
+        if [ "$(uname -s)" = "Darwin" ]; then
+            sudo networksetup -setsocksfirewallproxystate "${NETWORK_SERVICE}" off
+            echo "macOS SOCKS proxy disabled on ${NETWORK_SERVICE}"
+        fi
         ;;
     log|logs)
         source "${INSTALL_DIR}/.env"

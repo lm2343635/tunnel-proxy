@@ -17,7 +17,14 @@ if [ -f "${WATCHDOG_PID_FILE}" ]; then
 fi
 
 pkill -f "ssh.*-D ${SOCKS_PORT}.*${SSH_HOST}" 2>/dev/null
-brew services stop privoxy 2>/dev/null
+
+if [ "$(uname -s)" = "Darwin" ]; then
+    brew services stop privoxy 2>/dev/null
+elif command -v systemctl &>/dev/null; then
+    systemctl stop privoxy 2>/dev/null
+else
+    service privoxy stop 2>/dev/null
+fi
 
 echo "Tunnel and proxy stopped"
 echo "$(date): Tunnel and proxy stopped" >> "$LOG_FILE"

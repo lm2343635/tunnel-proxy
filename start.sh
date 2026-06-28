@@ -12,9 +12,28 @@ fi
 
 source "${ENV_FILE}"
 
+# Platform detection: pick Privoxy config path and service manager
+if [ "$(uname -s)" = "Darwin" ]; then
+    PRIVOXY_CONFIG="${PRIVOXY_CONFIG:-/opt/homebrew/etc/privoxy/config}"
+    PRIVOXY_INSTALL_HINT="brew install privoxy"
+else
+    PRIVOXY_CONFIG="${PRIVOXY_CONFIG:-/etc/privoxy/config}"
+    PRIVOXY_INSTALL_HINT="sudo apt-get install privoxy"
+fi
+
+privoxy_restart() {
+    if [ "$(uname -s)" = "Darwin" ]; then
+        brew services restart privoxy
+    elif command -v systemctl &>/dev/null; then
+        systemctl restart privoxy
+    else
+        service privoxy restart
+    fi
+}
+
 # Check dependencies
 if ! command -v privoxy &>/dev/null; then
-    echo "privoxy not found, install with: brew install privoxy"
+    echo "privoxy not found, install with: ${PRIVOXY_INSTALL_HINT}"
     exit 1
 fi
 
@@ -46,7 +65,7 @@ cat > "${PRIVOXY_CONFIG}" << EOF
 forward-socks5 / 127.0.0.1:${SOCKS_PORT} .
 listen-address 127.0.0.1:${HTTP_PROXY_PORT}
 EOF
-brew services restart privoxy >> "$LOG_FILE" 2>&1
+privoxy_restart >> "$LOG_FILE" 2>&1
 sleep 2
 
 # Health check
