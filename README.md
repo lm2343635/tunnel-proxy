@@ -36,7 +36,8 @@ This symlinks the `proxy` command to `/usr/local/bin`, making it available syste
 
 ```bash
 proxy start            # Start the tunnel
-proxy start -a         # Start with auto-reconnect watchdog (alias for --always)
+proxy start -a         # Start with auto-reconnect watchdog (alias for --always, checks every 30s)
+proxy start -a 10      # Auto-reconnect watchdog with a custom check interval (10s)
 proxy stop             # Stop the tunnel (also stops the watchdog)
 proxy status           # Check if the tunnel is running
 proxy log              # View logs
@@ -66,4 +67,4 @@ Add proxy environment variables to your Claude Code settings at `~/.claude/setti
 2. Create a new SSH dynamic port forward (SOCKS5 proxy)
 3. Configure and restart Privoxy to convert SOCKS5 to HTTP
 4. Run a health check to verify the tunnel is working
-5. With `--always`, spawn a background watchdog that probes the tunnel every 30s and reconnects if it drops
+5. With `--always`, spawn a background watchdog that probes the tunnel every 30s (or the interval you pass, e.g. `proxy start -a 10`) and reconnects if it drops

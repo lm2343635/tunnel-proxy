@@ -6,7 +6,8 @@ case "${1}" in
     start)
         flag="${2}"
         [ "${flag}" = "-a" ] && flag="--always"
-        bash "${INSTALL_DIR}/start.sh" "${flag}"
+        # ${3} is an optional watchdog interval in seconds (e.g. `proxy start -a 10`)
+        bash "${INSTALL_DIR}/start.sh" "${flag}" "${3}"
         ;;
     stop)
         bash "${INSTALL_DIR}/stop.sh"
@@ -46,7 +47,7 @@ case "${1}" in
         tail -f "${LOG_FILE}"
         ;;
     *)
-        echo "Usage: proxy {start [--always|-a]|stop|status|socks-on(so)|socks-off(sf)|log}"
+        echo "Usage: proxy {start [--always|-a [interval_seconds]]|stop|status|socks-on(so)|socks-off(sf)|log}"
         exit 1
         ;;
 esac

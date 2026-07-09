@@ -3,7 +3,9 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
 WATCHDOG_PID_FILE="/tmp/ssh-tunnel-watchdog.pid"
-WATCHDOG_INTERVAL=30
+# Watchdog check interval in seconds. Overridable via $2 (e.g. `start.sh --always 10`)
+# or the WATCHDOG_INTERVAL env var; falls back to 30.
+WATCHDOG_INTERVAL="${WATCHDOG_INTERVAL:-30}"
 
 if [ ! -f "${ENV_FILE}" ]; then
     echo "Config file not found: ${ENV_FILE}"
@@ -84,6 +86,15 @@ fi
 
 # Optional watchdog for auto-reconnect
 if [ "$1" = "--always" ]; then
+    # Optional interval override: `start.sh --always 10` -> check every 10s
+    if [ -n "$2" ]; then
+        if [ "$2" -gt 0 ] 2>/dev/null; then
+            WATCHDOG_INTERVAL="$2"
+        else
+            echo "Invalid interval '$2', using ${WATCHDOG_INTERVAL}s"
+        fi
+    fi
+
     if [ -f "${WATCHDOG_PID_FILE}" ]; then
         kill "$(cat "${WATCHDOG_PID_FILE}")" 2>/dev/null
         rm -f "${WATCHDOG_PID_FILE}"
