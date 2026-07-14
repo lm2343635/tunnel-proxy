@@ -47,13 +47,16 @@ fi
 start_ssh_tunnel() {
     pkill -f "ssh.*-D ${SOCKS_PORT}.*${SSH_HOST}" 2>/dev/null
     sleep 1
-    ssh -fNC \
+    # Launch ssh inside a subshell so bash stops tracking it as a job. Without
+    # this, when pkill terminates the tunnel on a later run/reconnect, bash
+    # prints a stray "Terminated: 15" notice to the terminal.
+    ( ssh -fNC \
         -o StrictHostKeyChecking=no \
         -o ServerAliveInterval=10 \
         -o ServerAliveCountMax=3 \
         -o ExitOnForwardFailure=yes \
         -o ConnectTimeout=10 \
-        -D ${SOCKS_PORT} ${SSH_HOST}
+        -D ${SOCKS_PORT} ${SSH_HOST} )
 }
 
 # Start SSH tunnel
