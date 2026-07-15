@@ -123,9 +123,15 @@ struct MenuBarView: View {
                 activateApp()
             }
                 .buttonStyle(.plain)
-            if let guide = AppPaths.userGuide {
+            Button("Statistics…") {
+                openWindow(id: "statistics")
+                activateApp()
+            }
+                .buttonStyle(.plain)
+            if AppPaths.userGuide != nil {
                 Button("User Guide…") {
-                    NSWorkspace.shared.open(guide)   // default browser
+                    openWindow(id: "user-guide")   // dedicated in-app window
+                    activateApp()
                 }
                     .buttonStyle(.plain)
             }

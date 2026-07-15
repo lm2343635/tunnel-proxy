@@ -16,7 +16,7 @@ import Foundation
 /// user-initiated stop).
 actor TunnelEngine {
 
-    enum Health {
+    enum Health: Equatable {
         case proxyOK        // HTTP proxy reachable end-to-end
         case tunnelOnly     // SOCKS up but HTTP proxy failed
         case down           // nothing reachable
@@ -58,8 +58,15 @@ actor TunnelEngine {
         case .down: log("Tunnel failed to start")
         }
 
-        if watchdog {
+        // Only arm the watchdog when something actually came up. Arming it on a
+        // `.down` connect leaves a background task relaunching ssh into the same
+        // (often occupied) port forever — the endless-loop bug. On `.down` we tear
+        // down whatever partially started so we don't leak a half-open ssh/privoxy.
+        if watchdog, health != .down {
             startWatchdog()
+        } else if health == .down {
+            terminate(&privoxyProcess, name: "privoxy")
+            terminate(&sshProcess, name: "ssh")
         }
         return health
     }
@@ -259,16 +266,32 @@ actor TunnelEngine {
     }
 
     private func watchdogTick() async {
-        // Probe SOCKS directly; if it's down, relaunch ssh.
+        // Probe SOCKS directly; if it's down, consider relaunching ssh.
         let ok = await curl([
             "-s", "--max-time", "5",
             "--socks5-hostname", "127.0.0.1:\(config.socksPort)",
             "https://api.ipify.org",
         ])?.range(of: #"\d+\.\d+"#, options: .regularExpression) != nil
-        if !ok {
-            log("Tunnel down, reconnecting…")
-            startSSH()
+        guard !ok else { return }
+
+        // The SOCKS probe can't tell "our tunnel died" from "a foreign process is
+        // squatting on the port" — both fail identically. Before relaunching, ask
+        // who holds the port. If a *foreign* process holds it, relaunching would
+        // just spin (`bind: Address already in use`), so stop instead of looping.
+        let port = config.socksPort
+        let ourPID = sshProcess?.processIdentifier
+        let holder = await Task.detached { PortInspector.holder(ofPort: port) }.value
+        if let holder {
+            // Reconnect-race guard: our own live/expected ssh child is not foreign.
+            let isOurLiveChild = (ourPID != nil && holder.pid == ourPID)
+            if !holder.isOurs && !isOurLiveChild {
+                log("Tunnel down, but port \(port) is held by “\(holder.command)” (PID \(holder.pid)) — not reconnecting")
+                stopWatchdog()
+                return
+            }
         }
+        log("Tunnel down, reconnecting…")
+        startSSH()
     }
 
     private func stopWatchdog() {

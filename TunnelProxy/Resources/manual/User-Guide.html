@@ -251,18 +251,12 @@
   </g>
   <g transform="translate(290,108)">
     <circle r="40" fill="#fff7e6" stroke="#f2dca0"/>
-    <g transform="translate(0,-2)">
+    <g transform="translate(0,-2)" opacity="0.45">
       <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#c99a20" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="#e0a92a" clip-path="url(#lefthalf-en)"/>
-    </g>
-    <circle cx="18" cy="20" r="11" fill="#fff7e6"/>
-    <g stroke="#e0a92a" stroke-width="3" stroke-linecap="round">
-      <line x1="18" y1="14" x2="18" y2="26"/>
-      <line x1="12" y1="20" x2="24" y2="20"/>
     </g>
     <circle cx="0" cy="52" r="6" fill="#f5b731"/>
     <text x="0" y="80" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">Connecting</text>
-    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">left-half shield with +</text>
+    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">blinking outline shield</text>
   </g>
   <g transform="translate(470,108)">
     <circle r="40" fill="#e8f8ec" stroke="#a7e2b6"/>
@@ -290,7 +284,7 @@
   <table>
     <tr><th>Icon</th><th>State</th><th>Meaning</th></tr>
     <tr><td>Outline shield (gray dot)</td><td><strong>Disconnected</strong></td><td>Your traffic goes out directly — the tunnel is off.</td></tr>
-    <tr><td>Left-half shield with a <strong>+</strong> (yellow dot)</td><td><strong>Connecting / Reconnecting</strong></td><td>The tunnel is being established.</td></tr>
+    <tr><td>Outline shield that <strong>blinks</strong> (yellow dot)</td><td><strong>Connecting / Reconnecting</strong></td><td>The tunnel is being established.</td></tr>
     <tr><td>Left-half filled shield (green dot)</td><td><strong>Connected</strong></td><td>Tunnel and proxy are active. You're all set.</td></tr>
     <tr><td>Shield with an <strong>!</strong> (red dot)</td><td><strong>Error</strong></td><td>Something went wrong. Open <strong>View Logs…</strong> to see why.</td></tr>
   </table>

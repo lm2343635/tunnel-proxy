@@ -22,6 +22,7 @@
 "macOS SOCKS proxy" = "macOS SOCKS 代理";
 "Launch at login" = "登录时启动";
 "View Logs…" = "查看日志…";
+"Statistics…" = "流量统计…";
 "User Guide…" = "使用手册…";
 "Settings…" = "设置…";
 "Quit" = "退出";
@@ -54,6 +55,33 @@
 "Config" = "配置";
 "Logs" = "日志";
 "Reveal in Finder" = "在访达中显示";
+
+/* Statistics settings */
+"Statistics" = "流量统计";
+"Record traffic statistics" = "记录流量统计";
+"Records byte volume over time — not the sites you visit. Stored locally only." = "仅记录一段时间内的流量大小，不记录访问的网站。数据仅保存在本地。";
+"Clear statistics…" = "清除统计数据…";
+"Clear statistics" = "清除统计数据";
+"Clear all recorded statistics?" = "清除所有已记录的统计数据？";
+"This permanently deletes all recorded traffic history." = "此操作将永久删除所有已记录的流量历史。";
+
+/* Statistics window */
+"Today" = "今天";
+"Week" = "本周";
+"Month" = "本月";
+"All" = "全部";
+"Downloaded" = "已下载";
+"Uploaded" = "已上传";
+"Total" = "合计";
+"Usage over time" = "流量趋势";
+"No traffic recorded for this range" = "此时间段内暂无流量记录";
+"Sessions" = "会话";
+"No sessions in this range" = "此时间段内暂无会话";
+"Unknown" = "未知";
+"Export…" = "导出…";
+"Recording is off" = "记录已关闭";
+"Recording since %@" = "记录始于 %@";
+"No data recorded yet" = "尚无记录数据";
 
 /* About tab */
 "Tunnel Proxy" = "Tunnel Proxy";

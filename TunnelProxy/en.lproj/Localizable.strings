@@ -22,6 +22,7 @@
 "macOS SOCKS proxy" = "macOS SOCKS proxy";
 "Launch at login" = "Launch at login";
 "View Logs…" = "View Logs…";
+"Statistics…" = "Statistics…";
 "User Guide…" = "User Guide…";
 "Settings…" = "Settings…";
 "Quit" = "Quit";
@@ -54,6 +55,33 @@
 "Config" = "Config";
 "Logs" = "Logs";
 "Reveal in Finder" = "Reveal in Finder";
+
+/* Statistics settings */
+"Statistics" = "Statistics";
+"Record traffic statistics" = "Record traffic statistics";
+"Records byte volume over time — not the sites you visit. Stored locally only." = "Records byte volume over time — not the sites you visit. Stored locally only.";
+"Clear statistics…" = "Clear statistics…";
+"Clear statistics" = "Clear statistics";
+"Clear all recorded statistics?" = "Clear all recorded statistics?";
+"This permanently deletes all recorded traffic history." = "This permanently deletes all recorded traffic history.";
+
+/* Statistics window */
+"Today" = "Today";
+"Week" = "Week";
+"Month" = "Month";
+"All" = "All";
+"Downloaded" = "Downloaded";
+"Uploaded" = "Uploaded";
+"Total" = "Total";
+"Usage over time" = "Usage over time";
+"No traffic recorded for this range" = "No traffic recorded for this range";
+"Sessions" = "Sessions";
+"No sessions in this range" = "No sessions in this range";
+"Unknown" = "Unknown";
+"Export…" = "Export…";
+"Recording is off" = "Recording is off";
+"Recording since %@" = "Recording since %@";
+"No data recorded yet" = "No data recorded yet";
 
 /* About tab */
 "Tunnel Proxy" = "Tunnel Proxy";

@@ -25,6 +25,14 @@ final class SpeedMonitor: ObservableObject {
     @Published private(set) var downText: String = "0 KB/s"
     @Published private(set) var upText: String = "0 KB/s"
 
+    /// Invoked once per sampling tick with the bytes transferred since the last
+    /// tick and the elapsed interval. `TrafficRecorder` subscribes to persist a
+    /// usage time-series — reusing these deltas means no second sampling pass and
+    /// inherits the reconnect/wrap-safety guarantees below. Fires only when a
+    /// valid delta exists (both this and the previous sample present); a tick that
+    /// only seeds the baseline, or where the tunnel is down, does not fire.
+    var onDelta: ((_ down: UInt64, _ up: UInt64, _ elapsed: TimeInterval) -> Void)?
+
     private var socksPort: Int = 1080
     private var timer: Timer?
     private var sampling = false
@@ -101,6 +109,10 @@ final class SpeedMonitor: ObservableObject {
                 } else {
                     self.downText = Self.format(bytesPerSec: Double(dRx) / elapsed)
                     self.upText = Self.format(bytesPerSec: Double(dTx) / elapsed)
+                    // Feed the recorder the same deltas we just formatted. Only
+                    // reached when both samples exist, so reconnected tunnels
+                    // (new 4-tuples) contribute 0 this tick — no spikes.
+                    self.onDelta?(dRx, dTx, elapsed)
                 }
             }
         }
@@ -214,12 +226,13 @@ final class SpeedMonitor: ObservableObject {
 
     // MARK: - Formatting
 
-    /// Compact rate string, e.g. "0 KB/s", "82 KB/s", "1.4 MB/s".
+    /// Compact rate string, e.g. "0KB/s", "82KB/s", "1.02MB/s". No space before
+    /// the unit so the menu bar column stays as narrow as possible.
     static func format(bytesPerSec: Double) -> String {
         let kb = bytesPerSec / 1024
-        if kb < 1 { return "0 KB/s" }
-        if kb < 1024 { return "\(Int(kb.rounded())) KB/s" }
+        if kb < 1 { return "0KB/s" }
+        if kb < 1024 { return "\(Int(kb.rounded()))KB/s" }
         let mb = kb / 1024
-        return String(format: "%.1f MB/s", mb)
+        return String(format: "%.2fMB/s", mb)
     }
 }

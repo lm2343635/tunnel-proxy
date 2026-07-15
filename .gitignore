@@ -1,4 +1,5 @@
 .env
+cli/.env
 .DS_Store
-.app/build
+build/
 .claude/settings.local.json

@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="560" viewBox="0 0 720 560" font-family="-apple-system, 'SF Pro Text', Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="ss" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+    <linearGradient id="dl" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a84ff" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#0a84ff" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="ul" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8bd450" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#8bd450" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="560" fill="#2c3446"/>
+
+  <g filter="url(#ss)">
+    <rect x="40" y="34" width="640" height="470" rx="12" fill="#1e222b"/>
+  </g>
+
+  <!-- titlebar -->
+  <rect x="40" y="34" width="640" height="44" rx="12" fill="#2a2f3a"/>
+  <rect x="40" y="66" width="640" height="12" fill="#2a2f3a"/>
+  <circle cx="64" cy="56" r="6" fill="#ff5f57"/>
+  <circle cx="84" cy="56" r="6" fill="#febc2e"/>
+  <circle cx="104" cy="56" r="6" fill="#28c840"/>
+  <text x="360" y="60" font-size="13.5" font-weight="700" fill="#cfd4de" text-anchor="middle">Statistics — Tunnel Proxy</text>
+
+  <!-- toolbar: range segmented control + server picker -->
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="56" y="92" width="248" height="28" rx="7" fill="#2a2f3a" stroke="#3a4150"/>
+    <rect x="58" y="94" width="60" height="24" rx="6" fill="#0a84ff"/>
+    <text x="88" y="110" fill="#ffffff" font-weight="700">Today</text>
+    <text x="150" y="110" fill="#cfd4de">Week</text>
+    <text x="212" y="110" fill="#cfd4de">Month</text>
+    <text x="274" y="110" fill="#cfd4de">All</text>
+
+    <text x="524" y="110" fill="#7d8697" text-anchor="end">Server</text>
+    <rect x="536" y="92" width="128" height="28" rx="7" fill="#2a2f3a" stroke="#3a4150"/>
+    <text x="600" y="110" fill="#cfd4de">All ▾</text>
+  </g>
+
+  <!-- headline totals -->
+  <g>
+    <rect x="56" y="134" width="192" height="70" rx="10" fill="#242a36" stroke="#333947"/>
+    <text x="72" y="156" font-size="11" fill="#7d8697">Downloaded</text>
+    <text x="72" y="186" font-size="24" font-weight="800" fill="#5fb0ff">2.4 GB</text>
+
+    <rect x="264" y="134" width="192" height="70" rx="10" fill="#242a36" stroke="#333947"/>
+    <text x="280" y="156" font-size="11" fill="#7d8697">Uploaded</text>
+    <text x="280" y="186" font-size="24" font-weight="800" fill="#8bd450">340 MB</text>
+
+    <rect x="472" y="134" width="192" height="70" rx="10" fill="#242a36" stroke="#333947"/>
+    <text x="488" y="156" font-size="11" fill="#7d8697">Peak speed</text>
+    <text x="488" y="186" font-size="24" font-weight="800" fill="#cfd4de">4.1 MB/s</text>
+  </g>
+
+  <!-- usage chart (stacked down/up bars, hourly) -->
+  <text x="56" y="230" font-size="11.5" font-weight="700" fill="#9aa3b2">Usage over time</text>
+  <g font-size="10">
+    <rect x="512" y="221" width="12" height="10" rx="2" fill="url(#dl)"/>
+    <text x="528" y="230" fill="#7d8697">Down</text>
+    <rect x="574" y="221" width="12" height="10" rx="2" fill="url(#ul)"/>
+    <text x="590" y="230" fill="#7d8697">Up</text>
+  </g>
+
+  <!-- chart plot area -->
+  <rect x="56" y="240" width="608" height="130" rx="8" fill="#171b23" stroke="#2a2f3a"/>
+  <!-- gridlines -->
+  <g stroke="#262c38" stroke-width="1">
+    <line x1="64" y1="272" x2="656" y2="272"/>
+    <line x1="64" y1="304" x2="656" y2="304"/>
+    <line x1="64" y1="336" x2="656" y2="336"/>
+  </g>
+  <!-- stacked bars: green (up) on top of blue (down); 24 hourly bars -->
+  <g>
+    <!-- each bar: down (blue) then up (green) stacked above it, baseline y=360 -->
+    <rect x="70"  y="348" width="14" height="12" fill="url(#dl)"/><rect x="70"  y="342" width="14" height="6"  fill="url(#ul)"/>
+    <rect x="94"  y="344" width="14" height="16" fill="url(#dl)"/><rect x="94"  y="338" width="14" height="6"  fill="url(#ul)"/>
+    <rect x="118" y="332" width="14" height="28" fill="url(#dl)"/><rect x="118" y="324" width="14" height="8"  fill="url(#ul)"/>
+    <rect x="142" y="300" width="14" height="60" fill="url(#dl)"/><rect x="142" y="288" width="14" height="12" fill="url(#ul)"/>
+    <rect x="166" y="276" width="14" height="84" fill="url(#dl)"/><rect x="166" y="262" width="14" height="14" fill="url(#ul)"/>
+    <rect x="190" y="288" width="14" height="72" fill="url(#dl)"/><rect x="190" y="276" width="14" height="12" fill="url(#ul)"/>
+    <rect x="214" y="312" width="14" height="48" fill="url(#dl)"/><rect x="214" y="304" width="14" height="8"  fill="url(#ul)"/>
+    <rect x="238" y="330" width="14" height="30" fill="url(#dl)"/><rect x="238" y="322" width="14" height="8"  fill="url(#ul)"/>
+    <rect x="262" y="320" width="14" height="40" fill="url(#dl)"/><rect x="262" y="311" width="14" height="9"  fill="url(#ul)"/>
+    <rect x="286" y="296" width="14" height="64" fill="url(#dl)"/><rect x="286" y="284" width="14" height="12" fill="url(#ul)"/>
+    <rect x="310" y="268" width="14" height="92" fill="url(#dl)"/><rect x="310" y="254" width="14" height="14" fill="url(#ul)"/>
+    <rect x="334" y="284" width="14" height="76" fill="url(#dl)"/><rect x="334" y="272" width="14" height="12" fill="url(#ul)"/>
+    <rect x="358" y="304" width="14" height="56" fill="url(#dl)"/><rect x="358" y="295" width="14" height="9"  fill="url(#ul)"/>
+    <rect x="382" y="326" width="14" height="34" fill="url(#dl)"/><rect x="382" y="318" width="14" height="8"  fill="url(#ul)"/>
+    <rect x="406" y="316" width="14" height="44" fill="url(#dl)"/><rect x="406" y="308" width="14" height="8"  fill="url(#ul)"/>
+    <rect x="430" y="292" width="14" height="68" fill="url(#dl)"/><rect x="430" y="280" width="14" height="12" fill="url(#ul)"/>
+    <rect x="454" y="262" width="14" height="98" fill="url(#dl)"/><rect x="454" y="248" width="14" height="14" fill="url(#ul)"/>
+    <rect x="478" y="252" width="14" height="108" fill="url(#dl)"/><rect x="478" y="236" width="14" height="16" fill="url(#ul)"/>
+    <rect x="502" y="280" width="14" height="80" fill="url(#dl)"/><rect x="502" y="268" width="14" height="12" fill="url(#ul)"/>
+    <rect x="526" y="308" width="14" height="52" fill="url(#dl)"/><rect x="526" y="300" width="14" height="8"  fill="url(#ul)"/>
+    <rect x="550" y="330" width="14" height="30" fill="url(#dl)"/><rect x="550" y="323" width="14" height="7"  fill="url(#ul)"/>
+    <rect x="574" y="340" width="14" height="20" fill="url(#dl)"/><rect x="574" y="334" width="14" height="6"  fill="url(#ul)"/>
+    <rect x="598" y="348" width="14" height="12" fill="url(#dl)"/><rect x="598" y="343" width="14" height="5"  fill="url(#ul)"/>
+    <rect x="622" y="352" width="14" height="8"  fill="url(#dl)"/><rect x="622" y="348" width="14" height="4"  fill="url(#ul)"/>
+  </g>
+  <!-- x axis labels -->
+  <g font-size="9.5" fill="#6b7280" text-anchor="middle">
+    <text x="77"  y="384">12a</text>
+    <text x="220" y="384">6a</text>
+    <text x="365" y="384">12p</text>
+    <text x="508" y="384">6p</text>
+    <text x="629" y="384">11p</text>
+  </g>
+
+  <!-- sessions list -->
+  <text x="56" y="410" font-size="11.5" font-weight="700" fill="#9aa3b2">Sessions</text>
+  <g font-size="11.5">
+    <!-- row 1 -->
+    <circle cx="64" cy="430" r="4" fill="#28c840"/>
+    <text x="78" y="434" fill="#cfd4de" font-family="'SF Mono', Menlo, monospace">14:02–15:20</text>
+    <text x="196" y="434" fill="#9aa3b2">server-a</text>
+    <text x="560" y="434" fill="#5fb0ff" text-anchor="end">↓ 180 MB</text>
+    <text x="656" y="434" fill="#8bd450" text-anchor="end">↑ 22 MB</text>
+    <!-- row 2 -->
+    <circle cx="64" cy="456" r="4" fill="#5b6472"/>
+    <text x="78" y="460" fill="#cfd4de" font-family="'SF Mono', Menlo, monospace">09:10–11:45</text>
+    <text x="196" y="460" fill="#9aa3b2">server-a</text>
+    <text x="560" y="460" fill="#5fb0ff" text-anchor="end">↓ 1.1 GB</text>
+    <text x="656" y="460" fill="#8bd450" text-anchor="end">↑ 90 MB</text>
+  </g>
+
+  <!-- status footer -->
+  <line x1="40" y1="478" x2="680" y2="478" stroke="#333947"/>
+  <circle cx="60" cy="493" r="5" fill="#28c840"/>
+  <text x="72" y="497" font-size="11.5" fill="#9aa3b2">Recording since Jul 1 · 12,483 samples</text>
+  <rect x="596" y="483" width="70" height="22" rx="6" fill="#3a4150"/>
+  <text x="631" y="498" font-size="11" fill="#cfd4de" text-anchor="middle">Export…</text>
+
+  <!-- caption -->
+  <text x="40" y="536" fill="#c7ccd6" font-size="12.5" font-weight="600">Statistics window — range picker · stacked down/up usage chart · headline totals · session list</text>
+</svg>

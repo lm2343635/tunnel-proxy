@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct TunnelProxyApp: App {
     @StateObject private var controller = TunnelController()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
         // Menu bar status item with a popover.
@@ -27,6 +28,32 @@ struct TunnelProxyApp: App {
                 .environmentObject(controller)
         }
         .defaultSize(width: 680, height: 440)
+
+        // Standalone Statistics window, opened from the popover.
+        Window("Statistics", id: "statistics") {
+            StatisticsView()
+                .environmentObject(controller)
+        }
+        .defaultSize(width: 720, height: 560)
+
+        // Standalone User Guide window, opened from the popover. Shows the
+        // bundled HTML manual in-app instead of the default browser.
+        Window("User Guide", id: "user-guide") {
+            ManualView()
+        }
+        .defaultSize(width: 860, height: 640)
+    }
+}
+
+/// App delegate used only to flush the traffic recorder on quit. SwiftUI tears
+/// the scene down before `deinit` runs reliably, so we hook
+/// `applicationWillTerminate`. The controller registers its flush closure here.
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    /// Set by `TunnelController` on init; invoked synchronously on quit.
+    static var onTerminate: (() -> Void)?
+
+    func applicationWillTerminate(_ notification: Notification) {
+        AppDelegate.onTerminate?()
     }
 }
 
@@ -38,12 +65,19 @@ struct MenuBarLabel: View {
     @EnvironmentObject var controller: TunnelController
 
     var body: some View {
+        // Reading `iconDimmed` here re-renders the label each blink tick. The
+        // dim is baked into the NSImage (a template image ignores SwiftUI
+        // `.opacity`, so fading has to happen at the pixel level).
+        let dimmed = controller.iconDimmed
         if controller.showSpeed {
             // Nested view observes the SpeedMonitor so the image refreshes as
             // rates change (it's a separate ObservableObject from controller).
-            SpeedLabel(monitor: controller.speedMonitor, symbol: controller.menuBarSymbol)
+            SpeedLabel(monitor: controller.speedMonitor,
+                       symbol: controller.menuBarSymbol,
+                       dimmed: dimmed)
         } else {
-            Image(nsImage: controller.menuBarImage)
+            Image(nsImage: MenuBarRenderer.iconImage(
+                symbol: controller.menuBarSymbol, dimmed: dimmed))
                 .accessibilityLabel("Tunnel Proxy")
         }
     }
@@ -53,10 +87,11 @@ struct MenuBarLabel: View {
 private struct SpeedLabel: View {
     @ObservedObject var monitor: SpeedMonitor
     let symbol: String
+    let dimmed: Bool
 
     var body: some View {
         Image(nsImage: MenuBarRenderer.labelImage(
-            symbol: symbol, up: monitor.upText, down: monitor.downText))
+            symbol: symbol, up: monitor.upText, down: monitor.downText, dimmed: dimmed))
             .accessibilityLabel("Tunnel Proxy")
     }
 }
@@ -66,19 +101,12 @@ extension TunnelController {
     var menuBarSymbol: String {
         switch state {
         case .connected: return "shield.lefthalf.filled"
-        case .connecting, .reconnecting: return "shield.lefthalf.filled.badge.plus"
+        // Hollow shield that blinks (via `iconDimmed`); the previous
+        // `.badge.plus` variant doesn't exist on all macOS versions and left the
+        // status item blank while connecting.
+        case .connecting, .reconnecting: return "shield"
         case .error: return "exclamationmark.shield"
         case .disconnected: return "shield"
         }
-    }
-
-    /// The status-item icon as a larger template image (~18pt vs the ~15pt
-    /// default) so it reads more clearly in the menu bar.
-    var menuBarImage: NSImage {
-        let config = NSImage.SymbolConfiguration(pointSize: 18, weight: .regular)
-        let image = NSImage(systemSymbolName: menuBarSymbol, accessibilityDescription: "Tunnel Proxy")?
-            .withSymbolConfiguration(config)
-        image?.isTemplate = true   // adopt the menu bar's light/dark tint
-        return image ?? NSImage()
     }
 }

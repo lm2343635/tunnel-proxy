@@ -27,11 +27,20 @@ enum ConnectionState: Equatable {
 final class TunnelController: ObservableObject {
 
     // Published UI state.
-    @Published private(set) var state: ConnectionState = .disconnected
+    @Published private(set) var state: ConnectionState = .disconnected {
+        didSet {
+            updateBlink()
+            syncRecorderState()
+        }
+    }
     @Published private(set) var exitIP: String?
     @Published private(set) var lastConnected: Date?
     @Published private(set) var isBusy = false
     @Published var systemSocksOn = false
+
+    /// Drives the connecting/reconnecting blink: the menu bar icon dims while
+    /// this is `true`. Toggled by `blinkTimer`; only animates in those states.
+    @Published private(set) var iconDimmed = false
 
     // Configuration (persisted as JSON in Application Support).
     @Published var config: TunnelConfig
@@ -50,21 +59,33 @@ final class TunnelController: ObservableObject {
     @Published var showSpeed: Bool {
         didSet {
             defaults.set(showSpeed, forKey: Keys.showSpeed)
-            if showSpeed { speedMonitor.start(socksPort: config.socksPort) } else { speedMonitor.stop() }
+            syncSampling()
+        }
+    }
+    /// Record traffic statistics (byte volume over time) while connected.
+    @Published var recordStats: Bool {
+        didSet {
+            defaults.set(recordStats, forKey: Keys.recordStats)
+            recorder.isEnabled = recordStats
+            syncSampling()
         }
     }
 
     /// Publishes live up/down rates for the menu bar label.
     let speedMonitor = SpeedMonitor()
+    /// Persists traffic usage over time; feeds the Statistics window.
+    let recorder = TrafficRecorder()
 
     let defaults = UserDefaults.standard
     private let engine = TunnelEngine()
     private var pollTimer: Timer?
+    private var blinkTimer: Timer?
 
     private enum Keys {
         static let watchdog = "watchdogEnabled"
         static let autoConnect = "autoConnectOnLaunch"
         static let showSpeed = "showSpeed"
+        static let recordStats = "recordStats"
     }
 
     init() {
@@ -73,8 +94,26 @@ final class TunnelController: ObservableObject {
         autoConnectOnLaunch = defaults.bool(forKey: Keys.autoConnect)
         launchAtLogin = (SMAppService.mainApp.status == .enabled)
         showSpeed = defaults.object(forKey: Keys.showSpeed) as? Bool ?? false
+        recordStats = defaults.object(forKey: Keys.recordStats) as? Bool ?? true
         AppPaths.ensureSupportDirectory()
-        if showSpeed { speedMonitor.start(socksPort: config.socksPort) }
+        recorder.isEnabled = recordStats
+        recorder.attach(to: speedMonitor)
+        syncSampling()
+        // Flush recorded traffic when the app quits (⌘Q or menu Quit).
+        AppDelegate.onTerminate = { [weak self] in
+            MainActor.assumeIsolated { self?.recorder.shutdown() }
+        }
+    }
+
+    /// Sampling (the 1 Hz TCP-table read) must run whenever we either show the
+    /// live speed *or* record statistics — both consume `SpeedMonitor`'s deltas.
+    /// The recorder additionally gates on connection state and its own toggle.
+    private func syncSampling() {
+        if showSpeed || recordStats {
+            speedMonitor.start(socksPort: config.socksPort)
+        } else {
+            speedMonitor.stop()
+        }
     }
 
     /// The log file the viewer tails.
@@ -124,14 +163,26 @@ final class TunnelController: ObservableObject {
         refreshStatus()
     }
 
+    // MARK: - Statistics
+
+    /// Wipe all recorded traffic statistics.
+    func clearStatistics() {
+        recorder.clearAll()
+    }
+
+    /// Flush the recorder before the app quits (call from `applicationWillTerminate`).
+    func shutdownRecorder() {
+        recorder.shutdown()
+    }
+
     // MARK: - Lifecycle
 
     func onAppear() {
         startPolling()
         refreshStatus()
         syncSystemSocksState()
-        // Ensure the speed monitor is live whenever the popover is shown.
-        if showSpeed { speedMonitor.start(socksPort: config.socksPort) }
+        // Ensure sampling is live (for speed display and/or recording).
+        syncSampling()
         if autoConnectOnLaunch, config.canConnect, case .disconnected = state {
             Task { await connect() }
         }
@@ -158,6 +209,42 @@ final class TunnelController: ObservableObject {
         }
     }
 
+    /// Open/close the recording session as the connection comes up or drops.
+    /// Only `.connected` counts as "up" — `.reconnecting` keeps the session open
+    /// (the watchdog is mid-relaunch; SpeedMonitor already contributes 0 bytes).
+    private func syncRecorderState() {
+        switch state {
+        case .connected:
+            recorder.setConnected(true,
+                                  serverID: selectedServer?.id,
+                                  serverName: selectedServer?.displayName ?? "")
+        case .reconnecting:
+            break
+        case .disconnected, .connecting, .error:
+            recorder.setConnected(false, serverID: nil, serverName: "")
+        }
+    }
+
+    /// Start/stop the blink timer based on state. Runs only while connecting or
+    /// reconnecting; otherwise the icon is fully opaque.
+    private func updateBlink() {
+        let shouldBlink: Bool
+        switch state {
+        case .connecting, .reconnecting: shouldBlink = true
+        default: shouldBlink = false
+        }
+        if shouldBlink {
+            guard blinkTimer == nil else { return }
+            blinkTimer = Timer.scheduledTimer(withTimeInterval: 0.6, repeats: true) { [weak self] _ in
+                Task { @MainActor in self?.iconDimmed.toggle() }
+            }
+        } else {
+            blinkTimer?.invalidate()
+            blinkTimer = nil
+            iconDimmed = false
+        }
+    }
+
     func saveConfig() {
         do {
             try config.save()
@@ -179,6 +266,13 @@ final class TunnelController: ObservableObject {
         state = .connecting
         defer { isBusy = false }
 
+        // Preflight: silently reclaim the SOCKS / HTTP-proxy ports before spawning
+        // any child. A stale ssh/privoxy (or another app) holding a port would
+        // otherwise make the tunnel fail to bind and the watchdog spin. Force-quit
+        // whoever is listening (SIGTERM → SIGKILL); a root-owned holder we can't
+        // kill just surfaces as the usual "failed to start" error afterwards.
+        await reclaimPorts()
+
         // Retrieve the secret for auth methods that need one.
         let secret: String? = (server.authMethod == .agent) ? nil : KeychainStore.secret(for: server.id)
         let health = await engine.connect(config: config, server: server,
@@ -193,6 +287,18 @@ final class TunnelController: ObservableObject {
             state = .error(String(localized: "Tunnel failed to start"))
         }
         await updateExitIP()
+    }
+
+    /// Force-quit any process listening on the SOCKS or HTTP-proxy port so the
+    /// tunnel can bind them. Runs the `lsof`/`kill` work off the MainActor.
+    private func reclaimPorts() async {
+        let ports = [config.socksPort, config.httpProxyPort]
+        await Task.detached {
+            for port in ports {
+                guard let holder = PortInspector.holder(ofPort: port) else { continue }
+                _ = PortInspector.forceQuit(pid: holder.pid)
+            }
+        }.value
     }
 
     func disconnect() async {

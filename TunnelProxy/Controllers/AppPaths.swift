@@ -26,6 +26,11 @@ enum AppPaths {
         supportDirectory.appendingPathComponent("privoxy.conf")
     }
 
+    /// SQLite database of recorded traffic statistics (buckets + sessions).
+    static var trafficStoreURL: URL {
+        supportDirectory.appendingPathComponent("traffic.sqlite")
+    }
+
     /// The bundled Privoxy executable inside the app's Resources.
     static var bundledPrivoxy: URL? {
         Bundle.main.resourceURL?.appendingPathComponent("privoxy/privoxy")

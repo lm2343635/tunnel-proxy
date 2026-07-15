@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var deps: [Dependency] = []
     @State private var saveMessage: String?
     @State private var networkServiceOptions: [String] = []
+    @State private var confirmClearStats = false
 
     var body: some View {
         TabView {
@@ -88,6 +89,14 @@ struct SettingsView: View {
                 Toggle("Launch at login", isOn: $controller.launchAtLogin)
                 Toggle("Auto-connect on launch", isOn: $controller.autoConnectOnLaunch)
             }
+            Section("Statistics") {
+                Toggle("Record traffic statistics", isOn: $controller.recordStats)
+                Text("Records byte volume over time — not the sites you visit. Stored locally only.")
+                    .font(.caption).foregroundStyle(.secondary)
+                Button("Clear statistics…", role: .destructive) {
+                    confirmClearStats = true
+                }
+            }
             Section("Files") {
                 LabeledContent("Config") { pathText(AppPaths.configURL.path) }
                 LabeledContent("Logs") { pathText(AppPaths.logURL.path) }
@@ -100,6 +109,15 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .confirmationDialog("Clear all recorded statistics?",
+                            isPresented: $confirmClearStats, titleVisibility: .visible) {
+            Button("Clear statistics", role: .destructive) {
+                controller.clearStatistics()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently deletes all recorded traffic history.")
+        }
     }
 
     private var aboutTab: some View {
