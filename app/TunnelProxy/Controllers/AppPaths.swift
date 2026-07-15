@@ -36,6 +36,16 @@ enum AppPaths {
         Bundle.main.resourceURL?.appendingPathComponent("helpers/askpass.sh")
     }
 
+    /// The bundled user guide (HTML), matching the app's UI language:
+    /// Chinese UI → 使用手册, anything else → the English guide.
+    static var userGuide: URL? {
+        let lang = Bundle.main.preferredLocalizations.first ?? "en"
+        let file = lang.hasPrefix("zh") ? "使用手册.html" : "User-Guide.html"
+        let url = Bundle.main.resourceURL?.appendingPathComponent("manual/\(file)")
+        guard let url, FileManager.default.fileExists(atPath: url.path) else { return nil }
+        return url
+    }
+
     /// Ensure the support directory exists. Safe to call repeatedly.
     @discardableResult
     static func ensureSupportDirectory() -> Bool {

@@ -50,7 +50,7 @@ final class TunnelController: ObservableObject {
     @Published var showSpeed: Bool {
         didSet {
             defaults.set(showSpeed, forKey: Keys.showSpeed)
-            if showSpeed { speedMonitor.start() } else { speedMonitor.stop() }
+            if showSpeed { speedMonitor.start(socksPort: config.socksPort) } else { speedMonitor.stop() }
         }
     }
 
@@ -74,7 +74,7 @@ final class TunnelController: ObservableObject {
         launchAtLogin = (SMAppService.mainApp.status == .enabled)
         showSpeed = defaults.object(forKey: Keys.showSpeed) as? Bool ?? false
         AppPaths.ensureSupportDirectory()
-        if showSpeed { speedMonitor.start() }
+        if showSpeed { speedMonitor.start(socksPort: config.socksPort) }
     }
 
     /// The log file the viewer tails.
@@ -131,7 +131,7 @@ final class TunnelController: ObservableObject {
         refreshStatus()
         syncSystemSocksState()
         // Ensure the speed monitor is live whenever the popover is shown.
-        if showSpeed { speedMonitor.start() }
+        if showSpeed { speedMonitor.start(socksPort: config.socksPort) }
         if autoConnectOnLaunch, config.canConnect, case .disconnected = state {
             Task { await connect() }
         }
@@ -164,6 +164,8 @@ final class TunnelController: ObservableObject {
         } catch {
             NSLog("Failed to save config: \(error.localizedDescription)")
         }
+        // Keep the speed monitor pointed at the (possibly changed) SOCKS port.
+        speedMonitor.updateSocksPort(config.socksPort)
     }
 
     // MARK: - Actions

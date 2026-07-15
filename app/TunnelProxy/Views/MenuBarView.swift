@@ -123,6 +123,12 @@ struct MenuBarView: View {
                 activateApp()
             }
                 .buttonStyle(.plain)
+            if let guide = AppPaths.userGuide {
+                Button("User Guide…") {
+                    NSWorkspace.shared.open(guide)   // default browser
+                }
+                    .buttonStyle(.plain)
+            }
             Button("Settings…") {
                 openSettings()
                 activateApp()

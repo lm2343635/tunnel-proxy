@@ -27,6 +27,7 @@
 		A100001600000000000016 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = V100000000000000000001 /* Localizable.strings */; };
 		A100001700000000000017 /* SpeedMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001700000000000017 /* SpeedMonitor.swift */; };
 		A100001800000000000018 /* MenuBarRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001800000000000018 /* MenuBarRenderer.swift */; };
+		A100001900000000000019 /* manual in Resources */ = {isa = PBXBuildFile; fileRef = B100001900000000000019 /* manual */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		B100001500000000000015 /* NetworkServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServices.swift; sourceTree = "<group>"; };
 		B100001700000000000017 /* SpeedMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedMonitor.swift; sourceTree = "<group>"; };
 		B100001800000000000018 /* MenuBarRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarRenderer.swift; sourceTree = "<group>"; };
+		B100001900000000000019 /* manual */ = {isa = PBXFileReference; lastKnownFileType = folder; path = manual; sourceTree = "<group>"; };
 		V100000000000000000002 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		V100000000000000000003 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -132,6 +134,7 @@
 			children = (
 				B100000A00000000000000A /* privoxy */,
 				B100001400000000000014 /* helpers */,
+				B100001900000000000019 /* manual */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				A100000A00000000000000A /* privoxy in Resources */,
 				A100001400000000000014 /* helpers in Resources */,
 				A100001600000000000016 /* Localizable.strings in Resources */,
+				A100001900000000000019 /* manual in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

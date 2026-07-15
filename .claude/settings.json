@@ -14,7 +14,9 @@
       "Bash(/usr/sbin/networksetup -listnetworkserviceorder)",
       "Bash(swiftc -o /tmp/spd /tmp/spd.swift)",
       "Bash(/tmp/spd)",
-      "Bash(defaults delete *)"
+      "Bash(defaults delete *)",
+      "Bash(nettop -P -x -L 1 -J bytes_in,bytes_out)",
+      "Bash(echo \"---exit: $?\")"
     ]
   }
 }

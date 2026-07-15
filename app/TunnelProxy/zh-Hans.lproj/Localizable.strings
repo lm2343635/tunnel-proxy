@@ -22,6 +22,7 @@
 "macOS SOCKS proxy" = "macOS SOCKS 代理";
 "Launch at login" = "登录时启动";
 "View Logs…" = "查看日志…";
+"User Guide…" = "使用手册…";
 "Settings…" = "设置…";
 "Quit" = "退出";
 "⚠︎ Add an SSH server in Settings to connect." = "⚠︎ 请在设置中添加 SSH 服务器以便连接。";
