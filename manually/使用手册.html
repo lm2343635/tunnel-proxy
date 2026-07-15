@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tunnel Proxy — 使用手册</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #111827; --muted: #6b7280;
+    --line: #e5e7eb; --accent: #0a84ff; --accent-soft: #eef4ff; --code-bg: #eef1f5;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.7; font-size: 16px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 96px; }
+  .lang { text-align: right; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .lang a { color: var(--accent); text-decoration: none; }
+  h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-style: italic; margin: 0 0 28px; }
+  h2 {
+    font-size: 22px; font-weight: 800; margin: 44px 0 12px;
+    padding-top: 20px; border-top: 1px solid var(--line);
+  }
+  h3 { font-size: 17px; font-weight: 700; margin: 26px 0 8px; }
+  p { margin: 12px 0; }
+  ul, ol { padding-left: 22px; }
+  li { margin: 6px 0; }
+  a { color: var(--accent); }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 5px;
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 0.88em;
+  }
+  kbd {
+    background: #fff; border: 1px solid #d6dae1; border-bottom-width: 2px;
+    border-radius: 5px; padding: 1px 6px; font-size: 0.85em; font-weight: 600;
+  }
+  figure {
+    margin: 22px 0; padding: 14px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+  figure svg { display: block; width: 100%; height: auto; }
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 15px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #f0f1f4; font-weight: 700; font-size: 13px; }
+  tr:last-child td { border-bottom: 0; }
+  blockquote {
+    margin: 16px 0; padding: 10px 16px; background: var(--accent-soft);
+    border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; color: #1f3a5f;
+  }
+  blockquote p { margin: 4px 0; }
+  blockquote strong { color: var(--ink); }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  .foot { color: var(--muted); font-size: 14px; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lang">For English, see <a href="User-Guide.html">User Guide (English)</a></div>
+
+  <h1>Tunnel Proxy — 使用手册</h1>
+  <p class="sub">一份面向普通用户的 Tunnel Proxy（macOS 菜单栏应用）友好指南。</p>
+
+  <h2 style="border-top:0; padding-top:0;">Tunnel Proxy 是什么？</h2>
+  <p>Tunnel Proxy 是一款常驻在 Mac <strong>菜单栏</strong>（屏幕右上角那排图标）里的小应用。它通过你自己的 SSH 服务器，用一条安全加密的连接来转发你的网络流量。</p>
+  <p>你可以用它来：</p>
+  <ul>
+    <li>通过位于其他地区的服务器访问互联网；</li>
+    <li>在不可信的网络（如公共 Wi-Fi）上保护你的流量隐私；</li>
+    <li>让网站和应用看到你<strong>服务器</strong>的 IP 地址，而不是你 Mac 的 IP。</li>
+  </ul>
+  <p>它所需的一切都已内置——<strong>无需再安装任何其他软件</strong>。你只需要知道如何连接一台 SSH 服务器（它的地址，以及你的登录方式）。</p>
+
+  <h3>工作原理</h3>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 300" font-family="-apple-system, 'PingFang SC', 'SF Pro Text', 'Microsoft YaHei', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrowz" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto">
+      <path d="M0 0 L9 4 L0 8 z" fill="#0a84ff"/>
+    </marker>
+    <filter id="cardz" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity="0.14"/>
+    </filter>
+    <linearGradient id="macz" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f2f4f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="860" height="300" fill="#f6f7f9"/>
+  <text x="30" y="42" font-size="19" font-weight="800" fill="#111827">Tunnel Proxy 的工作原理</text>
+  <text x="30" y="66" font-size="12.5" fill="#6b7280">你的应用把流量发给本机代理，Tunnel Proxy 通过加密的 SSH 隧道把它送到你的服务器。</text>
+  <rect x="30" y="96" width="330" height="150" rx="14" fill="url(#macz)" stroke="#d9dee6" filter="url(#cardz)"/>
+  <text x="50" y="122" font-size="12" font-weight="800" fill="#2563eb">你的 MAC</text>
+  <rect x="50" y="136" width="130" height="90" rx="10" fill="#ffffff" stroke="#c9ced8"/>
+  <text x="115" y="176" font-size="30" text-anchor="middle">🌐</text>
+  <text x="115" y="204" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">你的应用</text>
+  <text x="115" y="220" font-size="10" fill="#6b7280" text-anchor="middle">浏览器、命令行…</text>
+  <rect x="210" y="136" width="130" height="90" rx="10" fill="#eef4ff" stroke="#c7dbff"/>
+  <text x="275" y="172" font-size="26" text-anchor="middle">🛡️</text>
+  <text x="275" y="198" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Tunnel Proxy</text>
+  <text x="275" y="214" font-size="10" fill="#6b7280" text-anchor="middle">SOCKS 1080 · HTTP 8118</text>
+  <path d="M180 181 L206 181" stroke="#0a84ff" stroke-width="2" fill="none" marker-end="url(#arrowz)"/>
+  <path d="M360 171 L470 171" stroke="#0a84ff" stroke-width="2.4" fill="none" marker-end="url(#arrowz)"/>
+  <rect x="366" y="140" width="98" height="24" rx="12" fill="#0a84ff"/>
+  <text x="415" y="156" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">🔒 SSH 隧道</text>
+  <rect x="500" y="96" width="150" height="150" rx="14" fill="url(#macz)" stroke="#d9dee6" filter="url(#cardz)"/>
+  <text x="520" y="122" font-size="12" font-weight="800" fill="#1e874b">你的服务器</text>
+  <text x="575" y="176" font-size="34" text-anchor="middle">🖥️</text>
+  <text x="575" y="204" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">SSH 主机</text>
+  <text x="575" y="220" font-size="10" fill="#6b7280" text-anchor="middle">example.com</text>
+  <path d="M650 171 L716 171" stroke="#0a84ff" stroke-width="2" fill="none" marker-end="url(#arrowz)"/>
+  <rect x="720" y="126" width="110" height="90" rx="12" fill="#fff5ec" stroke="#f2d6bd"/>
+  <text x="775" y="166" font-size="28" text-anchor="middle">☁️</text>
+  <text x="775" y="196" font-size="12" font-weight="700" fill="#b5651d" text-anchor="middle">互联网</text>
+  <text x="30" y="282" font-size="11" fill="#8a93a6">网站看到的是你服务器的 IP 地址，而不是你 Mac 的。你的 Mac 与服务器之间的一切都经过加密。</text>
+</svg>
+  </figure>
+  <p>你的应用把流量发送到 Mac 上运行的本机代理，Tunnel Proxy 通过加密隧道把这些流量送到你的 SSH 服务器，再由服务器转发到互联网。你访问的网站看到的是服务器的 IP 地址，而你的 Mac 与服务器之间的一切都经过加密。</p>
+
+  <h2>安装应用</h2>
+  <ol>
+    <li>打开你收到的 <code>TunnelProxy.dmg</code> 文件。</li>
+    <li>把 <strong>Tunnel Proxy</strong> 图标拖到 <strong>应用程序（Applications）</strong> 文件夹上。</li>
+    <li>打开 <strong>应用程序</strong>，双击 <strong>Tunnel Proxy</strong>。
+      <ul><li>首次打开时，macOS 可能会询问「<em>确定要打开吗？</em>」——点击 <strong>打开</strong>。（如果被系统拦截，请前往 <strong>系统设置 → 隐私与安全性</strong>，向下滚动，点击 <strong>仍要打开</strong>。）</li></ul>
+    </li>
+    <li>菜单栏中会出现一个<strong>盾牌图标</strong>。应用没有 Dock 图标、也没有窗口——它完全存在于菜单栏中。</li>
+  </ol>
+  <blockquote><p><strong>提示：</strong> 没看到盾牌？可能是菜单栏太满了。按住 <kbd>⌘</kbd> 拖动一些菜单栏图标腾出空间，或确认应用是否已在运行。</p></blockquote>
+
+  <h2>菜单栏弹出面板</h2>
+  <p>点击盾牌图标即可打开主面板。</p>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" font-family="-apple-system, 'PingFang SC', 'SF Pro Text', 'Microsoft YaHei', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="deskz" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a4a63"/>
+      <stop offset="1" stop-color="#20293a"/>
+    </linearGradient>
+    <linearGradient id="panelz" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f5f6f8"/>
+    </linearGradient>
+    <filter id="popz" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.30"/>
+    </filter>
+    <clipPath id="lefthalf-mbz"><rect x="-30" y="-40" width="30" height="80"/></clipPath>
+  </defs>
+  <rect width="760" height="560" fill="url(#deskz)"/>
+  <rect x="0" y="0" width="760" height="28" fill="#1f2430" opacity="0.9"/>
+  <g fill="#ffffff" font-size="13">
+    <text x="520" y="19">100%</text>
+    <text x="575" y="19">周三 14:32</text>
+  </g>
+  <rect x="672" y="2" width="30" height="24" rx="5" fill="#0a84ff"/>
+  <g transform="translate(687,14) scale(0.42)">
+    <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linejoin="round"/>
+    <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="#ffffff" clip-path="url(#lefthalf-mbz)"/>
+  </g>
+  <g font-size="12.5" fill="#c7ccd6">
+    <text x="24" y="90" font-weight="700" fill="#ffffff">菜单栏弹出面板</text>
+    <text x="24" y="112">点击菜单栏中的盾牌图标，</text>
+    <text x="24" y="128">即可打开此面板。</text>
+  </g>
+  <g filter="url(#popz)">
+    <rect x="430" y="34" width="300" height="480" rx="14" fill="url(#panelz)" stroke="#e2e4e8"/>
+    <path d="M687 34 l-9 -10 l9 0 z" fill="#ffffff"/>
+  </g>
+  <circle cx="456" cy="70" r="7" fill="#28c840"/>
+  <text x="472" y="75" font-size="15" font-weight="700" fill="#111827">已连接</text>
+  <text x="472" y="94" font-size="11.5" fill="#6b7280">隧道与 HTTP 代理已启用</text>
+  <text x="410" y="75" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">①</text>
+  <line x1="446" y1="108" x2="714" y2="108" stroke="#e5e7eb"/>
+  <text x="446" y="132" font-size="11.5" fill="#6b7280">服务器</text>
+  <rect x="600" y="118" width="114" height="20" rx="5" fill="#eef1f5" stroke="#d7dbe2"/>
+  <text x="610" y="132" font-size="11.5" font-weight="600" fill="#111827">我的服务器 ⌄</text>
+  <text x="410" y="132" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">②</text>
+  <text x="446" y="158" font-size="11.5" fill="#6b7280">出口 IP</text>
+  <text x="714" y="158" font-size="11.5" font-weight="600" fill="#111827" text-anchor="end">203.0.113.47</text>
+  <text x="410" y="158" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">③</text>
+  <text x="446" y="182" font-size="11.5" fill="#6b7280">守护进程</text>
+  <text x="714" y="182" font-size="11.5" font-weight="600" fill="#28a745" text-anchor="end">开启</text>
+  <line x1="446" y1="198" x2="714" y2="198" stroke="#e5e7eb"/>
+  <rect x="446" y="212" width="268" height="38" rx="9" fill="#ff3b30"/>
+  <text x="580" y="236" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">断开</text>
+  <text x="410" y="236" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">④</text>
+  <text x="446" y="282" font-size="12" fill="#111827">自动重连（守护进程）</text>
+  <rect x="676" y="272" width="38" height="22" rx="11" fill="#28c840"/>
+  <circle cx="703" cy="283" r="9" fill="#ffffff"/>
+  <text x="446" y="314" font-size="12" fill="#111827">显示网络速度</text>
+  <rect x="676" y="304" width="38" height="22" rx="11" fill="#d1d5db"/>
+  <circle cx="687" cy="315" r="9" fill="#ffffff"/>
+  <text x="446" y="346" font-size="12" fill="#111827">macOS SOCKS 代理</text>
+  <rect x="676" y="336" width="38" height="22" rx="11" fill="#d1d5db"/>
+  <circle cx="687" cy="347" r="9" fill="#ffffff"/>
+  <text x="446" y="378" font-size="12" fill="#111827">登录时启动</text>
+  <rect x="676" y="368" width="38" height="22" rx="11" fill="#28c840"/>
+  <circle cx="703" cy="379" r="9" fill="#ffffff"/>
+  <text x="410" y="330" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑤</text>
+  <line x1="446" y1="402" x2="714" y2="402" stroke="#e5e7eb"/>
+  <text x="446" y="426" font-size="12.5" fill="#111827">查看日志…</text>
+  <text x="446" y="452" font-size="12.5" fill="#111827">设置…</text>
+  <text x="446" y="478" font-size="12.5" fill="#6b7280">退出</text>
+  <text x="410" y="452" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑥</text>
+  <g font-size="12" fill="#c7ccd6">
+    <text x="24" y="170"><tspan fill="#0a84ff" font-weight="800">①</tspan> 状态与说明</text>
+    <text x="24" y="200"><tspan fill="#0a84ff" font-weight="800">②</tspan> 选择要使用的服务器</text>
+    <text x="24" y="230"><tspan fill="#0a84ff" font-weight="800">③</tspan> 互联网看到的 IP</text>
+    <text x="24" y="260"><tspan fill="#0a84ff" font-weight="800">④</tspan> 连接 / 断开</text>
+    <text x="24" y="290"><tspan fill="#0a84ff" font-weight="800">⑤</tspan> 日常开关</text>
+    <text x="24" y="320"><tspan fill="#0a84ff" font-weight="800">⑥</tspan> 日志、设置、退出</text>
+  </g>
+</svg>
+  </figure>
+  <table>
+    <tr><th>序号</th><th>名称</th><th>作用</th></tr>
+    <tr><td>①</td><td><strong>状态</strong></td><td>彩色圆点和文字表示当前连接状态（见下文）。</td></tr>
+    <tr><td>②</td><td><strong>服务器</strong></td><td>选择要通过哪台服务器连接。</td></tr>
+    <tr><td>③</td><td><strong>出口 IP</strong></td><td>互联网当前看到的你的 IP 地址。仅在已连接时显示。</td></tr>
+    <tr><td>④</td><td><strong>连接 / 断开</strong></td><td>大按钮。开启或停止隧道。</td></tr>
+    <tr><td>⑤</td><td><strong>开关</strong></td><td>常用的开/关选项（见下文说明）。</td></tr>
+    <tr><td>⑥</td><td><strong>菜单项</strong></td><td>打开日志窗口、设置，或退出应用。</td></tr>
+  </table>
+
+  <h3>读懂状态图标</h3>
+  <p>菜单栏图标的形状和颜色会随连接状态而变化。</p>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 230" font-family="-apple-system, 'PingFang SC', 'SF Pro Text', 'Microsoft YaHei', Helvetica, Arial, sans-serif">
+  <defs>
+    <clipPath id="lefthalf-zh"><rect x="-30" y="-40" width="30" height="80"/></clipPath>
+  </defs>
+  <rect width="760" height="230" fill="#f6f7f9"/>
+  <text x="30" y="42" font-size="17" font-weight="800" fill="#111827">读懂菜单栏图标</text>
+  <g transform="translate(110,108)">
+    <circle r="40" fill="#eceef2" stroke="#d9dee6"/>
+    <g transform="translate(0,-2)" stroke="#7a828e" stroke-width="3" stroke-linejoin="round" fill="none">
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z"/>
+    </g>
+    <circle cx="0" cy="52" r="6" fill="#9aa1ac"/>
+    <text x="0" y="80" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">未连接</text>
+    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">空心盾牌</text>
+  </g>
+  <g transform="translate(290,108)">
+    <circle r="40" fill="#fff7e6" stroke="#f2dca0"/>
+    <g transform="translate(0,-2)">
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#c99a20" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="#e0a92a" clip-path="url(#lefthalf-zh)"/>
+    </g>
+    <circle cx="18" cy="20" r="11" fill="#fff7e6"/>
+    <g stroke="#e0a92a" stroke-width="3" stroke-linecap="round">
+      <line x1="18" y1="14" x2="18" y2="26"/>
+      <line x1="12" y1="20" x2="24" y2="20"/>
+    </g>
+    <circle cx="0" cy="52" r="6" fill="#f5b731"/>
+    <text x="0" y="80" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">正在连接</text>
+    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">带 + 的左半盾牌</text>
+  </g>
+  <g transform="translate(470,108)">
+    <circle r="40" fill="#e8f8ec" stroke="#a7e2b6"/>
+    <g transform="translate(0,-2)">
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#1e874b" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="#28a745" clip-path="url(#lefthalf-zh)"/>
+    </g>
+    <circle cx="0" cy="52" r="6" fill="#28c840"/>
+    <text x="0" y="80" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">已连接</text>
+    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">左半填充盾牌</text>
+  </g>
+  <g transform="translate(650,108)">
+    <circle r="40" fill="#fdeceb" stroke="#f3b6b1"/>
+    <g transform="translate(0,-2)">
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#d0342c" stroke-width="3" stroke-linejoin="round"/>
+      <line x1="0" y1="-12" x2="0" y2="8" stroke="#d0342c" stroke-width="3.4" stroke-linecap="round"/>
+      <circle cx="0" cy="16" r="2.2" fill="#d0342c"/>
+    </g>
+    <circle cx="0" cy="52" r="6" fill="#ff3b30"/>
+    <text x="0" y="80" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">出错</text>
+    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">带感叹号的盾牌</text>
+  </g>
+</svg>
+  </figure>
+  <table>
+    <tr><th>图标</th><th>状态</th><th>含义</th></tr>
+    <tr><td>空心盾牌（灰点）</td><td><strong>未连接</strong></td><td>流量直接连接——隧道已关闭。</td></tr>
+    <tr><td>带 <strong>+</strong> 的左半盾牌（黄点）</td><td><strong>正在连接 / 正在重连</strong></td><td>正在建立隧道。</td></tr>
+    <tr><td>左半填充盾牌（绿点）</td><td><strong>已连接</strong></td><td>隧道与代理已启用，一切就绪。</td></tr>
+    <tr><td>带感叹号的盾牌（红点）</td><td><strong>出错</strong></td><td>出现问题。打开 <strong>查看日志…</strong> 查看原因。</td></tr>
+  </table>
+
+  <h2>首次设置：添加你的服务器</h2>
+  <p>在连接之前，你需要先把 SSH 服务器信息告诉应用。</p>
+  <ol>
+    <li>点击盾牌图标 → <strong>设置…</strong>（或按 <kbd>⌘,</kbd>）。</li>
+    <li>进入 <strong>服务器</strong> 标签页，点击 <strong>＋ 添加服务器</strong>。</li>
+  </ol>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470" font-family="-apple-system, 'PingFang SC', 'SF Pro Text', 'Microsoft YaHei', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="winz" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f4f5f7"/>
+    </linearGradient>
+    <filter id="w3z" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <rect width="760" height="470" fill="#e9ebef"/>
+  <g filter="url(#w3z)">
+    <rect x="210" y="30" width="440" height="410" rx="12" fill="url(#winz)" stroke="#d6dae1"/>
+  </g>
+  <text x="430" y="62" font-size="15" font-weight="700" fill="#111827" text-anchor="middle">添加服务器</text>
+  <line x1="210" y1="78" x2="650" y2="78" stroke="#e5e7eb"/>
+  <rect x="234" y="94" width="392" height="118" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
+  <text x="252" y="120" font-size="12" fill="#6b7280">名称（可选）</text>
+  <text x="608" y="120" font-size="12" fill="#111827" text-anchor="end">我的服务器</text>
+  <line x1="252" y1="130" x2="608" y2="130" stroke="#eef0f3"/>
+  <text x="252" y="150" font-size="12" fill="#6b7280">主机</text>
+  <text x="608" y="150" font-size="12" fill="#111827" text-anchor="end">example.com</text>
+  <line x1="252" y1="160" x2="608" y2="160" stroke="#eef0f3"/>
+  <text x="252" y="180" font-size="12" fill="#6b7280">用户名</text>
+  <text x="608" y="180" font-size="12" fill="#111827" text-anchor="end">root</text>
+  <line x1="252" y1="190" x2="608" y2="190" stroke="#eef0f3"/>
+  <text x="252" y="205" font-size="12" fill="#6b7280">端口</text>
+  <text x="608" y="205" font-size="12" fill="#111827" text-anchor="end">22</text>
+  <text x="234" y="240" font-size="11" font-weight="700" fill="#6b7280">认证方式</text>
+  <rect x="234" y="250" width="392" height="120" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
+  <text x="252" y="276" font-size="12" fill="#6b7280">方式</text>
+  <rect x="470" y="264" width="138" height="20" rx="5" fill="#eef1f5" stroke="#d7dbe2"/>
+  <text x="480" y="278" font-size="11.5" font-weight="600" fill="#111827">密码 ⌄</text>
+  <line x1="252" y1="296" x2="608" y2="296" stroke="#eef0f3"/>
+  <text x="252" y="322" font-size="12" fill="#6b7280">密码</text>
+  <rect x="440" y="310" width="168" height="20" rx="5" fill="#f6f7f9" stroke="#dfe3e9"/>
+  <text x="450" y="324" font-size="12" fill="#9aa1ac">••••••••</text>
+  <text x="252" y="356" font-size="10.5" fill="#8a93a6">安全保存在 macOS 钥匙串中——绝不写入明文文件。</text>
+  <line x1="210" y1="392" x2="650" y2="392" stroke="#e5e7eb"/>
+  <rect x="470" y="404" width="70" height="26" rx="7" fill="#eceef2" stroke="#d6dae1"/>
+  <text x="505" y="421" font-size="12" fill="#111827" text-anchor="middle">取消</text>
+  <rect x="552" y="404" width="74" height="26" rx="7" fill="#0a84ff"/>
+  <text x="589" y="421" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle">保存</text>
+  <g font-size="12" fill="#4b5563">
+    <text x="30" y="120" font-weight="700" fill="#111827">服务器信息</text>
+    <text x="30" y="140">起个名字，然后填写</text>
+    <text x="30" y="156">主机、登录用户名</text>
+    <text x="30" y="172">和端口。</text>
+    <text x="30" y="270" font-weight="700" fill="#111827">登录方式</text>
+    <text x="30" y="290">密码、私钥文件，</text>
+    <text x="30" y="306">或使用你默认的</text>
+    <text x="30" y="322">SSH 密钥 / 代理。</text>
+  </g>
+</svg>
+  </figure>
+  <p>填写以下信息：</p>
+  <table>
+    <tr><th>字段</th><th>填写内容</th></tr>
+    <tr><td><strong>名称</strong></td><td>任意你喜欢的标签，如「<em>家里的服务器</em>」。可选。</td></tr>
+    <tr><td><strong>主机</strong></td><td>服务器地址，如 <code>example.com</code> 或 <code>203.0.113.10</code>。</td></tr>
+    <tr><td><strong>用户名</strong></td><td>你在服务器上的登录名，如 <code>root</code>。</td></tr>
+    <tr><td><strong>端口</strong></td><td>SSH 端口。通常为 <strong>22</strong>——如无特别说明请保持不变。</td></tr>
+  </table>
+  <p>选择一种 <strong>认证方式</strong>——即你如何证明身份：</p>
+  <table>
+    <tr><th>方式</th><th>何时使用</th><th>填写内容</th></tr>
+    <tr><td><strong>密码</strong></td><td>你用密码登录</td><td>你的 SSH 密码</td></tr>
+    <tr><td><strong>私钥文件</strong></td><td>你有一个密钥文件（如在 <code>~/.ssh</code> 中）</td><td>点击 <strong>选择…</strong> 选取密钥；若密钥有口令则一并填写</td></tr>
+    <tr><td><strong>默认密钥 / 代理</strong></td><td>你的 Mac 已配置好用密钥连接</td><td>无需填写——自动使用你现有的密钥</td></tr>
+  </table>
+  <p>点击 <strong>保存</strong>。</p>
+  <blockquote><p><strong>你的密码很安全。</strong> 密码和密钥口令保存在 <strong>macOS 钥匙串</strong> 中——这是 macOS 用来保管你其他密码的同一个安全保险库，绝不会写入明文文件。</p></blockquote>
+  <p>你可以添加<strong>多台服务器</strong>并在弹出面板中切换。在服务器列表里，点击左侧的圆圈即可把某台服务器设为当前使用的服务器。</p>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" font-family="-apple-system, 'PingFang SC', 'SF Pro Text', 'Microsoft YaHei', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="s-winz" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f4f5f7"/>
+    </linearGradient>
+    <filter id="s-shz" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.20"/>
+    </filter>
+  </defs>
+  <rect width="760" height="430" fill="#e9ebef"/>
+  <g filter="url(#s-shz)">
+    <rect x="120" y="30" width="520" height="370" rx="12" fill="url(#s-winz)" stroke="#d6dae1"/>
+  </g>
+  <rect x="120" y="30" width="520" height="52" rx="12" fill="#f0f1f4"/>
+  <rect x="120" y="70" width="520" height="12" fill="#f0f1f4"/>
+  <rect x="176" y="42" width="92" height="34" rx="8" fill="#dfe3ea"/>
+  <text x="222" y="58" font-size="16" text-anchor="middle">🗄️</text>
+  <text x="222" y="72" font-size="10.5" font-weight="600" fill="#111827" text-anchor="middle">服务器</text>
+  <text x="330" y="58" font-size="16" text-anchor="middle">🌐</text>
+  <text x="330" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">隧道</text>
+  <text x="430" y="58" font-size="16" text-anchor="middle">⚙️</text>
+  <text x="430" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">高级</text>
+  <text x="536" y="58" font-size="16" text-anchor="middle">ℹ️</text>
+  <text x="536" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">关于</text>
+  <line x1="120" y1="82" x2="640" y2="82" stroke="#dcdfe5"/>
+  <rect x="148" y="102" width="464" height="52" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
+  <circle cx="172" cy="128" r="7" fill="none" stroke="#0a84ff" stroke-width="4"/>
+  <text x="192" y="124" font-size="12.5" font-weight="600" fill="#111827">我的服务器</text>
+  <text x="192" y="140" font-size="10.5" fill="#6b7280">root@example.com:22 · 密码</text>
+  <text x="560" y="132" font-size="15" fill="#8a93a6">✎  🗑</text>
+  <rect x="148" y="164" width="464" height="52" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
+  <circle cx="172" cy="190" r="7" fill="none" stroke="#c3c8d0" stroke-width="2"/>
+  <text x="192" y="186" font-size="12.5" font-weight="600" fill="#111827">备用服务器</text>
+  <text x="192" y="202" font-size="10.5" fill="#6b7280">me@10.0.0.9:2222 · 私钥文件</text>
+  <text x="560" y="194" font-size="15" fill="#8a93a6">✎  🗑</text>
+  <line x1="148" y1="300" x2="612" y2="300" stroke="#e5e7eb"/>
+  <rect x="148" y="312" width="120" height="28" rx="7" fill="#eceef2" stroke="#d6dae1"/>
+  <text x="208" y="330" font-size="12" fill="#111827" text-anchor="middle">＋ 添加服务器</text>
+  <g font-size="12" fill="#4b5563">
+    <text x="30" y="360" font-weight="700" fill="#111827">四个标签页</text>
+    <text x="30" y="380">服务器 · 隧道（端口、守护进程）· 高级（启动、文件）· 关于</text>
+    <text x="30" y="398" fill="#8a93a6">蓝色实心圆点表示当前使用的服务器。点击某一行即可切换。</text>
+  </g>
+</svg>
+  </figure>
+
+  <h2>连接</h2>
+  <ol>
+    <li>点击盾牌图标。</li>
+    <li>确认 <strong>服务器</strong> 一行中已选中正确的服务器。</li>
+    <li>点击 <strong>连接</strong>。</li>
+  </ol>
+  <p>几秒钟后，状态会变为<strong>绿色 / 已连接</strong>，并显示 <strong>出口 IP</strong>。这个 IP 就是你服务器的地址——证明你的流量正通过隧道传输。</p>
+  <p>要停止，点击盾牌图标并按 <strong>断开</strong>。</p>
+
+  <h2>日常开关</h2>
+  <p>这些开关位于弹出面板中「连接」按钮的下方。</p>
+  <h3>自动重连（守护进程）</h3>
+  <p>建议保持<strong>开启</strong>。如果隧道意外中断——比如 Wi-Fi 抖动一下——应用会在后台悄悄为你重新连接。重连时你可能会短暂看到黄色的「<em>正在重新连接…</em>」状态。</p>
+  <h3>显示网络速度</h3>
+  <p><strong>开启</strong>后，菜单栏图标旁边会显示实时的上传/下载速度，方便你一眼看到流量在流动。</p>
+  <h3>macOS SOCKS 代理</h3>
+  <ul>
+    <li><strong>关闭（默认）：</strong> 只有你手动指向代理的应用才会走隧道。</li>
+    <li><strong>开启：</strong> 应用会修改你 Mac 的<strong>全局</strong>网络设置，让<em>所有</em>应用自动走隧道。</li>
+  </ul>
+  <p>如果你希望 Mac 上的一切都走隧道、而不必逐个配置应用，就把它<strong>开启</strong>。断开或退出时，如果你想恢复直连，记得把它重新关闭。</p>
+  <h3>登录时启动</h3>
+  <p><strong>开启</strong>后，每次登录 Mac 时 Tunnel Proxy 都会自动启动，盾牌图标始终守候在菜单栏中。</p>
+  <blockquote><p><strong>设置 → 高级</strong> 里还有一个 <strong>启动时自动连接</strong> 选项。两者都开启，隧道就会在你每次开机时自动建立。</p></blockquote>
+
+  <h2>设置项说明</h2>
+  <p>点击盾牌图标 → <strong>设置…</strong>（<kbd>⌘,</kbd>）打开。共有四个标签页。</p>
+  <h3>服务器</h3>
+  <p>添加、编辑、删除，以及选择当前使用的服务器。（见「<em>首次设置</em>」。）</p>
+  <h3>隧道</h3>
+  <ul>
+    <li><strong>SOCKS 端口</strong> / <strong>HTTP 代理端口</strong>——应用在本机监听的端口号（默认 <code>1080</code> 和 <code>8118</code>）。仅在与其他程序冲突时才需修改。</li>
+    <li><strong>网络服务</strong>——<em>macOS SOCKS 代理</em> 开关作用于哪个网络连接（Wi-Fi、以太网……）。通常保持默认即可。</li>
+    <li><strong>守护进程间隔（秒）</strong>——自动重连检查的运行频率。</li>
+    <li><strong>运行环境</strong>——<em>privoxy</em>、<em>ssh</em>、<em>curl</em> 旁的绿色 ✓ 表示应用所需的组件都已就绪。</li>
+  </ul>
+  <p>在这里修改任何内容后，请点击 <strong>保存</strong>。</p>
+  <h3>高级</h3>
+  <ul>
+    <li><strong>登录时启动</strong> 与 <strong>启动时自动连接</strong>（见上文）。</li>
+    <li><strong>文件</strong>——显示配置文件和日志文件的位置，并提供 <strong>在访达中显示</strong> 按钮。</li>
+  </ul>
+  <h3>关于</h3>
+  <p>应用名称和一段简短说明。</p>
+
+  <h2>查看日志</h2>
+  <p>如果连接失败或行为异常，日志会准确显示发生了什么。</p>
+  <ol>
+    <li>点击盾牌图标 → <strong>查看日志…</strong></li>
+    <li>日志窗口会实时输出：
+      <ul>
+        <li><strong>筛选…</strong>——输入关键字只显示匹配的行。</li>
+        <li><strong>自动滚动</strong>——始终显示最新的日志行。</li>
+        <li><strong>清除</strong>——清空显示内容。</li>
+      </ul>
+    </li>
+  </ol>
+  <p>日志按颜色区分：绿色表示成功，橙色表示警告，红色表示错误。</p>
+
+  <h2>疑难解答</h2>
+  <table>
+    <tr><th>问题</th><th>尝试这样做</th></tr>
+    <tr><td><strong>连接按钮是灰色的</strong></td><td>你还没添加服务器，或设置不完整。打开 <strong>设置 → 服务器</strong> 检查信息。</td></tr>
+    <tr><td><strong>卡在「正在连接…」后报错</strong></td><td>检查 <strong>主机</strong>、<strong>端口</strong> 和 <strong>用户名</strong>。确认能连上服务器（可先在终端里尝试连接）。打开 <strong>查看日志…</strong> 看具体错误。</td></tr>
+    <tr><td><strong>密码 / 密钥错误</strong></td><td>在 <strong>设置 → 服务器</strong> 里重新打开该服务器，点击铅笔图标，重新输入密码或重新选择密钥文件。</td></tr>
+    <tr><td><strong>网站仍显示我的真实 IP</strong></td><td>确认状态为<strong>绿色 / 已连接</strong>。若某个应用忽略代理，请开启 <strong>macOS SOCKS 代理</strong>，让整个系统都走隧道。</td></tr>
+    <tr><td><strong>隧道频繁中断</strong></td><td>开启 <strong>自动重连（守护进程）</strong>。若持续中断，通常说明服务器或网络不稳定。</td></tr>
+    <tr><td><strong>提示「内置代理缺失」</strong></td><td>应用文件不完整。请重新下载并从 DMG 重新安装。</td></tr>
+    <tr><td><strong>启动后没有盾牌图标</strong></td><td>菜单栏可能已满——按住 ⌘ 拖开其他图标。确认应用是否在运行。</td></tr>
+  </table>
+
+  <h2>常见问题</h2>
+  <p><strong>我还需要安装别的东西吗（Homebrew、其他工具）？</strong><br>不需要。所有组件都已内置在应用中。<code>ssh</code> 和 <code>curl</code> 是 macOS 自带的。</p>
+  <p><strong>这是 VPN 吗？</strong><br>对你的流量来说效果类似，但它是连到你<strong>自己服务器</strong>的 <em>SSH 隧道</em>，而不是商业 VPN 服务。服务器由你自己提供。</p>
+  <p><strong>我的密码存在哪里？</strong><br>存在 <strong>macOS 钥匙串</strong>——系统的安全保险库里，绝不会以明文形式保存。</p>
+  <p><strong>它会拖慢我的网速吗？</strong><br>你的流量会经由服务器多一次中转，因此会有少量额外开销。速度主要取决于你服务器的网络连接。</p>
+  <p><strong>如何彻底卸载？</strong><br>先断开连接，关闭 <strong>登录时启动</strong> 与 <strong>macOS SOCKS 代理</strong>，然后退出应用，把 <strong>Tunnel Proxy</strong> 从「应用程序」拖入废纸篓即可。</p>
+
+  <hr>
+  <p class="foot">想知道后台到底发生了什么？<strong>查看日志…</strong> 窗口永远是排查问题的第一站。</p>
+</div>
+</body>
+</html>

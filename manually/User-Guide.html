@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tunnel Proxy — User Guide</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #111827; --muted: #6b7280;
+    --line: #e5e7eb; --accent: #0a84ff; --accent-soft: #eef4ff;
+    --warn: #b5651d; --code-bg: #eef1f5;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.6; font-size: 16px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 96px; }
+  .lang { text-align: right; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .lang a { color: var(--accent); text-decoration: none; }
+  h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-style: italic; margin: 0 0 28px; }
+  h2 {
+    font-size: 22px; font-weight: 800; margin: 44px 0 12px;
+    padding-top: 20px; border-top: 1px solid var(--line);
+  }
+  h3 { font-size: 17px; font-weight: 700; margin: 26px 0 8px; }
+  p { margin: 12px 0; }
+  ul, ol { padding-left: 22px; }
+  li { margin: 6px 0; }
+  a { color: var(--accent); }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 5px;
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 0.88em;
+  }
+  kbd {
+    background: #fff; border: 1px solid #d6dae1; border-bottom-width: 2px;
+    border-radius: 5px; padding: 1px 6px; font-size: 0.85em; font-weight: 600;
+  }
+  figure {
+    margin: 22px 0; padding: 14px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { color: var(--muted); font-size: 13px; text-align: center; margin-top: 8px; }
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 15px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #f0f1f4; font-weight: 700; font-size: 13px; }
+  tr:last-child td { border-bottom: 0; }
+  blockquote {
+    margin: 16px 0; padding: 10px 16px; background: var(--accent-soft);
+    border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; color: #1f3a5f;
+  }
+  blockquote p { margin: 4px 0; }
+  .tip strong, blockquote strong { color: var(--ink); }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  .foot { color: var(--muted); font-size: 14px; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lang">中文用户请阅读 <a href="使用手册.html">使用手册（简体中文）</a></div>
+
+  <h1>Tunnel Proxy — User Guide</h1>
+  <p class="sub">A friendly guide to the Tunnel Proxy menu bar app for macOS.</p>
+
+  <h2 style="border-top:0; padding-top:0;">What is Tunnel Proxy?</h2>
+  <p>Tunnel Proxy is a small app that lives in your Mac's <strong>menu bar</strong> (the strip of icons at the top-right of the screen). It routes your internet traffic through your own SSH server over a secure, encrypted connection.</p>
+  <p>You might use it to:</p>
+  <ul>
+    <li>Reach the internet through a server in another location.</li>
+    <li>Keep your traffic private on an untrusted network (like public Wi-Fi).</li>
+    <li>Make websites and apps see your <strong>server's</strong> IP address instead of your Mac's.</li>
+  </ul>
+  <p>Everything it needs is built in — there is <strong>nothing else to install</strong>. You only need to know how to reach one SSH server (its address and how you sign in).</p>
+
+  <h3>How it works</h3>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 300" font-family="-apple-system, 'SF Pro Text', 'PingFang SC', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto">
+      <path d="M0 0 L9 4 L0 8 z" fill="#0a84ff"/>
+    </marker>
+    <filter id="card" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity="0.14"/>
+    </filter>
+    <linearGradient id="mac" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f2f4f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="860" height="300" fill="#f6f7f9"/>
+  <text x="30" y="42" font-size="19" font-weight="800" fill="#111827">How Tunnel Proxy works</text>
+  <text x="30" y="66" font-size="12.5" fill="#6b7280">Your apps talk to a local proxy. Tunnel Proxy carries the traffic to your server over an encrypted SSH tunnel.</text>
+  <rect x="30" y="96" width="330" height="150" rx="14" fill="url(#mac)" stroke="#d9dee6" filter="url(#card)"/>
+  <text x="50" y="122" font-size="12" font-weight="800" fill="#2563eb">YOUR MAC</text>
+  <rect x="50" y="136" width="130" height="90" rx="10" fill="#ffffff" stroke="#c9ced8"/>
+  <text x="115" y="176" font-size="30" text-anchor="middle">🌐</text>
+  <text x="115" y="204" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Your apps</text>
+  <text x="115" y="220" font-size="10" fill="#6b7280" text-anchor="middle">browser, CLI…</text>
+  <rect x="210" y="136" width="130" height="90" rx="10" fill="#eef4ff" stroke="#c7dbff"/>
+  <text x="275" y="172" font-size="26" text-anchor="middle">🛡️</text>
+  <text x="275" y="198" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Tunnel Proxy</text>
+  <text x="275" y="214" font-size="10" fill="#6b7280" text-anchor="middle">SOCKS 1080 · HTTP 8118</text>
+  <path d="M180 181 L206 181" stroke="#0a84ff" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <path d="M360 171 L470 171" stroke="#0a84ff" stroke-width="2.4" fill="none" marker-end="url(#arrow)"/>
+  <rect x="368" y="140" width="94" height="24" rx="12" fill="#0a84ff"/>
+  <text x="415" y="156" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">🔒 SSH tunnel</text>
+  <rect x="500" y="96" width="150" height="150" rx="14" fill="url(#mac)" stroke="#d9dee6" filter="url(#card)"/>
+  <text x="520" y="122" font-size="12" font-weight="800" fill="#1e874b">YOUR SERVER</text>
+  <text x="575" y="176" font-size="34" text-anchor="middle">🖥️</text>
+  <text x="575" y="204" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">SSH host</text>
+  <text x="575" y="220" font-size="10" fill="#6b7280" text-anchor="middle">example.com</text>
+  <path d="M650 171 L716 171" stroke="#0a84ff" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <rect x="720" y="126" width="110" height="90" rx="12" fill="#fff5ec" stroke="#f2d6bd"/>
+  <text x="775" y="166" font-size="28" text-anchor="middle">☁️</text>
+  <text x="775" y="196" font-size="12" font-weight="700" fill="#b5651d" text-anchor="middle">Internet</text>
+  <text x="30" y="282" font-size="11" fill="#8a93a6">Websites see your server's IP address — not your Mac's. Everything between your Mac and the server is encrypted.</text>
+</svg>
+  </figure>
+  <p>Your apps send their traffic to a local proxy running on your Mac. Tunnel Proxy carries that traffic to your SSH server through an encrypted tunnel, and the server passes it on to the internet. The websites you visit see the server's IP address, and everything between your Mac and the server is encrypted.</p>
+
+  <h2>Installing the app</h2>
+  <ol>
+    <li>Open the <code>TunnelProxy.dmg</code> file you received.</li>
+    <li>Drag the <strong>Tunnel Proxy</strong> icon onto the <strong>Applications</strong> folder.</li>
+    <li>Open <strong>Applications</strong> and double-click <strong>Tunnel Proxy</strong>.
+      <ul><li>The first time, macOS may ask <em>"Are you sure you want to open it?"</em> — click <strong>Open</strong>. (If macOS blocks it, go to <strong>System Settings → Privacy &amp; Security</strong>, scroll down, and click <strong>Open Anyway</strong>.)</li></ul>
+    </li>
+    <li>A <strong>shield icon</strong> appears in the menu bar. There is no Dock icon and no window — the app lives entirely in the menu bar.</li>
+  </ol>
+  <blockquote><p><strong>Tip:</strong> Don't see the shield? Your menu bar may be full. Hold <kbd>⌘</kbd> and drag some menu bar icons to make room, or check that the app is running.</p></blockquote>
+
+  <h2>The menu bar popover</h2>
+  <p>Click the shield icon to open the main panel.</p>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" font-family="-apple-system, 'SF Pro Text', 'PingFang SC', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="desk2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a4a63"/>
+      <stop offset="1" stop-color="#20293a"/>
+    </linearGradient>
+    <linearGradient id="panel2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f5f6f8"/>
+    </linearGradient>
+    <filter id="pop" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.30"/>
+    </filter>
+    <clipPath id="lefthalf-mb"><rect x="-30" y="-40" width="30" height="80"/></clipPath>
+  </defs>
+  <rect width="760" height="560" fill="url(#desk2)"/>
+  <rect x="0" y="0" width="760" height="28" fill="#1f2430" opacity="0.9"/>
+  <g fill="#ffffff" font-size="13">
+    <text x="520" y="19">100%</text>
+    <text x="575" y="19">Wed 14:32</text>
+  </g>
+  <rect x="672" y="2" width="30" height="24" rx="5" fill="#0a84ff"/>
+  <g transform="translate(687,14) scale(0.42)">
+    <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linejoin="round"/>
+    <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="#ffffff" clip-path="url(#lefthalf-mb)"/>
+  </g>
+  <g font-size="12.5" fill="#c7ccd6">
+    <text x="24" y="90" font-weight="700" fill="#ffffff">The menu bar popover</text>
+    <text x="24" y="112">Click the shield icon in the menu bar</text>
+    <text x="24" y="128">to open this panel.</text>
+  </g>
+  <g filter="url(#pop)">
+    <rect x="430" y="34" width="300" height="480" rx="14" fill="url(#panel2)" stroke="#e2e4e8"/>
+    <path d="M687 34 l-9 -10 l9 0 z" fill="#ffffff"/>
+  </g>
+  <circle cx="456" cy="70" r="7" fill="#28c840"/>
+  <text x="472" y="75" font-size="15" font-weight="700" fill="#111827">Connected</text>
+  <text x="472" y="94" font-size="11.5" fill="#6b7280">Tunnel + HTTP proxy active</text>
+  <text x="410" y="75" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">①</text>
+  <line x1="446" y1="108" x2="714" y2="108" stroke="#e5e7eb"/>
+  <text x="446" y="132" font-size="11.5" fill="#6b7280">Server</text>
+  <rect x="600" y="118" width="114" height="20" rx="5" fill="#eef1f5" stroke="#d7dbe2"/>
+  <text x="610" y="132" font-size="11.5" font-weight="600" fill="#111827">My Server ⌄</text>
+  <text x="410" y="132" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">②</text>
+  <text x="446" y="158" font-size="11.5" fill="#6b7280">Exit IP</text>
+  <text x="714" y="158" font-size="11.5" font-weight="600" fill="#111827" text-anchor="end">203.0.113.47</text>
+  <text x="410" y="158" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">③</text>
+  <text x="446" y="182" font-size="11.5" fill="#6b7280">Watchdog</text>
+  <text x="714" y="182" font-size="11.5" font-weight="600" fill="#28a745" text-anchor="end">On</text>
+  <line x1="446" y1="198" x2="714" y2="198" stroke="#e5e7eb"/>
+  <rect x="446" y="212" width="268" height="38" rx="9" fill="#ff3b30"/>
+  <text x="580" y="236" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">Disconnect</text>
+  <text x="410" y="236" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">④</text>
+  <text x="446" y="282" font-size="12" fill="#111827">Auto-reconnect (watchdog)</text>
+  <rect x="676" y="272" width="38" height="22" rx="11" fill="#28c840"/>
+  <circle cx="703" cy="283" r="9" fill="#ffffff"/>
+  <text x="446" y="314" font-size="12" fill="#111827">Show network speed</text>
+  <rect x="676" y="304" width="38" height="22" rx="11" fill="#d1d5db"/>
+  <circle cx="687" cy="315" r="9" fill="#ffffff"/>
+  <text x="446" y="346" font-size="12" fill="#111827">macOS SOCKS proxy</text>
+  <rect x="676" y="336" width="38" height="22" rx="11" fill="#d1d5db"/>
+  <circle cx="687" cy="347" r="9" fill="#ffffff"/>
+  <text x="446" y="378" font-size="12" fill="#111827">Launch at login</text>
+  <rect x="676" y="368" width="38" height="22" rx="11" fill="#28c840"/>
+  <circle cx="703" cy="379" r="9" fill="#ffffff"/>
+  <text x="410" y="330" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑤</text>
+  <line x1="446" y1="402" x2="714" y2="402" stroke="#e5e7eb"/>
+  <text x="446" y="426" font-size="12.5" fill="#111827">View Logs…</text>
+  <text x="446" y="452" font-size="12.5" fill="#111827">Settings…</text>
+  <text x="446" y="478" font-size="12.5" fill="#6b7280">Quit</text>
+  <text x="410" y="452" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑥</text>
+  <g font-size="12" fill="#c7ccd6">
+    <text x="24" y="170"><tspan fill="#0a84ff" font-weight="800">①</tspan> Status &amp; description</text>
+    <text x="24" y="200"><tspan fill="#0a84ff" font-weight="800">②</tspan> Pick which server to use</text>
+    <text x="24" y="230"><tspan fill="#0a84ff" font-weight="800">③</tspan> The IP the internet sees</text>
+    <text x="24" y="260"><tspan fill="#0a84ff" font-weight="800">④</tspan> Connect / Disconnect</text>
+    <text x="24" y="290"><tspan fill="#0a84ff" font-weight="800">⑤</tspan> Everyday switches</text>
+    <text x="24" y="320"><tspan fill="#0a84ff" font-weight="800">⑥</tspan> Logs, Settings, Quit</text>
+  </g>
+</svg>
+  </figure>
+
+  <table>
+    <tr><th>#</th><th>What it is</th><th>What it does</th></tr>
+    <tr><td>①</td><td><strong>Status</strong></td><td>The colored dot and label tell you the current state (see below).</td></tr>
+    <tr><td>②</td><td><strong>Server</strong></td><td>Choose which server to connect through.</td></tr>
+    <tr><td>③</td><td><strong>Exit IP</strong></td><td>The IP address the internet currently sees you as. Only shown when connected.</td></tr>
+    <tr><td>④</td><td><strong>Connect / Disconnect</strong></td><td>The big button. Starts or stops the tunnel.</td></tr>
+    <tr><td>⑤</td><td><strong>Switches</strong></td><td>Everyday on/off options (explained below).</td></tr>
+    <tr><td>⑥</td><td><strong>Menu items</strong></td><td>Open the Logs window, Settings, or Quit the app.</td></tr>
+  </table>
+
+  <h3>Reading the status icon</h3>
+  <p>The shape and color of the menu bar icon change with the connection state.</p>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 230" font-family="-apple-system, 'SF Pro Text', 'PingFang SC', Helvetica, Arial, sans-serif">
+  <defs>
+    <clipPath id="lefthalf-en"><rect x="-30" y="-40" width="30" height="80"/></clipPath>
+  </defs>
+  <rect width="760" height="230" fill="#f6f7f9"/>
+  <text x="30" y="42" font-size="17" font-weight="800" fill="#111827">Reading the menu bar icon</text>
+  <g transform="translate(110,108)">
+    <circle r="40" fill="#eceef2" stroke="#d9dee6"/>
+    <g transform="translate(0,-2)" stroke="#7a828e" stroke-width="3" stroke-linejoin="round" fill="none">
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z"/>
+    </g>
+    <circle cx="0" cy="52" r="6" fill="#9aa1ac"/>
+    <text x="0" y="80" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">Disconnected</text>
+    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">outline shield</text>
+  </g>
+  <g transform="translate(290,108)">
+    <circle r="40" fill="#fff7e6" stroke="#f2dca0"/>
+    <g transform="translate(0,-2)">
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#c99a20" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="#e0a92a" clip-path="url(#lefthalf-en)"/>
+    </g>
+    <circle cx="18" cy="20" r="11" fill="#fff7e6"/>
+    <g stroke="#e0a92a" stroke-width="3" stroke-linecap="round">
+      <line x1="18" y1="14" x2="18" y2="26"/>
+      <line x1="12" y1="20" x2="24" y2="20"/>
+    </g>
+    <circle cx="0" cy="52" r="6" fill="#f5b731"/>
+    <text x="0" y="80" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">Connecting</text>
+    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">left-half shield with +</text>
+  </g>
+  <g transform="translate(470,108)">
+    <circle r="40" fill="#e8f8ec" stroke="#a7e2b6"/>
+    <g transform="translate(0,-2)">
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#1e874b" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="#28a745" clip-path="url(#lefthalf-en)"/>
+    </g>
+    <circle cx="0" cy="52" r="6" fill="#28c840"/>
+    <text x="0" y="80" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">Connected</text>
+    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">left-half filled shield</text>
+  </g>
+  <g transform="translate(650,108)">
+    <circle r="40" fill="#fdeceb" stroke="#f3b6b1"/>
+    <g transform="translate(0,-2)">
+      <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#d0342c" stroke-width="3" stroke-linejoin="round"/>
+      <line x1="0" y1="-12" x2="0" y2="8" stroke="#d0342c" stroke-width="3.4" stroke-linecap="round"/>
+      <circle cx="0" cy="16" r="2.2" fill="#d0342c"/>
+    </g>
+    <circle cx="0" cy="52" r="6" fill="#ff3b30"/>
+    <text x="0" y="80" font-size="12.5" font-weight="700" fill="#111827" text-anchor="middle">Error</text>
+    <text x="0" y="98" font-size="10.5" fill="#6b7280" text-anchor="middle">shield with !</text>
+  </g>
+</svg>
+  </figure>
+  <table>
+    <tr><th>Icon</th><th>State</th><th>Meaning</th></tr>
+    <tr><td>Outline shield (gray dot)</td><td><strong>Disconnected</strong></td><td>Your traffic goes out directly — the tunnel is off.</td></tr>
+    <tr><td>Left-half shield with a <strong>+</strong> (yellow dot)</td><td><strong>Connecting / Reconnecting</strong></td><td>The tunnel is being established.</td></tr>
+    <tr><td>Left-half filled shield (green dot)</td><td><strong>Connected</strong></td><td>Tunnel and proxy are active. You're all set.</td></tr>
+    <tr><td>Shield with an <strong>!</strong> (red dot)</td><td><strong>Error</strong></td><td>Something went wrong. Open <strong>View Logs…</strong> to see why.</td></tr>
+  </table>
+
+  <h2>First-time setup: add your server</h2>
+  <p>Before you can connect, you need to tell the app about your SSH server.</p>
+  <ol>
+    <li>Click the shield icon → <strong>Settings…</strong> (or press <kbd>⌘,</kbd>).</li>
+    <li>Go to the <strong>Servers</strong> tab and click <strong>＋ Add Server</strong>.</li>
+  </ol>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470" font-family="-apple-system, 'SF Pro Text', 'PingFang SC', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="win" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f4f5f7"/>
+    </linearGradient>
+    <filter id="w3" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <rect width="760" height="470" fill="#e9ebef"/>
+  <g filter="url(#w3)">
+    <rect x="210" y="30" width="440" height="410" rx="12" fill="url(#win)" stroke="#d6dae1"/>
+  </g>
+  <text x="430" y="62" font-size="15" font-weight="700" fill="#111827" text-anchor="middle">Add Server</text>
+  <line x1="210" y1="78" x2="650" y2="78" stroke="#e5e7eb"/>
+  <rect x="234" y="94" width="392" height="118" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
+  <text x="252" y="120" font-size="12" fill="#6b7280">Name (optional)</text>
+  <text x="608" y="120" font-size="12" fill="#111827" text-anchor="end">My Server</text>
+  <line x1="252" y1="130" x2="608" y2="130" stroke="#eef0f3"/>
+  <text x="252" y="150" font-size="12" fill="#6b7280">Host</text>
+  <text x="608" y="150" font-size="12" fill="#111827" text-anchor="end">example.com</text>
+  <line x1="252" y1="160" x2="608" y2="160" stroke="#eef0f3"/>
+  <text x="252" y="180" font-size="12" fill="#6b7280">Username</text>
+  <text x="608" y="180" font-size="12" fill="#111827" text-anchor="end">root</text>
+  <line x1="252" y1="190" x2="608" y2="190" stroke="#eef0f3"/>
+  <text x="252" y="205" font-size="12" fill="#6b7280">Port</text>
+  <text x="608" y="205" font-size="12" fill="#111827" text-anchor="end">22</text>
+  <text x="234" y="240" font-size="11" font-weight="700" fill="#6b7280">AUTHENTICATION</text>
+  <rect x="234" y="250" width="392" height="120" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
+  <text x="252" y="276" font-size="12" fill="#6b7280">Method</text>
+  <rect x="470" y="264" width="138" height="20" rx="5" fill="#eef1f5" stroke="#d7dbe2"/>
+  <text x="480" y="278" font-size="11.5" font-weight="600" fill="#111827">Password ⌄</text>
+  <line x1="252" y1="296" x2="608" y2="296" stroke="#eef0f3"/>
+  <text x="252" y="322" font-size="12" fill="#6b7280">Password</text>
+  <rect x="440" y="310" width="168" height="20" rx="5" fill="#f6f7f9" stroke="#dfe3e9"/>
+  <text x="450" y="324" font-size="12" fill="#9aa1ac">••••••••</text>
+  <text x="252" y="356" font-size="10.5" fill="#8a93a6">Stored securely in the macOS Keychain — never in a plain file.</text>
+  <line x1="210" y1="392" x2="650" y2="392" stroke="#e5e7eb"/>
+  <rect x="470" y="404" width="70" height="26" rx="7" fill="#eceef2" stroke="#d6dae1"/>
+  <text x="505" y="421" font-size="12" fill="#111827" text-anchor="middle">Cancel</text>
+  <rect x="552" y="404" width="74" height="26" rx="7" fill="#0a84ff"/>
+  <text x="589" y="421" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle">Save</text>
+  <g font-size="12" fill="#4b5563">
+    <text x="30" y="120" font-weight="700" fill="#111827">Server details</text>
+    <text x="30" y="140">Give it any name, then</text>
+    <text x="30" y="156">enter the host, your</text>
+    <text x="30" y="172">login name and port.</text>
+    <text x="30" y="270" font-weight="700" fill="#111827">Sign-in method</text>
+    <text x="30" y="290">Password, a private key</text>
+    <text x="30" y="306">file, or your default</text>
+    <text x="30" y="322">SSH keys / agent.</text>
+  </g>
+</svg>
+  </figure>
+  <p>Fill in the details:</p>
+  <table>
+    <tr><th>Field</th><th>What to enter</th></tr>
+    <tr><td><strong>Name</strong></td><td>Any label you like, e.g. <em>"Home server"</em>. Optional.</td></tr>
+    <tr><td><strong>Host</strong></td><td>The server's address, e.g. <code>example.com</code> or <code>203.0.113.10</code>.</td></tr>
+    <tr><td><strong>Username</strong></td><td>Your login name on the server, e.g. <code>root</code>.</td></tr>
+    <tr><td><strong>Port</strong></td><td>The SSH port. Usually <strong>22</strong> — leave it unless told otherwise.</td></tr>
+  </table>
+  <p>Choose an <strong>Authentication</strong> method — how you prove who you are:</p>
+  <table>
+    <tr><th>Method</th><th>When to use it</th><th>What you enter</th></tr>
+    <tr><td><strong>Password</strong></td><td>You log in with a password</td><td>Your SSH password</td></tr>
+    <tr><td><strong>Private key file</strong></td><td>You have a key file (e.g. in <code>~/.ssh</code>)</td><td>Click <strong>Choose…</strong> to pick the key; add its passphrase if it has one</td></tr>
+    <tr><td><strong>Default keys / agent</strong></td><td>Your Mac is already set up to connect with keys</td><td>Nothing — it uses your existing keys automatically</td></tr>
+  </table>
+  <p>Click <strong>Save</strong>.</p>
+  <blockquote><p><strong>Your secrets are safe.</strong> Passwords and key passphrases are stored in the <strong>macOS Keychain</strong>, the same secure vault macOS uses for your other passwords. They are never written to a plain file.</p></blockquote>
+  <p>You can add <strong>multiple servers</strong> and switch between them from the popover. In the Servers list, click the circle on the left to mark a server as the active one.</p>
+  <figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" font-family="-apple-system, 'SF Pro Text', 'PingFang SC', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="s-win" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f4f5f7"/>
+    </linearGradient>
+    <filter id="s-sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.20"/>
+    </filter>
+  </defs>
+  <rect width="760" height="430" fill="#e9ebef"/>
+  <g filter="url(#s-sh)">
+    <rect x="120" y="30" width="520" height="370" rx="12" fill="url(#s-win)" stroke="#d6dae1"/>
+  </g>
+  <rect x="120" y="30" width="520" height="52" rx="12" fill="#f0f1f4"/>
+  <rect x="120" y="70" width="520" height="12" fill="#f0f1f4"/>
+  <rect x="176" y="42" width="92" height="34" rx="8" fill="#dfe3ea"/>
+  <text x="222" y="58" font-size="16" text-anchor="middle">🗄️</text>
+  <text x="222" y="72" font-size="10.5" font-weight="600" fill="#111827" text-anchor="middle">Servers</text>
+  <text x="330" y="58" font-size="16" text-anchor="middle">🌐</text>
+  <text x="330" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">Tunnel</text>
+  <text x="430" y="58" font-size="16" text-anchor="middle">⚙️</text>
+  <text x="430" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">Advanced</text>
+  <text x="536" y="58" font-size="16" text-anchor="middle">ℹ️</text>
+  <text x="536" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">About</text>
+  <line x1="120" y1="82" x2="640" y2="82" stroke="#dcdfe5"/>
+  <rect x="148" y="102" width="464" height="52" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
+  <circle cx="172" cy="128" r="7" fill="none" stroke="#0a84ff" stroke-width="4"/>
+  <text x="192" y="124" font-size="12.5" font-weight="600" fill="#111827">My Server</text>
+  <text x="192" y="140" font-size="10.5" fill="#6b7280">root@example.com:22 · Password</text>
+  <text x="560" y="132" font-size="15" fill="#8a93a6">✎  🗑</text>
+  <rect x="148" y="164" width="464" height="52" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
+  <circle cx="172" cy="190" r="7" fill="none" stroke="#c3c8d0" stroke-width="2"/>
+  <text x="192" y="186" font-size="12.5" font-weight="600" fill="#111827">Backup box</text>
+  <text x="192" y="202" font-size="10.5" fill="#6b7280">me@10.0.0.9:2222 · Private key file</text>
+  <text x="560" y="194" font-size="15" fill="#8a93a6">✎  🗑</text>
+  <line x1="148" y1="300" x2="612" y2="300" stroke="#e5e7eb"/>
+  <rect x="148" y="312" width="120" height="28" rx="7" fill="#eceef2" stroke="#d6dae1"/>
+  <text x="208" y="330" font-size="12" fill="#111827" text-anchor="middle">＋ Add Server</text>
+  <g font-size="12" fill="#4b5563">
+    <text x="30" y="360" font-weight="700" fill="#111827">Four tabs</text>
+    <text x="30" y="380">Servers · Tunnel (ports, watchdog) · Advanced (startup, files) · About</text>
+    <text x="30" y="398" fill="#8a93a6">The filled blue circle marks the active server. Click a row to switch.</text>
+  </g>
+</svg>
+  </figure>
+
+  <h2>Connecting</h2>
+  <ol>
+    <li>Click the shield icon.</li>
+    <li>Make sure the right server is chosen in the <strong>Server</strong> row.</li>
+    <li>Click <strong>Connect</strong>.</li>
+  </ol>
+  <p>Within a few seconds the status turns <strong>green / Connected</strong>, and the <strong>Exit IP</strong> appears. That IP is your server's address — proof your traffic is going through the tunnel.</p>
+  <p>To stop, click the shield icon and press <strong>Disconnect</strong>.</p>
+
+  <h2>The everyday switches</h2>
+  <p>These live in the popover, below the Connect button.</p>
+  <h3>Auto-reconnect (watchdog)</h3>
+  <p>Keep this <strong>on</strong> (recommended). If the tunnel ever drops — say your Wi-Fi hiccups — the app quietly reconnects it for you in the background. You may briefly see the yellow <em>"Reconnecting…"</em> state while it does.</p>
+  <h3>Show network speed</h3>
+  <p>When <strong>on</strong>, live upload/download speeds appear next to the menu bar icon so you can see traffic flowing at a glance.</p>
+  <h3>macOS SOCKS proxy</h3>
+  <ul>
+    <li><strong>Off (default):</strong> Only apps you've pointed at the proxy use the tunnel.</li>
+    <li><strong>On:</strong> The app configures your Mac's <strong>system-wide</strong> network settings so that <em>all</em> apps use the tunnel automatically.</li>
+  </ul>
+  <p>Turn this <strong>on</strong> if you want everything on your Mac to go through the tunnel without configuring each app. When you disconnect or quit, remember to turn it back off if you want direct traffic again.</p>
+  <h3>Launch at login</h3>
+  <p>When <strong>on</strong>, Tunnel Proxy starts automatically each time you log in to your Mac, so the shield is always waiting in the menu bar.</p>
+  <blockquote><p>There is also an <strong>Auto-connect on launch</strong> option in <strong>Settings → Advanced</strong>. Turn both on and your tunnel comes up by itself whenever you start your Mac.</p></blockquote>
+
+  <h2>Settings reference</h2>
+  <p>Open with the shield icon → <strong>Settings…</strong> (<kbd>⌘,</kbd>). There are four tabs.</p>
+  <h3>Servers</h3>
+  <p>Add, edit, delete, and choose your active server. (See <em>First-time setup</em>.)</p>
+  <h3>Tunnel</h3>
+  <ul>
+    <li><strong>SOCKS Port</strong> / <strong>HTTP Proxy Port</strong> — the local port numbers the app listens on (defaults <code>1080</code> and <code>8118</code>). Only change these if they clash with another program.</li>
+    <li><strong>Network Service</strong> — which network connection (Wi-Fi, Ethernet…) the <em>macOS SOCKS proxy</em> switch applies to. Normally leave it on the default.</li>
+    <li><strong>Watchdog Interval (s)</strong> — how often the auto-reconnect check runs.</li>
+    <li><strong>Runtime</strong> — a green ✓ next to <em>privoxy</em>, <em>ssh</em>, and <em>curl</em> confirms everything the app needs is present.</li>
+  </ul>
+  <p>Click <strong>Save</strong> after changing anything here.</p>
+  <h3>Advanced</h3>
+  <ul>
+    <li><strong>Launch at login</strong> and <strong>Auto-connect on launch</strong> (see above).</li>
+    <li><strong>Files</strong> — shows where your config and log files live, with a <strong>Reveal in Finder</strong> button.</li>
+  </ul>
+  <h3>About</h3>
+  <p>App name and a short description.</p>
+
+  <h2>Viewing logs</h2>
+  <p>If a connection fails or behaves oddly, the logs show exactly what happened.</p>
+  <ol>
+    <li>Click the shield icon → <strong>View Logs…</strong></li>
+    <li>The Logs window streams live:
+      <ul>
+        <li><strong>Filter…</strong> — type to show only matching lines.</li>
+        <li><strong>Auto-scroll</strong> — keeps the newest lines in view.</li>
+        <li><strong>Clear</strong> — empties the display.</li>
+      </ul>
+    </li>
+  </ol>
+  <p>Lines are color-coded: green for success, orange for warnings, red for errors.</p>
+
+  <h2>Troubleshooting</h2>
+  <table>
+    <tr><th>Problem</th><th>Try this</th></tr>
+    <tr><td><strong>Connect button is grayed out</strong></td><td>You haven't added a server yet, or the settings are incomplete. Open <strong>Settings → Servers</strong> and check the details.</td></tr>
+    <tr><td><strong>Stuck on "Connecting…" then Error</strong></td><td>Check the <strong>Host</strong>, <strong>Port</strong>, and <strong>Username</strong>. Make sure you can reach the server (try connecting from Terminal). Open <strong>View Logs…</strong> for the exact error.</td></tr>
+    <tr><td><strong>Wrong password / key</strong></td><td>Re-open the server in <strong>Settings → Servers</strong>, click the pencil, and re-enter your password or re-choose your key file.</td></tr>
+    <tr><td><strong>Websites still show my real IP</strong></td><td>Make sure the status is <strong>green / Connected</strong>. If an app ignores the proxy, turn on <strong>macOS SOCKS proxy</strong> so the whole system uses the tunnel.</td></tr>
+    <tr><td><strong>Tunnel keeps dropping</strong></td><td>Turn on <strong>Auto-reconnect (watchdog)</strong>. Persistent drops usually mean an unstable server or network.</td></tr>
+    <tr><td><strong>"Bundled proxy missing"</strong></td><td>The app files are incomplete. Re-download and reinstall from the DMG.</td></tr>
+    <tr><td><strong>No shield icon after launch</strong></td><td>Your menu bar may be full — ⌘-drag other icons aside. Confirm the app is running.</td></tr>
+  </table>
+
+  <h2>Frequently asked questions</h2>
+  <p><strong>Do I need to install anything else (Homebrew, extra tools)?</strong><br>No. Everything is built into the app. <code>ssh</code> and <code>curl</code> already come with macOS.</p>
+  <p><strong>Is this a VPN?</strong><br>It works similarly for your traffic, but it's an <em>SSH tunnel</em> to your own server, not a commercial VPN service. You provide the server.</p>
+  <p><strong>Where is my password stored?</strong><br>In the <strong>macOS Keychain</strong> — the secure system vault. Never in a plain text file.</p>
+  <p><strong>Does it slow down my internet?</strong><br>Your traffic takes an extra hop through your server, so there's a small overhead. The speed mostly depends on your server's connection.</p>
+  <p><strong>How do I fully remove it?</strong><br>Disconnect, turn off <strong>Launch at login</strong> and <strong>macOS SOCKS proxy</strong>, then quit and drag <strong>Tunnel Proxy</strong> from Applications to the Trash.</p>
+
+  <hr>
+  <p class="foot">Need to check what's happening under the hood? The <strong>View Logs…</strong> window is always the best first stop.</p>
+</div>
+</body>
+</html>

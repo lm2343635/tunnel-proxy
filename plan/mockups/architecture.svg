@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="440" viewBox="0 0 860 440" font-family="-apple-system, 'SF Pro Text', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0 0 L7 3 L0 6 z" fill="#5b6472"/>
+    </marker>
+    <style>
+      .box  { fill:#ffffff; stroke:#c9ced8; stroke-width:1.5; rx:10; }
+      .lbl  { font-size:13px; font-weight:700; fill:#1f2937; }
+      .sub  { font-size:10.5px; fill:#6b7280; }
+      .flow { stroke:#5b6472; stroke-width:1.6; fill:none; marker-end:url(#arr); }
+      .note { font-size:10px; fill:#8a93a6; }
+    </style>
+  </defs>
+  <rect width="860" height="440" fill="#f6f7f9"/>
+  <text x="30" y="40" font-size="17" font-weight="800" fill="#111827">Architecture — SwiftUI menu bar app wraps existing scripts</text>
+
+  <!-- Swift app group -->
+  <rect x="30" y="70" width="360" height="330" rx="14" fill="#eef4ff" stroke="#c7dbff"/>
+  <text x="50" y="96" font-size="12" font-weight="800" fill="#2563eb">macOS App (SwiftUI, sandboxed off)</text>
+
+  <rect x="52" y="112" width="316" height="52" rx="10" class="box"/>
+  <text x="68" y="134" class="lbl">MenuBarExtra / Popover</text>
+  <text x="68" y="150" class="sub">status dot · Connect/Disconnect · toggles</text>
+
+  <rect x="52" y="176" width="316" height="52" rx="10" class="box"/>
+  <text x="68" y="198" class="lbl">Settings + Logs windows</text>
+  <text x="68" y="214" class="sub">config form (.env) · live log stream</text>
+
+  <rect x="52" y="240" width="316" height="60" rx="10" class="box"/>
+  <text x="68" y="262" class="lbl">TunnelController (ViewModel)</text>
+  <text x="68" y="278" class="sub">observable state · polls status · debounces</text>
+  <text x="68" y="292" class="sub">SMAppService (launch at login)</text>
+
+  <rect x="52" y="312" width="316" height="66" rx="10" class="box"/>
+  <text x="68" y="334" class="lbl">ProcessRunner</text>
+  <text x="68" y="350" class="sub">Process/NSTask → runs `proxy …` + reads .env</text>
+  <text x="68" y="366" class="sub">privileged ops via osascript / helper</text>
+
+  <!-- flows inside -->
+  <path class="flow" d="M210 164 L210 176"/>
+  <path class="flow" d="M210 228 L210 240"/>
+  <path class="flow" d="M210 300 L210 312"/>
+
+  <!-- Shell layer -->
+  <rect x="430" y="70" width="200" height="330" rx="14" fill="#f0f7 f0" stroke="#cfe8cf" fill-opacity="1"/>
+  <rect x="430" y="70" width="200" height="330" rx="14" fill="#eefaf0" stroke="#cfe8cf"/>
+  <text x="450" y="96" font-size="12" font-weight="800" fill="#1e874b">Existing scripts (unchanged)</text>
+
+  <rect x="450" y="112" width="160" height="46" rx="10" class="box"/>
+  <text x="466" y="140" class="lbl">proxy (CLI)</text>
+
+  <rect x="450" y="170" width="160" height="46" rx="10" class="box"/>
+  <text x="466" y="198" class="lbl">start.sh</text>
+
+  <rect x="450" y="228" width="160" height="46" rx="10" class="box"/>
+  <text x="466" y="256" class="lbl">stop.sh</text>
+
+  <rect x="450" y="286" width="160" height="46" rx="10" class="box"/>
+  <text x="466" y="308" class="lbl">.env config</text>
+
+  <rect x="450" y="344" width="160" height="40" rx="10" class="box"/>
+  <text x="466" y="369" class="lbl">watchdog loop</text>
+
+  <!-- System layer -->
+  <rect x="670" y="70" width="160" height="330" rx="14" fill="#fff5ec" stroke="#f2d6bd"/>
+  <text x="690" y="96" font-size="12" font-weight="800" fill="#b5651d">System</text>
+
+  <rect x="690" y="112" width="120" height="52" rx="10" class="box"/>
+  <text x="706" y="134" class="lbl">ssh -D</text>
+  <text x="706" y="150" class="sub">SOCKS5 :1080</text>
+
+  <rect x="690" y="176" width="120" height="52" rx="10" class="box"/>
+  <text x="706" y="198" class="lbl">Privoxy</text>
+  <text x="706" y="214" class="sub">HTTP :8118</text>
+
+  <rect x="690" y="240" width="120" height="52" rx="10" class="box"/>
+  <text x="706" y="262" class="lbl">networksetup</text>
+  <text x="706" y="278" class="sub">system SOCKS</text>
+
+  <rect x="690" y="304" width="120" height="52" rx="10" class="box"/>
+  <text x="706" y="326" class="lbl">curl</text>
+  <text x="706" y="342" class="sub">health checks</text>
+
+  <!-- cross-group flows -->
+  <path class="flow" d="M368 345 L450 135"/>
+  <path class="flow" d="M610 135 L690 135"/>
+  <path class="flow" d="M610 193 L690 200"/>
+  <text x="392" y="418" class="note">App shells out to `proxy start|stop|status|socks-on|socks-off`; scripts remain the single source of truth for tunnel logic.</text>
+</svg>

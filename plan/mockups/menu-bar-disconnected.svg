@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="520" viewBox="0 0 720 520" font-family="-apple-system, 'SF Pro Text', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="desk2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a4a63"/>
+      <stop offset="1" stop-color="#20293a"/>
+    </linearGradient>
+    <linearGradient id="panel2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f3f4f6"/>
+    </linearGradient>
+    <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect width="720" height="520" fill="url(#desk2)"/>
+
+  <!-- menu bar -->
+  <rect x="0" y="0" width="720" height="28" fill="#1f2430" opacity="0.85"/>
+  <text x="16" y="19" fill="#ffffff" font-size="13" font-weight="600"></text>
+  <text x="42" y="19" fill="#ffffff" font-size="13" font-weight="600">Tunnel Proxy</text>
+  <g fill="#ffffff" font-size="13">
+    <text x="470" y="19">▲</text>
+    <text x="500" y="19">100%</text>
+    <text x="560" y="19">Sun 14:32</text>
+  </g>
+  <!-- status item icon (outline = disconnected) -->
+  <rect x="640" y="2" width="30" height="24" rx="5" fill="none"/>
+  <text x="647" y="19" fill="#c7ccd6" font-size="14" font-weight="700">⇅</text>
+
+  <!-- popover -->
+  <g filter="url(#shadow2)">
+    <rect x="440" y="34" width="264" height="300" rx="12" fill="url(#panel2)" stroke="#e2e4e8"/>
+    <path d="M655 34 l-9 -9 l9 0 z" fill="#ffffff"/>
+  </g>
+
+  <circle cx="466" cy="66" r="7" fill="#8e8e93"/>
+  <text x="482" y="71" font-size="15" font-weight="700" fill="#111827">Disconnected</text>
+  <text x="482" y="90" font-size="11.5" fill="#6b7280">Traffic goes out directly</text>
+
+  <line x1="456" y1="104" x2="688" y2="104" stroke="#e5e7eb"/>
+
+  <text x="456" y="128" font-size="12" fill="#6b7280">Host</text>
+  <text x="688" y="128" font-size="12.5" font-weight="600" fill="#111827" text-anchor="end">root@example.com</text>
+  <text x="456" y="150" font-size="12" fill="#6b7280">Last connected</text>
+  <text x="688" y="150" font-size="12.5" font-weight="600" fill="#111827" text-anchor="end">Yesterday 18:05</text>
+
+  <line x1="456" y1="166" x2="688" y2="166" stroke="#e5e7eb"/>
+
+  <!-- primary connect button -->
+  <rect x="456" y="180" width="232" height="40" rx="9" fill="#0a84ff"/>
+  <text x="572" y="205" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">Connect</text>
+
+  <!-- reconnect / watchdog checkbox row -->
+  <rect x="456" y="236" width="16" height="16" rx="4" fill="#ffffff" stroke="#0a84ff" stroke-width="2"/>
+  <path d="M459 244 l3 3 l6 -7" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="482" y="249" font-size="13" fill="#111827">Auto-reconnect (watchdog)</text>
+
+  <line x1="456" y1="270" x2="688" y2="270" stroke="#e5e7eb"/>
+
+  <text x="456" y="294" font-size="13" fill="#111827">Settings…</text>
+  <text x="456" y="318" font-size="13" fill="#111827">Quit</text>
+
+  <text x="16" y="480" fill="#c7ccd6" font-size="13" font-weight="600">Menu bar popover — Disconnected state</text>
+  <text x="16" y="500" fill="#8a93a6" font-size="11.5">Icon is a hollow outline; primary action is Connect. Watchdog opt-in shown as a checkbox.</text>
+</svg>

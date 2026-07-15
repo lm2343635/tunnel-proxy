@@ -1,0 +1,108 @@
+/* Menu bar popover */
+"Connected" = "Connected";
+"Disconnected" = "Disconnected";
+"Connecting…" = "Connecting…";
+"Reconnecting…" = "Reconnecting…";
+"Tunnel + HTTP proxy active" = "Tunnel + HTTP proxy active";
+"Traffic goes out directly" = "Traffic goes out directly";
+"Establishing tunnel…" = "Establishing tunnel…";
+"Watchdog reconnecting…" = "Watchdog reconnecting…";
+"Something went wrong" = "Something went wrong";
+"Server" = "Server";
+"None" = "None";
+"Exit IP" = "Exit IP";
+"Last connected" = "Last connected";
+"Watchdog" = "Watchdog";
+"On" = "On";
+"Off" = "Off";
+"Connect" = "Connect";
+"Disconnect" = "Disconnect";
+"Auto-reconnect (watchdog)" = "Auto-reconnect (watchdog)";
+"Show network speed" = "Show network speed";
+"macOS SOCKS proxy" = "macOS SOCKS proxy";
+"Launch at login" = "Launch at login";
+"View Logs…" = "View Logs…";
+"Settings…" = "Settings…";
+"Quit" = "Quit";
+"⚠︎ Add an SSH server in Settings to connect." = "⚠︎ Add an SSH server in Settings to connect.";
+"⚠︎ " = "⚠︎ ";
+"Check server settings" = "Check server settings";
+"⚠︎ Bundled proxy missing — reinstall the app." = "⚠︎ Bundled proxy missing — reinstall the app.";
+
+/* Settings tabs */
+"Servers" = "Servers";
+"Tunnel" = "Tunnel";
+"Advanced" = "Advanced";
+"About" = "About";
+
+/* Tunnel tab */
+"Ports" = "Ports";
+"SOCKS Port" = "SOCKS Port";
+"HTTP Proxy Port" = "HTTP Proxy Port";
+"macOS" = "macOS";
+"Network Service" = "Network Service";
+"%@ (unavailable)" = "%@ (unavailable)";
+"Watchdog Interval (s)" = "Watchdog Interval (s)";
+"Runtime" = "Runtime";
+"Save" = "Save";
+
+/* Advanced tab */
+"Startup" = "Startup";
+"Auto-connect on launch" = "Auto-connect on launch";
+"Files" = "Files";
+"Config" = "Config";
+"Logs" = "Logs";
+"Reveal in Finder" = "Reveal in Finder";
+
+/* About tab */
+"Tunnel Proxy" = "Tunnel Proxy";
+"A self-contained menu bar SSH SOCKS5 → HTTP proxy." = "A self-contained menu bar SSH SOCKS5 → HTTP proxy.";
+"Privoxy is bundled; ssh and curl ship with macOS. All SSH data is managed here." = "Privoxy is bundled; ssh and curl ship with macOS. All SSH data is managed here.";
+
+/* Servers list */
+"No servers yet" = "No servers yet";
+"Add an SSH server to connect through." = "Add an SSH server to connect through.";
+"Add Server" = "Add Server";
+
+/* Server editor */
+"Edit Server" = "Edit Server";
+"Name (optional)" = "Name (optional)";
+"My Server" = "My Server";
+"Host" = "Host";
+"Username" = "Username";
+"Port" = "Port";
+"Authentication" = "Authentication";
+"Method" = "Method";
+"Key File" = "Key File";
+"Choose…" = "Choose…";
+"Passphrase" = "Passphrase";
+"if the key is encrypted" = "if the key is encrypted";
+"SSH password" = "SSH password";
+"Password" = "Password";
+"•••••••• (stored)" = "•••••••• (stored)";
+"Cancel" = "Cancel";
+
+/* Auth method labels */
+"Default keys / agent" = "Default keys / agent";
+"Private key file" = "Private key file";
+"New Server" = "New Server";
+
+/* Logs window */
+"Filter…" = "Filter…";
+"Auto-scroll" = "Auto-scroll";
+"Clear" = "Clear";
+"Streaming · %lld lines" = "Streaming · %lld lines";
+
+/* Status / error messages */
+"Saved." = "Saved.";
+"Invalid configuration" = "Invalid configuration";
+"Tunnel OK but proxy failed" = "Tunnel OK but proxy failed";
+"Tunnel failed to start" = "Tunnel failed to start";
+"No server selected" = "No server selected";
+"Host is required" = "Host is required";
+"Port must be 1–65535" = "Port must be 1–65535";
+"Key file path is required" = "Key file path is required";
+"SOCKS port must be 1–65535" = "SOCKS port must be 1–65535";
+"HTTP proxy port must be 1–65535" = "HTTP proxy port must be 1–65535";
+"Ports must differ" = "Ports must differ";
+"Watchdog interval must be positive" = "Watchdog interval must be positive";

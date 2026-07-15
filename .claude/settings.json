@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(command -v networksetup)",
+      "Read(//usr/sbin/**)",
+      "Bash(/usr/sbin/networksetup -setsocksfirewallproxystate Wi-Fi off)",
+      "Bash(echo \"off exit=$? \\(no prompt = success\\)\")",
+      "Bash(/usr/sbin/networksetup -getsocksfirewallproxy Wi-Fi)",
+      "Bash(xcrun notarytool *)",
+      "Bash(chmod +x /Users/meng/Documents/Projects/tunnel-proxy/app/release.sh)",
+      "Bash(./release.sh)",
+      "Bash(pkill -9 -f \"TunnelProxy.app/Contents/MacOS/TunnelProxy\")",
+      "Bash(/usr/sbin/networksetup -listallnetworkservices)",
+      "Bash(/usr/sbin/networksetup -listnetworkserviceorder)",
+      "Bash(swiftc -o /tmp/spd /tmp/spd.swift)",
+      "Bash(/tmp/spd)",
+      "Bash(defaults delete *)"
+    ]
+  }
+}

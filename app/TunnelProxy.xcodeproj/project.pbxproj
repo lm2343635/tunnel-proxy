@@ -1,0 +1,384 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1000001000000000000001 /* TunnelProxyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000001000000000000001 /* TunnelProxyApp.swift */; };
+		A1000002000000000000002 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002000000000000002 /* ProcessRunner.swift */; };
+		A1000003000000000000003 /* LogTailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000004000000000000004 /* LogTailer.swift */; };
+		A1000005000000000000005 /* TunnelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000005000000000000005 /* TunnelController.swift */; };
+		A1000006000000000000006 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000006000000000000006 /* MenuBarView.swift */; };
+		A1000007000000000000007 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000007000000000000007 /* SettingsView.swift */; };
+		A1000008000000000000008 /* LogsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000008000000000000008 /* LogsView.swift */; };
+		A1000009000000000000009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1000009000000000000009 /* Assets.xcassets */; };
+		A100000A00000000000000A /* privoxy in Resources */ = {isa = PBXBuildFile; fileRef = B100000A00000000000000A /* privoxy */; };
+		A100000E00000000000000E /* AppPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000E00000000000000E /* AppPaths.swift */; };
+		A100000F00000000000000F /* TunnelConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000F00000000000000F /* TunnelConfig.swift */; };
+		A100001000000000000010 /* TunnelEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001000000000000010 /* TunnelEngine.swift */; };
+		A100001100000000000011 /* ServerProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001100000000000011 /* ServerProfile.swift */; };
+		A100001200000000000012 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001200000000000012 /* KeychainStore.swift */; };
+		A100001300000000000013 /* ServersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001300000000000013 /* ServersView.swift */; };
+		A100001400000000000014 /* helpers in Resources */ = {isa = PBXBuildFile; fileRef = B100001400000000000014 /* helpers */; };
+		A100001500000000000015 /* NetworkServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001500000000000015 /* NetworkServices.swift */; };
+		A100001600000000000016 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = V100000000000000000001 /* Localizable.strings */; };
+		A100001700000000000017 /* SpeedMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001700000000000017 /* SpeedMonitor.swift */; };
+		A100001800000000000018 /* MenuBarRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001800000000000018 /* MenuBarRenderer.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B1000001000000000000001 /* TunnelProxyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelProxyApp.swift; sourceTree = "<group>"; };
+		B1000002000000000000002 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessRunner.swift; sourceTree = "<group>"; };
+		B1000004000000000000004 /* LogTailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogTailer.swift; sourceTree = "<group>"; };
+		B1000005000000000000005 /* TunnelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelController.swift; sourceTree = "<group>"; };
+		B1000006000000000000006 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		B1000007000000000000007 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B1000008000000000000008 /* LogsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsView.swift; sourceTree = "<group>"; };
+		B1000009000000000000009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B100000A00000000000000A /* privoxy */ = {isa = PBXFileReference; lastKnownFileType = folder; path = privoxy; sourceTree = "<group>"; };
+		B100000B00000000000000B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B100000C00000000000000C /* TunnelProxy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TunnelProxy.entitlements; sourceTree = "<group>"; };
+		B100000D00000000000000D /* TunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TunnelProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B100000E00000000000000E /* AppPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPaths.swift; sourceTree = "<group>"; };
+		B100000F00000000000000F /* TunnelConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelConfig.swift; sourceTree = "<group>"; };
+		B100001000000000000010 /* TunnelEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelEngine.swift; sourceTree = "<group>"; };
+		B100001100000000000011 /* ServerProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerProfile.swift; sourceTree = "<group>"; };
+		B100001200000000000012 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
+		B100001300000000000013 /* ServersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersView.swift; sourceTree = "<group>"; };
+		B100001400000000000014 /* helpers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = helpers; sourceTree = "<group>"; };
+		B100001500000000000015 /* NetworkServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServices.swift; sourceTree = "<group>"; };
+		B100001700000000000017 /* SpeedMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedMonitor.swift; sourceTree = "<group>"; };
+		B100001800000000000018 /* MenuBarRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarRenderer.swift; sourceTree = "<group>"; };
+		V100000000000000000002 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		V100000000000000000003 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C1000001000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D1000000000000000000000 = {
+			isa = PBXGroup;
+			children = (
+				D1000001000000000000001 /* TunnelProxy */,
+				D1000002000000000000002 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D1000001000000000000001 /* TunnelProxy */ = {
+			isa = PBXGroup;
+			children = (
+				B1000001000000000000001 /* TunnelProxyApp.swift */,
+				D1000003000000000000003 /* Controllers */,
+				D1000004000000000000004 /* Views */,
+				D1000005000000000000005 /* Resources */,
+				B1000009000000000000009 /* Assets.xcassets */,
+				V100000000000000000001 /* Localizable.strings */,
+				B100000B00000000000000B /* Info.plist */,
+				B100000C00000000000000C /* TunnelProxy.entitlements */,
+			);
+			path = TunnelProxy;
+			sourceTree = "<group>";
+		};
+		D1000002000000000000002 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B100000D00000000000000D /* TunnelProxy.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D1000003000000000000003 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B100000E00000000000000E /* AppPaths.swift */,
+				B100000F00000000000000F /* TunnelConfig.swift */,
+				B100001100000000000011 /* ServerProfile.swift */,
+				B100001200000000000012 /* KeychainStore.swift */,
+				B100001500000000000015 /* NetworkServices.swift */,
+				B100001700000000000017 /* SpeedMonitor.swift */,
+				B100001800000000000018 /* MenuBarRenderer.swift */,
+				B100001000000000000010 /* TunnelEngine.swift */,
+				B1000002000000000000002 /* ProcessRunner.swift */,
+				B1000004000000000000004 /* LogTailer.swift */,
+				B1000005000000000000005 /* TunnelController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		D1000004000000000000004 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B1000006000000000000006 /* MenuBarView.swift */,
+				B1000007000000000000007 /* SettingsView.swift */,
+				B100001300000000000013 /* ServersView.swift */,
+				B1000008000000000000008 /* LogsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D1000005000000000000005 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B100000A00000000000000A /* privoxy */,
+				B100001400000000000014 /* helpers */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E1000001000000000000001 /* TunnelProxy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F1000002000000000000002 /* Build configuration list for PBXNativeTarget "TunnelProxy" */;
+			buildPhases = (
+				G1000001000000000000001 /* Sources */,
+				C1000001000000000000001 /* Frameworks */,
+				G1000002000000000000002 /* Resources */,
+				G1000003000000000000003 /* Sign bundled privoxy */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TunnelProxy;
+			productName = TunnelProxy;
+			productReference = B100000D00000000000000D /* TunnelProxy.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		H1000001000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2650;
+				LastUpgradeCheck = 2650;
+				TargetAttributes = {
+					E1000001000000000000001 = {
+						CreatedOnToolsVersion = 26.5;
+					};
+				};
+			};
+			buildConfigurationList = F1000001000000000000001 /* Build configuration list for PBXProject "TunnelProxy" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				"zh-Hans",
+			);
+			mainGroup = D1000000000000000000000;
+			productRefGroup = D1000002000000000000002 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E1000001000000000000001 /* TunnelProxy */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		G1000002000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000009000000000000009 /* Assets.xcassets in Resources */,
+				A100000A00000000000000A /* privoxy in Resources */,
+				A100001400000000000014 /* helpers in Resources */,
+				A100001600000000000016 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		G1000003000000000000003 /* Sign bundled privoxy */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Sign bundled privoxy";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "# Re-sign the bundled privoxy binary + dylibs with the app's identity.\n# Xcode copies the folder reference verbatim but does not sign nested\n# Mach-O files, which the hardened runtime requires.\nset -e\nDIR=\"${CODESIGNING_FOLDER_PATH}/Contents/Resources/privoxy\"\nif [ ! -d \"$DIR\" ]; then\n  echo \"warning: bundled privoxy not found at $DIR\"\n  exit 0\nfi\nIDENTITY=\"${EXPANDED_CODE_SIGN_IDENTITY:--}\"\nfor f in \"$DIR/libpcre2-8.0.dylib\" \"$DIR/libpcre2-posix.3.dylib\" \"$DIR/privoxy\"; do\n  if [ -f \"$f\" ]; then\n    /usr/bin/codesign --force --options runtime --timestamp --sign \"$IDENTITY\" \"$f\"\n  fi\ndone\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		G1000001000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000001000000000000001 /* TunnelProxyApp.swift in Sources */,
+				A100000E00000000000000E /* AppPaths.swift in Sources */,
+				A100000F00000000000000F /* TunnelConfig.swift in Sources */,
+				A100001000000000000010 /* TunnelEngine.swift in Sources */,
+				A1000002000000000000002 /* ProcessRunner.swift in Sources */,
+				A1000003000000000000003 /* LogTailer.swift in Sources */,
+				A1000005000000000000005 /* TunnelController.swift in Sources */,
+				A100001100000000000011 /* ServerProfile.swift in Sources */,
+				A100001200000000000012 /* KeychainStore.swift in Sources */,
+				A100001500000000000015 /* NetworkServices.swift in Sources */,
+				A100001700000000000017 /* SpeedMonitor.swift in Sources */,
+				A100001800000000000018 /* MenuBarRenderer.swift in Sources */,
+				A1000006000000000000006 /* MenuBarView.swift in Sources */,
+				A1000007000000000000007 /* SettingsView.swift in Sources */,
+				A100001300000000000013 /* ServersView.swift in Sources */,
+				A1000008000000000000008 /* LogsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		V100000000000000000001 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				V100000000000000000002 /* en */,
+				V100000000000000000003 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		I1000001000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		I1000002000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		I1000003000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TunnelProxy/TunnelProxy.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = X92HAV9XYP;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TunnelProxy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		I1000004000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TunnelProxy/TunnelProxy.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = X92HAV9XYP;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TunnelProxy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F1000001000000000000001 /* Build configuration list for PBXProject "TunnelProxy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				I1000001000000000000001 /* Debug */,
+				I1000002000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F1000002000000000000002 /* Build configuration list for PBXNativeTarget "TunnelProxy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				I1000003000000000000003 /* Debug */,
+				I1000004000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = H1000001000000000000001 /* Project object */;
+}

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="520" viewBox="0 0 720 520" font-family="-apple-system, 'SF Pro Text', Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="ls" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <rect width="720" height="520" fill="#2c3446"/>
+
+  <g filter="url(#ls)">
+    <rect x="50" y="36" width="620" height="440" rx="12" fill="#1e222b"/>
+  </g>
+
+  <!-- titlebar -->
+  <rect x="50" y="36" width="620" height="44" rx="12" fill="#2a2f3a"/>
+  <rect x="50" y="68" width="620" height="12" fill="#2a2f3a"/>
+  <circle cx="74" cy="58" r="6" fill="#ff5f57"/>
+  <circle cx="94" cy="58" r="6" fill="#febc2e"/>
+  <circle cx="114" cy="58" r="6" fill="#28c840"/>
+  <text x="360" y="62" font-size="13.5" font-weight="700" fill="#cfd4de" text-anchor="middle">Logs — /tmp/ssh-tunnel.log</text>
+
+  <!-- toolbar -->
+  <rect x="574" y="48" width="34" height="22" rx="6" fill="#3a4150"/>
+  <text x="591" y="63" font-size="11" fill="#cfd4de" text-anchor="middle">⤓</text>
+  <rect x="616" y="48" width="34" height="22" rx="6" fill="#3a4150"/>
+  <text x="633" y="63" font-size="11" fill="#cfd4de" text-anchor="middle">⌫</text>
+
+  <!-- filter bar -->
+  <rect x="66" y="92" width="300" height="28" rx="7" fill="#2a2f3a" stroke="#3a4150"/>
+  <text x="80" y="111" font-size="11.5" fill="#7d8697">Filter…</text>
+  <g font-size="11" text-anchor="middle">
+    <rect x="470" y="92" width="60" height="28" rx="7" fill="#0a84ff"/>
+    <text x="500" y="111" fill="#ffffff" font-weight="700">Follow</text>
+    <rect x="540" y="92" width="110" height="28" rx="7" fill="#2a2f3a" stroke="#3a4150"/>
+    <text x="595" y="111" fill="#cfd4de">Auto-scroll ✓</text>
+  </g>
+
+  <!-- log body (monospace) -->
+  <g font-family="'SF Mono', Menlo, monospace" font-size="11.5">
+    <text x="66" y="150" fill="#6b7280">Sun Jul 14 14:30:01 2026<tspan fill="#8bd450">  Starting SSH tunnel...</tspan></text>
+    <text x="66" y="172" fill="#6b7280">Sun Jul 14 14:30:04 2026<tspan fill="#8bd450">  Tunnel + proxy started successfully</tspan></text>
+    <text x="66" y="194" fill="#6b7280">Sun Jul 14 14:30:04 2026<tspan fill="#5fb0ff">  Watchdog started (PID 48213)</tspan></text>
+    <text x="66" y="216" fill="#6b7280">Sun Jul 14 14:31:34 2026<tspan fill="#f0b429">  Tunnel down, reconnecting...</tspan></text>
+    <text x="66" y="238" fill="#6b7280">Sun Jul 14 14:31:38 2026<tspan fill="#8bd450">  Tunnel + proxy started successfully</tspan></text>
+    <text x="66" y="260" fill="#6b7280">Sun Jul 14 14:33:12 2026<tspan fill="#cfd4de">  Health check OK · exit IP 203.0.113.47</tspan></text>
+    <text x="66" y="282" fill="#6b7280">Sun Jul 14 14:35:44 2026<tspan fill="#ff7b72">  curl: (7) Failed to connect — retrying</tspan></text>
+    <text x="66" y="304" fill="#6b7280">Sun Jul 14 14:35:49 2026<tspan fill="#8bd450">  Tunnel + proxy started successfully</tspan></text>
+  </g>
+
+  <!-- blinking cursor line -->
+  <rect x="66" y="316" width="7" height="13" fill="#8bd450" opacity="0.8"/>
+
+  <!-- status footer -->
+  <line x1="50" y1="444" x2="670" y2="444" stroke="#333947"/>
+  <circle cx="70" cy="460" r="5" fill="#28c840"/>
+  <text x="82" y="464" font-size="11.5" fill="#9aa3b2">Streaming · 8 lines · connected</text>
+
+  <text x="50" y="504" fill="#c7ccd6" font-size="12.5" font-weight="600">Live log viewer — tails LOG_FILE, color-codes info / warn / error</text>
+</svg>

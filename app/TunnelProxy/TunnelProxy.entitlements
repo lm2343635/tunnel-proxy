@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- The app shells out to ssh/privoxy/networksetup and reads config / logs
+	     outside a sandbox container, so App Sandbox is disabled (see plan risks). -->
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+	<!-- The bundled privoxy loads its own dylibs (libpcre2) from the app bundle.
+	     Under the hardened runtime, allow it to load those sibling libraries. -->
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<true/>
+</dict>
+</plist>

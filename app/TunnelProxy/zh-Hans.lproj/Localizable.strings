@@ -1,0 +1,108 @@
+/* Menu bar popover */
+"Connected" = "已连接";
+"Disconnected" = "未连接";
+"Connecting…" = "正在连接…";
+"Reconnecting…" = "正在重新连接…";
+"Tunnel + HTTP proxy active" = "隧道与 HTTP 代理已启用";
+"Traffic goes out directly" = "流量直接连接";
+"Establishing tunnel…" = "正在建立隧道…";
+"Watchdog reconnecting…" = "守护进程正在重连…";
+"Something went wrong" = "出现错误";
+"Server" = "服务器";
+"None" = "无";
+"Exit IP" = "出口 IP";
+"Last connected" = "上次连接";
+"Watchdog" = "守护进程";
+"On" = "开启";
+"Off" = "关闭";
+"Connect" = "连接";
+"Disconnect" = "断开";
+"Auto-reconnect (watchdog)" = "自动重连（守护进程）";
+"Show network speed" = "显示网络速度";
+"macOS SOCKS proxy" = "macOS SOCKS 代理";
+"Launch at login" = "登录时启动";
+"View Logs…" = "查看日志…";
+"Settings…" = "设置…";
+"Quit" = "退出";
+"⚠︎ Add an SSH server in Settings to connect." = "⚠︎ 请在设置中添加 SSH 服务器以便连接。";
+"⚠︎ " = "⚠︎ ";
+"Check server settings" = "请检查服务器设置";
+"⚠︎ Bundled proxy missing — reinstall the app." = "⚠︎ 内置代理缺失——请重新安装应用。";
+
+/* Settings tabs */
+"Servers" = "服务器";
+"Tunnel" = "隧道";
+"Advanced" = "高级";
+"About" = "关于";
+
+/* Tunnel tab */
+"Ports" = "端口";
+"SOCKS Port" = "SOCKS 端口";
+"HTTP Proxy Port" = "HTTP 代理端口";
+"macOS" = "macOS";
+"Network Service" = "网络服务";
+"%@ (unavailable)" = "%@（不可用）";
+"Watchdog Interval (s)" = "守护进程间隔（秒）";
+"Runtime" = "运行环境";
+"Save" = "保存";
+
+/* Advanced tab */
+"Startup" = "启动";
+"Auto-connect on launch" = "启动时自动连接";
+"Files" = "文件";
+"Config" = "配置";
+"Logs" = "日志";
+"Reveal in Finder" = "在访达中显示";
+
+/* About tab */
+"Tunnel Proxy" = "Tunnel Proxy";
+"A self-contained menu bar SSH SOCKS5 → HTTP proxy." = "一款自带运行环境的菜单栏 SSH SOCKS5 → HTTP 代理工具。";
+"Privoxy is bundled; ssh and curl ship with macOS. All SSH data is managed here." = "内置 Privoxy；ssh 与 curl 随 macOS 提供。所有 SSH 数据均在此管理。";
+
+/* Servers list */
+"No servers yet" = "暂无服务器";
+"Add an SSH server to connect through." = "添加一个 SSH 服务器用于连接。";
+"Add Server" = "添加服务器";
+
+/* Server editor */
+"Edit Server" = "编辑服务器";
+"Name (optional)" = "名称（可选）";
+"My Server" = "我的服务器";
+"Host" = "主机";
+"Username" = "用户名";
+"Port" = "端口";
+"Authentication" = "认证方式";
+"Method" = "方式";
+"Key File" = "密钥文件";
+"Choose…" = "选择…";
+"Passphrase" = "密钥口令";
+"if the key is encrypted" = "如果密钥已加密";
+"SSH password" = "SSH 密码";
+"Password" = "密码";
+"•••••••• (stored)" = "••••••••（已保存）";
+"Cancel" = "取消";
+
+/* Auth method labels */
+"Default keys / agent" = "默认密钥 / 代理";
+"Private key file" = "私钥文件";
+"New Server" = "新服务器";
+
+/* Logs window */
+"Filter…" = "筛选…";
+"Auto-scroll" = "自动滚动";
+"Clear" = "清除";
+"Streaming · %lld lines" = "实时输出 · %lld 行";
+
+/* Status / error messages */
+"Saved." = "已保存。";
+"Invalid configuration" = "配置无效";
+"Tunnel OK but proxy failed" = "隧道正常，但代理失败";
+"Tunnel failed to start" = "隧道启动失败";
+"No server selected" = "未选择服务器";
+"Host is required" = "必须填写主机";
+"Port must be 1–65535" = "端口必须为 1–65535";
+"Key file path is required" = "必须填写密钥文件路径";
+"SOCKS port must be 1–65535" = "SOCKS 端口必须为 1–65535";
+"HTTP proxy port must be 1–65535" = "HTTP 代理端口必须为 1–65535";
+"Ports must differ" = "两个端口不能相同";
+"Watchdog interval must be positive" = "守护进程间隔必须为正数";
