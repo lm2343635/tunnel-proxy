@@ -88,10 +88,17 @@ actor TunnelEngine {
 
         var args = [
             "-N",                                   // no remote command
-            "-C",                                   // compression
             "-o", "StrictHostKeyChecking=no",
-            "-o", "ServerAliveInterval=10",
-            "-o", "ServerAliveCountMax=3",
+            // Keepalive tuned for lossy carrier (China Telecom) links: probe often
+            // enough to keep NAT/CGNAT mappings alive (they recycle idle flows ~60s),
+            // but tolerate a wide burst-loss window before declaring the link dead.
+            "-o", "ServerAliveInterval=15",
+            "-o", "ServerAliveCountMax=6",          // ~90s of loss tolerated, not 30s
+            "-o", "TCPKeepAlive=yes",               // OS-level keepalive as a backstop
+            // Do NOT compress: on high-loss links -C amplifies latency sensitivity and
+            // buys little for already-encrypted/compressed HTTPS traffic.
+            "-o", "Compression=no",
+            "-o", "IPQoS=throughput",               // avoid low-latency DSCP throttling
             "-o", "ExitOnForwardFailure=yes",
             "-o", "ConnectTimeout=10",
             "-p", "\(server.port)",
@@ -265,14 +272,24 @@ actor TunnelEngine {
         log("Watchdog started (every \(config.watchdogInterval)s)")
     }
 
+    /// Consecutive failed SOCKS probes. On a lossy carrier link a *single* probe
+    /// can fail from transient packet loss while the tunnel is actually fine; hard-
+    /// reconnecting on one miss is what makes the proxy feel like it "drops every
+    /// minute". Require two misses in a row before tearing ssh down.
+    private var consecutiveProbeFailures = 0
+
     private func watchdogTick() async {
         // Probe SOCKS directly; if it's down, consider relaunching ssh.
-        let ok = await curl([
-            "-s", "--max-time", "5",
-            "--socks5-hostname", "127.0.0.1:\(config.socksPort)",
-            "https://api.ipify.org",
-        ])?.range(of: #"\d+\.\d+"#, options: .regularExpression) != nil
-        guard !ok else { return }
+        let ok = await socksProbeOK()
+        if ok {
+            consecutiveProbeFailures = 0
+            return
+        }
+        consecutiveProbeFailures += 1
+        if consecutiveProbeFailures < 2 {
+            log("Watchdog probe missed (\(consecutiveProbeFailures)/2) — waiting for confirmation")
+            return
+        }
 
         // The SOCKS probe can't tell "our tunnel died" from "a foreign process is
         // squatting on the port" — both fail identically. Before relaunching, ask
@@ -292,6 +309,17 @@ actor TunnelEngine {
         }
         log("Tunnel down, reconnecting…")
         startSSH()
+        consecutiveProbeFailures = 0
+    }
+
+    /// One SOCKS liveness probe through the tunnel. Short timeout so a stalled
+    /// probe doesn't stretch the watchdog cycle on a slow link.
+    private func socksProbeOK() async -> Bool {
+        await curl([
+            "-s", "--max-time", "4",
+            "--socks5-hostname", "127.0.0.1:\(config.socksPort)",
+            "https://api.ipify.org",
+        ])?.range(of: #"\d+\.\d+"#, options: .regularExpression) != nil
     }
 
     private func stopWatchdog() {

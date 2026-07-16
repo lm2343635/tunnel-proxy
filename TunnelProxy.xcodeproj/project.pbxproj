@@ -34,6 +34,7 @@
 		A100001D0000000000001D /* TrafficRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001D0000000000001D /* TrafficRecorder.swift */; };
 		A100001E0000000000001E /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001E0000000000001E /* StatisticsView.swift */; };
 		A100001F0000000000001F /* PortInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001F0000000000001F /* PortInspector.swift */; };
+		A100002000000000000020 /* ClaudeCodeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002000000000000020 /* ClaudeCodeConfig.swift */; };
 		BB8F28213007D9C1003B52E2 /* architecture.svg in Resources */ = {isa = PBXBuildFile; fileRef = BB8F28173007D9C1003B52E2 /* architecture.svg */; };
 		BB8F28223007D9C1003B52E2 /* gui-app-plan.md in Resources */ = {isa = PBXBuildFile; fileRef = BB8F281E3007D9C1003B52E2 /* gui-app-plan.md */; };
 		BB8F28233007D9C1003B52E2 /* menu-bar-connected.svg in Resources */ = {isa = PBXBuildFile; fileRef = BB8F28193007D9C1003B52E2 /* menu-bar-connected.svg */; };
@@ -74,6 +75,7 @@
 		B100001D0000000000001D /* TrafficRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficRecorder.swift; sourceTree = "<group>"; };
 		B100001E0000000000001E /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		B100001F0000000000001F /* PortInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortInspector.swift; sourceTree = "<group>"; };
+		B100002000000000000020 /* ClaudeCodeConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeConfig.swift; sourceTree = "<group>"; };
 		BB8F28173007D9C1003B52E2 /* architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = architecture.svg; sourceTree = "<group>"; };
 		BB8F28183007D9C1003B52E2 /* logs.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = logs.svg; sourceTree = "<group>"; };
 		BB8F28193007D9C1003B52E2 /* menu-bar-connected.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = "menu-bar-connected.svg"; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 				B1000004000000000000004 /* LogTailer.swift */,
 				B1000005000000000000005 /* TunnelController.swift */,
 				B100001F0000000000001F /* PortInspector.swift */,
+				B100002000000000000020 /* ClaudeCodeConfig.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				A100001D0000000000001D /* TrafficRecorder.swift in Sources */,
 				A100001E0000000000001E /* StatisticsView.swift in Sources */,
 				A100001F0000000000001F /* PortInspector.swift in Sources */,
+				A100002000000000000020 /* ClaudeCodeConfig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

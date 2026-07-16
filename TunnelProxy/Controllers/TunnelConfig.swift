@@ -14,7 +14,7 @@ struct TunnelConfig: Codable, Equatable {
     /// Empty by default; the UI fills this with the primary (default-route)
     /// network service on first open.
     var networkService: String = ""
-    var watchdogInterval: Int = 30
+    var watchdogInterval: Int = 15
 
     // MARK: - Server helpers
 

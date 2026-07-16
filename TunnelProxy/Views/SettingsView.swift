@@ -11,6 +11,11 @@ struct SettingsView: View {
     @State private var networkServiceOptions: [String] = []
     @State private var confirmClearStats = false
 
+    // Tools tab — Claude Code proxy toggle.
+    @State private var claudeProxyOn = false
+    @State private var claudeProxyMessage: String?
+    @State private var claudeProxyIsError = false
+
     var body: some View {
         TabView {
             ServersView()
@@ -20,6 +25,8 @@ struct SettingsView: View {
                 .tabItem { Label("Tunnel", systemImage: "network") }
             advancedTab
                 .tabItem { Label("Advanced", systemImage: "gearshape.2") }
+            toolsTab
+                .tabItem { Label("工具", systemImage: "wrench.and.screwdriver") }
             aboutTab
                 .tabItem { Label("About", systemImage: "info.circle") }
         }
@@ -27,6 +34,7 @@ struct SettingsView: View {
         .onAppear {
             refreshDependencies()
             loadNetworkServices()
+            refreshClaudeProxyState()
         }
     }
 
@@ -120,6 +128,32 @@ struct SettingsView: View {
         }
     }
 
+    // MARK: - Tools
+
+    private var toolsTab: some View {
+        Form {
+            Section("Claude Code") {
+                Toggle("让 Claude Code 使用此代理", isOn: Binding(
+                    get: { claudeProxyOn },
+                    set: { setClaudeProxy($0) }
+                ))
+                Text("将 HTTP 代理环境变量写入 ~/.claude/settings.json，使 Claude Code 指向 \(ClaudeCodeConfig.proxyURL(port: controller.config.httpProxyPort))。其他设置保持不变。")
+                    .font(.caption).foregroundStyle(.secondary)
+                if let msg = claudeProxyMessage {
+                    Text(msg).font(.caption)
+                        .foregroundStyle(claudeProxyIsError ? .orange : .green)
+                }
+            }
+            Section("文件") {
+                LabeledContent("设置") { pathText(ClaudeCodeConfig.settingsURL.path) }
+                Button("在访达中显示") {
+                    NSWorkspace.shared.activateFileViewerSelecting([ClaudeCodeConfig.settingsURL])
+                }
+            }
+        }
+        .formStyle(.grouped)
+    }
+
     private var aboutTab: some View {
         VStack(spacing: 10) {
             if let icon = NSApp.applicationIconImage {
@@ -196,6 +230,38 @@ struct SettingsView: View {
         controller.saveConfig()
         saveMessage = "Saved."
         controller.refreshStatus()
+    }
+
+    // MARK: - Claude Code proxy
+
+    private func refreshClaudeProxyState() {
+        let port = controller.config.httpProxyPort
+        Task.detached {
+            let enabled = ClaudeCodeConfig.isProxyEnabled(port: port)
+            await MainActor.run { self.claudeProxyOn = enabled }
+        }
+    }
+
+    /// Write (or clear) the proxy keys, reverting the toggle and surfacing the
+    /// message on failure so a malformed settings.json never overwrites silently.
+    private func setClaudeProxy(_ enabled: Bool) {
+        let port = controller.config.httpProxyPort
+        Task.detached {
+            do {
+                try ClaudeCodeConfig.setProxyEnabled(enabled, port: port)
+                await MainActor.run {
+                    self.claudeProxyOn = enabled
+                    self.claudeProxyIsError = false
+                    self.claudeProxyMessage = enabled ? "Claude Code 将使用此代理。" : "已从 Claude Code 移除代理。"
+                }
+            } catch {
+                await MainActor.run {
+                    self.claudeProxyOn = ClaudeCodeConfig.isProxyEnabled(port: port)
+                    self.claudeProxyIsError = true
+                    self.claudeProxyMessage = error.localizedDescription
+                }
+            }
+        }
     }
 }
 

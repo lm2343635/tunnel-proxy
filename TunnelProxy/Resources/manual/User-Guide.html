@@ -410,8 +410,8 @@
   <rect x="148" y="312" width="120" height="28" rx="7" fill="#eceef2" stroke="#d6dae1"/>
   <text x="208" y="330" font-size="12" fill="#111827" text-anchor="middle">＋ Add Server</text>
   <g font-size="12" fill="#4b5563">
-    <text x="30" y="360" font-weight="700" fill="#111827">Four tabs</text>
-    <text x="30" y="380">Servers · Tunnel (ports, watchdog) · Advanced (startup, files) · About</text>
+    <text x="30" y="360" font-weight="700" fill="#111827">Five tabs</text>
+    <text x="30" y="380">Servers · Tunnel · Advanced · Tools (Claude Code proxy) · About</text>
     <text x="30" y="398" fill="#8a93a6">The filled blue circle marks the active server. Click a row to switch.</text>
   </g>
 </svg>
@@ -443,7 +443,7 @@
   <blockquote><p>There is also an <strong>Auto-connect on launch</strong> option in <strong>Settings → Advanced</strong>. Turn both on and your tunnel comes up by itself whenever you start your Mac.</p></blockquote>
 
   <h2>Settings reference</h2>
-  <p>Open with the shield icon → <strong>Settings…</strong> (<kbd>⌘,</kbd>). There are four tabs.</p>
+  <p>Open with the shield icon → <strong>Settings…</strong> (<kbd>⌘,</kbd>). There are five tabs.</p>
   <h3>Servers</h3>
   <p>Add, edit, delete, and choose your active server. (See <em>First-time setup</em>.)</p>
   <h3>Tunnel</h3>
@@ -459,6 +459,13 @@
     <li><strong>Launch at login</strong> and <strong>Auto-connect on launch</strong> (see above).</li>
     <li><strong>Files</strong> — shows where your config and log files live, with a <strong>Reveal in Finder</strong> button.</li>
   </ul>
+  <h3>Tools</h3>
+  <p>Extra one-click helpers that point other programs at this app's HTTP proxy.</p>
+  <ul>
+    <li><strong>Route Claude Code through this proxy</strong> — turn this <strong>on</strong> to make <a href="https://claude.com/claude-code">Claude Code</a> send its traffic through the tunnel. It adds the standard HTTP-proxy environment keys (<code>http_proxy</code>, <code>https_proxy</code>, and their uppercase forms, plus <code>no_proxy</code> for <code>localhost</code>) to <code>~/.claude/settings.json</code>, pointing them at <code>http://127.0.0.1:8118</code> (or whatever <strong>HTTP Proxy Port</strong> you set in the Tunnel tab). Turn it <strong>off</strong> to remove just those keys — everything else in your Claude Code settings is left untouched. Restart Claude Code for the change to take effect.</li>
+    <li><strong>Settings file</strong> — shows the path to <code>~/.claude/settings.json</code>, with a <strong>Reveal in Finder</strong> button.</li>
+  </ul>
+  <blockquote><p>If you change the HTTP Proxy Port later, come back and toggle this off and on again so the new port is written.</p></blockquote>
   <h3>About</h3>
   <p>App name and a short description.</p>
 

@@ -407,8 +407,8 @@
   <rect x="148" y="312" width="120" height="28" rx="7" fill="#eceef2" stroke="#d6dae1"/>
   <text x="208" y="330" font-size="12" fill="#111827" text-anchor="middle">＋ 添加服务器</text>
   <g font-size="12" fill="#4b5563">
-    <text x="30" y="360" font-weight="700" fill="#111827">四个标签页</text>
-    <text x="30" y="380">服务器 · 隧道（端口、守护进程）· 高级（启动、文件）· 关于</text>
+    <text x="30" y="360" font-weight="700" fill="#111827">五个标签页</text>
+    <text x="30" y="380">服务器 · 隧道 · 高级 · 工具（Claude Code 代理）· 关于</text>
     <text x="30" y="398" fill="#8a93a6">蓝色实心圆点表示当前使用的服务器。点击某一行即可切换。</text>
   </g>
 </svg>
@@ -440,7 +440,7 @@
   <blockquote><p><strong>设置 → 高级</strong> 里还有一个 <strong>启动时自动连接</strong> 选项。两者都开启，隧道就会在你每次开机时自动建立。</p></blockquote>
 
   <h2>设置项说明</h2>
-  <p>点击盾牌图标 → <strong>设置…</strong>（<kbd>⌘,</kbd>）打开。共有四个标签页。</p>
+  <p>点击盾牌图标 → <strong>设置…</strong>（<kbd>⌘,</kbd>）打开。共有五个标签页。</p>
   <h3>服务器</h3>
   <p>添加、编辑、删除，以及选择当前使用的服务器。（见「<em>首次设置</em>」。）</p>
   <h3>隧道</h3>
@@ -456,6 +456,13 @@
     <li><strong>登录时启动</strong> 与 <strong>启动时自动连接</strong>（见上文）。</li>
     <li><strong>文件</strong>——显示配置文件和日志文件的位置，并提供 <strong>在访达中显示</strong> 按钮。</li>
   </ul>
+  <h3>工具</h3>
+  <p>一键将其他程序指向本应用 HTTP 代理的辅助功能。</p>
+  <ul>
+    <li><strong>让 Claude Code 走此代理</strong>——开启后，<a href="https://claude.com/claude-code">Claude Code</a> 的流量将通过隧道转发。它会把标准的 HTTP 代理环境变量（<code>http_proxy</code>、<code>https_proxy</code> 及其大写形式，以及针对 <code>localhost</code> 的 <code>no_proxy</code>）写入 <code>~/.claude/settings.json</code>，指向 <code>http://127.0.0.1:8118</code>（或你在「隧道」标签页设置的 <strong>HTTP 代理端口</strong>）。<strong>关闭</strong> 时仅移除这些键，Claude Code 的其他设置保持不变。修改后请重启 Claude Code 使其生效。</li>
+    <li><strong>设置文件</strong>——显示 <code>~/.claude/settings.json</code> 的路径，并提供 <strong>在访达中显示</strong> 按钮。</li>
+  </ul>
+  <blockquote><p>如果之后修改了 HTTP 代理端口，请回到此处将开关关闭再开启，以写入新的端口。</p></blockquote>
   <h3>关于</h3>
   <p>应用名称和一段简短说明。</p>
 
