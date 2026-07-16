@@ -296,7 +296,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "# Re-sign the bundled privoxy binary + dylibs with the app's identity.\n# Xcode copies the folder reference verbatim but does not sign nested\n# Mach-O files, which the hardened runtime requires.\nset -e\nDIR=\"${CODESIGNING_FOLDER_PATH}/Contents/Resources/privoxy\"\nif [ ! -d \"$DIR\" ]; then\n  echo \"warning: bundled privoxy not found at $DIR\"\n  exit 0\nfi\nIDENTITY=\"${EXPANDED_CODE_SIGN_IDENTITY:--}\"\nfor f in \"$DIR/libpcre2-8.0.dylib\" \"$DIR/libpcre2-posix.3.dylib\" \"$DIR/privoxy\"; do\n  if [ -f \"$f\" ]; then\n    /usr/bin/codesign --force --options runtime --timestamp --sign \"$IDENTITY\" \"$f\"\n  fi\ndone\n";
+			shellScript = "# Re-sign the bundled privoxy binary + dylibs with the app's identity.\n# Xcode copies the folder reference verbatim but does not sign nested\n# Mach-O files, which the hardened runtime requires.\nset -e\nDIR=\"${CODESIGNING_FOLDER_PATH}/Contents/Resources/privoxy\"\nif [ ! -d \"$DIR\" ]; then\n  echo \"warning: bundled privoxy not found at $DIR\"\n  exit 0\nfi\nIDENTITY=\"${EXPANDED_CODE_SIGN_IDENTITY:--}\"\n# A secure timestamp requires Apple's timestamp server; only Release/\n# notarized builds need it. For other configs sign offline so a slow or\n# unreachable network can't fail the build (matches Xcode's own signing).\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n  TIMESTAMP=\"--timestamp\"\nelse\n  TIMESTAMP=\"--timestamp=none\"\nfi\nfor f in \"$DIR/libpcre2-8.0.dylib\" \"$DIR/libpcre2-posix.3.dylib\" \"$DIR/privoxy\"; do\n  if [ -f \"$f\" ]; then\n    /usr/bin/codesign --force --options runtime $TIMESTAMP --sign \"$IDENTITY\" \"$f\"\n  fi\ndone\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -405,7 +405,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -431,7 +431,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -36,7 +36,12 @@ final class TunnelController: ObservableObject {
     @Published private(set) var exitIP: String?
     @Published private(set) var lastConnected: Date?
     @Published private(set) var isBusy = false
-    @Published var systemSocksOn = false
+    /// User intent to route all system traffic through the tunnel's SOCKS proxy.
+    /// Persisted so it survives relaunches; the *actual* OS proxy is applied on
+    /// connect and cleared on disconnect (see `applySystemSocks`).
+    @Published var systemSocksOn: Bool {
+        didSet { defaults.set(systemSocksOn, forKey: Keys.systemSocks) }
+    }
 
     /// Drives the connecting/reconnecting blink: the menu bar icon dims while
     /// this is `true`. Toggled by `blinkTimer`; only animates in those states.
@@ -86,6 +91,7 @@ final class TunnelController: ObservableObject {
         static let autoConnect = "autoConnectOnLaunch"
         static let showSpeed = "showSpeed"
         static let recordStats = "recordStats"
+        static let systemSocks = "systemSocksOn"
     }
 
     init() {
@@ -95,6 +101,7 @@ final class TunnelController: ObservableObject {
         launchAtLogin = (SMAppService.mainApp.status == .enabled)
         showSpeed = defaults.object(forKey: Keys.showSpeed) as? Bool ?? false
         recordStats = defaults.object(forKey: Keys.recordStats) as? Bool ?? true
+        systemSocksOn = defaults.bool(forKey: Keys.systemSocks)
         AppPaths.ensureSupportDirectory()
         recorder.isEnabled = recordStats
         recorder.attach(to: speedMonitor)
@@ -180,7 +187,7 @@ final class TunnelController: ObservableObject {
     func onAppear() {
         startPolling()
         refreshStatus()
-        syncSystemSocksState()
+        reconcileSystemSocksState()
         // Ensure sampling is live (for speed display and/or recording).
         syncSampling()
         if autoConnectOnLaunch, config.canConnect, case .disconnected = state {
@@ -188,17 +195,26 @@ final class TunnelController: ObservableObject {
         }
     }
 
-    /// Read the actual system SOCKS proxy state so the UI toggle matches reality.
-    func syncSystemSocksState() {
+    /// On launch, clear any stale OS SOCKS proxy left behind by a crash or a
+    /// non-graceful quit: if the proxy is actually enabled but no tunnel is up,
+    /// disabling it prevents a "no internet" state. The `systemSocksOn` intent
+    /// flag is untouched — a later connect re-applies it.
+    func reconcileSystemSocksState() {
         let service = config.networkService
         Task { [weak self] in
-            let result = await Task.detached {
-                ProcessRunner.run("/usr/sbin/networksetup",
-                                  ["-getsocksfirewallproxy", service], timeout: 10)
+            guard let self else { return }
+            let enabled = await Task.detached {
+                let r = ProcessRunner.run("/usr/sbin/networksetup",
+                                          ["-getsocksfirewallproxy", service], timeout: 10)
+                return r.stdout.range(of: #"Enabled:\s*Yes"#,
+                                      options: .regularExpression) != nil
             }.value
-            let enabled = result.stdout.range(of: #"Enabled:\s*Yes"#,
-                                              options: .regularExpression) != nil
-            await MainActor.run { self?.systemSocksOn = enabled }
+            guard enabled else { return }
+            // Only clear it if there's no live tunnel behind the proxy.
+            let tunnelUp = await self.engine.exitIP() != nil
+            if !tunnelUp {
+                await self.applySystemSocks(on: false)
+            }
         }
     }
 
@@ -225,24 +241,14 @@ final class TunnelController: ObservableObject {
         }
     }
 
-    /// Start/stop the blink timer based on state. Runs only while connecting or
-    /// reconnecting; otherwise the icon is fully opaque.
+    /// The connecting/reconnecting state now shows a static loading glyph (see
+    /// `menuBarSymbol`) instead of a blinking shield, so the icon stays fully
+    /// opaque at all times. Kept as a no-op stop so any lingering timer is torn
+    /// down and `iconDimmed` never sticks on.
     private func updateBlink() {
-        let shouldBlink: Bool
-        switch state {
-        case .connecting, .reconnecting: shouldBlink = true
-        default: shouldBlink = false
-        }
-        if shouldBlink {
-            guard blinkTimer == nil else { return }
-            blinkTimer = Timer.scheduledTimer(withTimeInterval: 0.6, repeats: true) { [weak self] _ in
-                Task { @MainActor in self?.iconDimmed.toggle() }
-            }
-        } else {
-            blinkTimer?.invalidate()
-            blinkTimer = nil
-            iconDimmed = false
-        }
+        blinkTimer?.invalidate()
+        blinkTimer = nil
+        iconDimmed = false
     }
 
     func saveConfig() {
@@ -281,6 +287,8 @@ final class TunnelController: ObservableObject {
         case .proxyOK:
             state = .connected
             lastConnected = Date()
+            // Honor the persisted "route all traffic" intent now that we're up.
+            if systemSocksOn { await applySystemSocks(on: true) }
         case .tunnelOnly:
             state = .error(String(localized: "Tunnel OK but proxy failed"))
         case .down:
@@ -305,6 +313,10 @@ final class TunnelController: ObservableObject {
         guard !isBusy else { return }
         isBusy = true
         defer { isBusy = false }
+        // Always clear the *actual* OS SOCKS proxy so the machine keeps working
+        // once the tunnel is gone — but leave the `systemSocksOn` intent flag on,
+        // so the next connect re-applies it automatically.
+        if systemSocksOn { await applySystemSocks(on: false) }
         await engine.stop()
         state = .disconnected
         exitIP = nil
@@ -341,11 +353,27 @@ final class TunnelController: ObservableObject {
     /// Enable/disable the macOS system SOCKS proxy for the configured network
     /// service. `networksetup` changes the current user's own network settings,
     /// which does not require administrator rights — so no password prompt.
+    ///
+    /// `systemSocksOn` is the *user intent* toggle and is persisted across
+    /// connect/disconnect. The actual OS proxy, however, is only meaningful while
+    /// the tunnel is up: `connect()`/`disconnect()` apply and clear it to match
+    /// intent, so the machine keeps working when the tunnel is down.
     func toggleSystemSocks(on: Bool) async {
         guard !isBusy else { return }
         isBusy = true
         defer { isBusy = false }
 
+        let ok = await applySystemSocks(on: on)
+        if !ok {
+            // Revert the toggle in the UI if the change failed.
+            systemSocksOn = !on
+        }
+    }
+
+    /// Push the SOCKS proxy state to `networksetup` without touching the
+    /// `systemSocksOn` intent flag. Returns whether the change succeeded.
+    @discardableResult
+    private func applySystemSocks(on: Bool) async -> Bool {
         let service = config.networkService
         let port = config.socksPort
         let networksetup = "/usr/sbin/networksetup"
@@ -364,10 +392,30 @@ final class TunnelController: ObservableObject {
         }.value
 
         if !result.succeeded {
-            // Revert the toggle in the UI if the change failed.
-            systemSocksOn = !on
             NSLog("System SOCKS toggle failed: \(result.output)")
         }
+        return result.succeeded
+    }
+
+    /// Turn off every proxy (HTTP, HTTPS, SOCKS, and PAC) for the configured
+    /// network service, clearing the interface's proxy state entirely. Also drops
+    /// the `systemSocksOn` intent so the app stops re-applying SOCKS on connect.
+    /// Returns whether all proxy toggles succeeded.
+    @discardableResult
+    func removeAllProxies() async -> Bool {
+        guard !isBusy else { return false }
+        isBusy = true
+        defer { isBusy = false }
+
+        let service = config.networkService
+        let ok = await Task.detached {
+            NetworkServices.removeAllProxies(for: service)
+        }.value
+
+        // The system SOCKS proxy is now off; keep the UI intent flag in sync so
+        // the next connect doesn't silently turn it back on.
+        systemSocksOn = false
+        return ok
     }
 
     // MARK: - Launch at login

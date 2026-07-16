@@ -33,6 +33,32 @@ enum NetworkServices {
         return services.first
     }
 
+    /// Turn off every proxy — Web (HTTP), Secure Web (HTTPS), SOCKS firewall,
+    /// and Auto Proxy Config (PAC) — for the given network service, clearing the
+    /// interface's proxy state entirely. `networksetup` edits the current user's
+    /// own network settings, so this needs no administrator rights.
+    ///
+    /// Returns `true` only if all four toggles succeeded.
+    @discardableResult
+    static func removeAllProxies(for service: String) -> Bool {
+        let states = [
+            "-setwebproxystate",
+            "-setsecurewebproxystate",
+            "-setsocksfirewallproxystate",
+            "-setautoproxystate",
+        ]
+        var allOK = true
+        for state in states {
+            let result = ProcessRunner.run(
+                "/usr/sbin/networksetup", [state, service, "off"], timeout: 20)
+            if !result.succeeded {
+                allOK = false
+                NSLog("removeAllProxies: \(state) for \(service) failed: \(result.output)")
+            }
+        }
+        return allOK
+    }
+
     // MARK: - Private
 
     /// Parse `route get default` for the interface device name.

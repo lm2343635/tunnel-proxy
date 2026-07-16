@@ -16,6 +16,9 @@ struct SettingsView: View {
     @State private var claudeProxyMessage: String?
     @State private var claudeProxyIsError = false
 
+    // Tools tab — "Remove all proxies" result alert.
+    @State private var removeProxiesAlert: RemoveProxiesResult?
+
     var body: some View {
         TabView {
             ServersView()
@@ -26,7 +29,7 @@ struct SettingsView: View {
             advancedTab
                 .tabItem { Label("Advanced", systemImage: "gearshape.2") }
             toolsTab
-                .tabItem { Label("工具", systemImage: "wrench.and.screwdriver") }
+                .tabItem { Label("Tools", systemImage: "wrench.and.screwdriver") }
             aboutTab
                 .tabItem { Label("About", systemImage: "info.circle") }
         }
@@ -133,25 +136,51 @@ struct SettingsView: View {
     private var toolsTab: some View {
         Form {
             Section("Claude Code") {
-                Toggle("让 Claude Code 使用此代理", isOn: Binding(
+                Toggle("Route Claude Code through this proxy", isOn: Binding(
                     get: { claudeProxyOn },
                     set: { setClaudeProxy($0) }
                 ))
-                Text("将 HTTP 代理环境变量写入 ~/.claude/settings.json，使 Claude Code 指向 \(ClaudeCodeConfig.proxyURL(port: controller.config.httpProxyPort))。其他设置保持不变。")
+                Text("Adds the HTTP proxy env keys to ~/.claude/settings.json, pointing Claude Code at \(ClaudeCodeConfig.proxyURL(port: controller.config.httpProxyPort)). Other settings are left untouched.")
                     .font(.caption).foregroundStyle(.secondary)
                 if let msg = claudeProxyMessage {
                     Text(msg).font(.caption)
                         .foregroundStyle(claudeProxyIsError ? .orange : .green)
                 }
             }
-            Section("文件") {
-                LabeledContent("设置") { pathText(ClaudeCodeConfig.settingsURL.path) }
-                Button("在访达中显示") {
+            Section("File") {
+                LabeledContent("Settings") { pathText(ClaudeCodeConfig.settingsURL.path) }
+                Button("Reveal in Finder") {
                     NSWorkspace.shared.activateFileViewerSelecting([ClaudeCodeConfig.settingsURL])
                 }
             }
+            Section("System Proxies") {
+                Button("Remove All Proxies", role: .destructive) {
+                    Task {
+                        let service = controller.config.networkService
+                        let ok = await controller.removeAllProxies()
+                        removeProxiesAlert = RemoveProxiesResult(service: service, succeeded: ok)
+                    }
+                }
+                .disabled(controller.config.networkService.isEmpty || controller.isBusy)
+                Text("Turns off HTTP, HTTPS, SOCKS, and auto (PAC) proxies for the \(controller.config.networkService.isEmpty ? "selected network service" : controller.config.networkService) network service.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
+        .alert("Remove All Proxies",
+               isPresented: Binding(
+                get: { removeProxiesAlert != nil },
+                set: { if !$0 { removeProxiesAlert = nil } }
+               ),
+               presenting: removeProxiesAlert) { _ in
+            Button("OK", role: .cancel) {}
+        } message: { result in
+            if result.succeeded {
+                Text("All proxies were removed for “\(result.service)”.")
+            } else {
+                Text("Some proxies could not be removed for “\(result.service)”. Check the logs for details.")
+            }
+        }
     }
 
     private var aboutTab: some View {
@@ -252,7 +281,7 @@ struct SettingsView: View {
                 await MainActor.run {
                     self.claudeProxyOn = enabled
                     self.claudeProxyIsError = false
-                    self.claudeProxyMessage = enabled ? "Claude Code 将使用此代理。" : "已从 Claude Code 移除代理。"
+                    self.claudeProxyMessage = enabled ? "Claude Code will use this proxy." : "Proxy removed from Claude Code."
                 }
             } catch {
                 await MainActor.run {
@@ -270,4 +299,11 @@ struct Dependency: Identifiable {
     let name: String
     let found: Bool
     let detail: String
+}
+
+/// Outcome of "Remove All Proxies", used to drive the result alert.
+struct RemoveProxiesResult: Identifiable {
+    let id = UUID()
+    let service: String
+    let succeeded: Bool
 }

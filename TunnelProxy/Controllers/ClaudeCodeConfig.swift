@@ -33,7 +33,7 @@ enum ClaudeCodeConfig {
         var errorDescription: String? {
             switch self {
             case .malformed:
-                return String(localized: "~/.claude/settings.json 不是有效的 JSON。请修复或删除该文件后重试。")
+                return String(localized: "~/.claude/settings.json is not valid JSON. Fix or remove it, then try again.")
             }
         }
     }

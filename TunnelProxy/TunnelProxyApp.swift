@@ -101,10 +101,9 @@ extension TunnelController {
     var menuBarSymbol: String {
         switch state {
         case .connected: return "shield.lefthalf.filled"
-        // Hollow shield that blinks (via `iconDimmed`); the previous
-        // `.badge.plus` variant doesn't exist on all macOS versions and left the
-        // status item blank while connecting.
-        case .connecting, .reconnecting: return "shield"
+        // A loading/progress glyph while the tunnel comes up, instead of a
+        // blinking shield — reads as "working" without the flicker.
+        case .connecting, .reconnecting: return "arrow.triangle.2.circlepath"
         case .error: return "exclamationmark.shield"
         case .disconnected: return "shield"
         }
