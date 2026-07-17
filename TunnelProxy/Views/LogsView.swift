@@ -1,7 +1,9 @@
 import SwiftUI
 
-/// Live log viewer that tails `LOG_FILE`. Filter box, follow/auto-scroll toggle,
-/// and clear — matches the Logs SVG mockup.
+/// Live log viewer that tails the tunnel log. Redesigned as a tiled surface: a
+/// header with a filter field, auto-scroll toggle, and Clear; the log fills a
+/// tile below; a status row reports line count + the log path. `LogTailer` +
+/// severity mapping are unchanged.
 struct LogsView: View {
     @EnvironmentObject var controller: TunnelController
     @StateObject private var tailer = LogTailer()
@@ -15,85 +17,95 @@ struct LogsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            toolbar
-            Divider()
-            logBody
-            Divider()
-            statusBar
+        VStack(alignment: .leading, spacing: 12) {
+            header
+            logTile
+            statusRow
         }
-        .background(Color(nsColor: .textBackgroundColor))
+        .padding(DS.contentPadding)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear { tailer.start(path: logPath) }
         .onDisappear { tailer.stop() }
     }
 
-    private var toolbar: some View {
-        HStack(spacing: 10) {
+    private var header: some View {
+        TabHeader(title: "Logs") {
             TextField("Filter…", text: $filter)
-                .textFieldStyle(.roundedBorder)
-                .frame(maxWidth: 320)
-            Spacer()
+                .textFieldStyle(.plain)
+                .font(.system(size: 12.5))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .frame(width: 220)
+                .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(DS.tile))
+                .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .strokeBorder(DS.tileBorder, lineWidth: 1))
+
             Toggle("Auto-scroll", isOn: $autoScroll)
                 .toggleStyle(.checkbox)
-            Button {
-                tailer.clear()
-            } label: {
-                Label("Clear", systemImage: "trash")
+                .font(.system(size: 12.5))
+
+            Button { tailer.clear() } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "trash").font(.system(size: 12))
+                    Text("Clear").font(.system(size: 12.5))
+                }
+                .foregroundStyle(DS.primaryText)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(DS.tile))
+                .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .strokeBorder(DS.tileBorder, lineWidth: 1))
             }
+            .buttonStyle(.plain)
         }
-        .padding(10)
     }
 
-    private var logBody: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 2) {
-                    ForEach(filtered) { line in
-                        Text(line.text)
-                            .font(.system(size: 11.5, design: .monospaced))
-                            .foregroundStyle(color(for: line.severity))
-                            .textSelection(.enabled)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .id(line.id)
+    private var logTile: some View {
+        Tile(padding: EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16)) {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 0) {
+                        ForEach(filtered) { line in
+                            Text(line.text)
+                                .font(.system(size: 11.5, design: .monospaced))
+                                .foregroundStyle(color(for: line.severity))
+                                .lineSpacing(4)
+                                .textSelection(.enabled)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .id(line.id)
+                        }
                     }
                 }
-                .padding(10)
-            }
-            .background(Color(nsColor: .windowBackgroundColor))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(Color(nsColor: .separatorColor)))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .onChange(of: tailer.lines.count) { _, _ in
-                if autoScroll, let last = filtered.last {
-                    withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }
+                .onChange(of: tailer.lines.count) { _, _ in
+                    if autoScroll, let last = filtered.last {
+                        withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }
+                    }
                 }
             }
         }
+        .frame(maxHeight: .infinity)
     }
 
-    private var statusBar: some View {
+    private var statusRow: some View {
         HStack(spacing: 8) {
-            Circle().fill(.green).frame(width: 8, height: 8)
+            Circle().fill(DS.ringGreen).frame(width: 8, height: 8)
             Text("Streaming · \(filtered.count) lines")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 11)).foregroundStyle(DS.secondaryText)
             Spacer()
-            Text(logPath).font(.caption).foregroundStyle(.tertiary)
+            Text(logPath).font(.system(size: 11)).foregroundStyle(DS.tertiaryText)
+                .lineLimit(1).truncationMode(.middle)
         }
-        .padding(8)
+        .padding(.horizontal, 4)
     }
 
-    private var logPath: String {
-        controller.logURL.path
-    }
+    private var logPath: String { controller.logURL.path }
 
     private func color(for severity: LogLine.Severity) -> Color {
         switch severity {
-        case .info: return .primary
-        case .success: return .green
-        case .warn: return .orange
-        case .error: return .red
+        case .info: return DS.primaryText
+        case .success: return DS.textGreen
+        case .warn: return DS.warning
+        case .error: return DS.dangerText
         }
     }
 }

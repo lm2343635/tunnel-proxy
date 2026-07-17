@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Mini window</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>html,body{margin:0;padding:0;background:transparent;-webkit-font-smoothing:antialiased;
+font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI','PingFang SC',sans-serif}
+body{display:inline-block}</style></head>
+<body class="dc-fit"><div style="width:300px;background:linear-gradient(120deg,#E4F8E9,#FFFFFF 60%);border-radius:16px;box-shadow:0 16px 38px rgba(15,18,26,.28),0 0 0 1px rgba(0,0,0,.06);padding:14px 16px;box-sizing:border-box">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:52px;height:52px;border-radius:50%;border:5.5px solid #28CD41;box-sizing:border-box;background:#FFF;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 2px 5px rgba(0,0,0,.1)"><svg width="18" height="18" viewBox="0 0 17 17"><path d="M5.3 4.9a5.9 5.9 0 106.4 0" fill="none" stroke="#28CD41" stroke-width="1.35" stroke-linecap="round"></path><path d="M8.5 1.8v6.4" fill="none" stroke="#28CD41" stroke-width="1.35" stroke-linecap="round"></path></svg></div>
+<span><span style="display:block;font-size:14px;font-weight:800">Connected</span><span style="display:block;font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:2px">59.136.225.99</span></span>
+<span style="margin-left:auto;align-self:flex-start;font-size:10.5px;font-weight:600;color:#1F9E38">42 ms</span>
+</div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<span style="flex:1;background:rgba(255,255,255,.75);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;color:#0F7BF5">↓ 1.2 MB/s</span>
+<span style="flex:1;background:rgba(255,255,255,.75);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;color:#28BD4B">↑ 340 KB/s</span>
+<span style="flex:none;background:rgba(255,59,48,.1);color:#E5372B;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700">Stop</span>
+</div>
+</div>
+<script>(function(){function fit(){var e=document.body;var s=(document.documentElement.clientWidth)/300;e.style.transformOrigin="top left";e.style.transform="scale("+Math.min(1,s)+")";}window.addEventListener("resize",fit);if(document.readyState!=="loading")fit();else document.addEventListener("DOMContentLoaded",fit);})();</script>
+</body></html>

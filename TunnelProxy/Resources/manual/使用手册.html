@@ -68,7 +68,7 @@
   <p class="sub">一份面向普通用户的 Tunnel Proxy（macOS 菜单栏应用）友好指南。</p>
 
   <h2 style="border-top:0; padding-top:0;">Tunnel Proxy 是什么？</h2>
-  <p>Tunnel Proxy 是一款常驻在 Mac <strong>菜单栏</strong>（屏幕右上角那排图标）里的小应用。它通过你自己的 SSH 服务器，用一条安全加密的连接来转发你的网络流量。</p>
+  <p>Tunnel Proxy 是一款 macOS 应用，它通过你自己的 SSH 服务器，用一条安全加密的连接来转发你的网络流量。它有一个供日常使用的<strong>主窗口</strong>，以及一个用于快速操作的<strong>菜单栏</strong>盾牌图标（位于屏幕右上角那排图标中）。</p>
   <p>你可以用它来：</p>
   <ul>
     <li>通过位于其他地区的服务器访问互联网；</li>
@@ -130,105 +130,62 @@
     <li>打开 <strong>应用程序</strong>，双击 <strong>Tunnel Proxy</strong>。
       <ul><li>首次打开时，macOS 可能会询问「<em>确定要打开吗？</em>」——点击 <strong>打开</strong>。（如果被系统拦截，请前往 <strong>系统设置 → 隐私与安全性</strong>，向下滚动，点击 <strong>仍要打开</strong>。）</li></ul>
     </li>
-    <li>菜单栏中会出现一个<strong>盾牌图标</strong>。应用没有 Dock 图标、也没有窗口——它完全存在于菜单栏中。</li>
+    <li><strong>主窗口</strong>会打开，同时菜单栏中会出现一个<strong>盾牌图标</strong>。你可以从任一处操作应用。</li>
   </ol>
-  <blockquote><p><strong>提示：</strong> 没看到盾牌？可能是菜单栏太满了。按住 <kbd>⌘</kbd> 拖动一些菜单栏图标腾出空间，或确认应用是否已在运行。</p></blockquote>
+  <blockquote><p><strong>提示：</strong> 没看到盾牌？可能是菜单栏太满了。按住 <kbd>⌘</kbd> 拖动一些菜单栏图标腾出空间，或确认应用是否已在运行。你随时可以通过菜单栏弹出面板中的 <strong>打开应用</strong> 按钮重新打开主窗口。</p></blockquote>
+
+  <h2>主窗口</h2>
+  <p>主窗口是你完成大部分操作的地方。左侧的<strong>侧边栏</strong>有六个标签页，侧边栏底部还有一个小状态卡片，一眼即可看到当前连接和出口 IP。</p>
+  <table>
+    <tr><th>标签页</th><th>用途</th></tr>
+    <tr><td><strong>连接</strong></td><td>仪表盘首页——连接或断开、查看实时吞吐量、切换服务器。</td></tr>
+    <tr><td><strong>服务器</strong></td><td>添加、编辑、删除，以及选择当前使用的服务器。</td></tr>
+    <tr><td><strong>日志</strong></td><td>实时活动日志。</td></tr>
+    <tr><td><strong>流量统计</strong></td><td>你随时间传输了多少数据。</td></tr>
+    <tr><td><strong>设置</strong></td><td>端口、启动、macOS 网络、菜单栏等——所有更改即时生效。</td></tr>
+    <tr><td><strong>工具</strong></td><td>让 Claude Code 走此代理，以及一个用于移除所有代理的应急按钮。</td></tr>
+  </table>
+
+  <h3>连接标签页（仪表盘）</h3>
+  <p>「连接」是首页，中心是一个大号电源圆环——点击它即可连接或断开。围绕它的是实时吞吐量和延迟图、一张用于快速切换服务器的卡片，以及三个一点即切的选项卡片。</p>
+  <figure>
+    <iframe src="design/connection.zh.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>连接标签页：点击电源圆环即可连接或断开，查看实时吞吐量与延迟，并切换服务器。</figcaption>
+  </figure>
+  <p>下方的三个选项卡片一点即切——无需保存：</p>
+  <ul>
+    <li><strong>路由 Mac 流量</strong>——把 Mac 的<em>所有</em>流量都通过隧道转发（见下文）。</li>
+    <li><strong>自动重连</strong>——隧道意外中断时悄悄重新连接。</li>
+    <li><strong>登录时启动</strong>——登录时自动启动 Tunnel Proxy。</li>
+  </ul>
 
   <h2>菜单栏弹出面板</h2>
-  <p>点击盾牌图标即可打开主面板。</p>
+  <p>点击菜单栏中的盾牌图标即可打开一个紧凑面板——当你不想打开整个窗口时很方便。</p>
   <figure>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" font-family="-apple-system, 'PingFang SC', 'SF Pro Text', 'Microsoft YaHei', Helvetica, Arial, sans-serif">
-  <defs>
-    <linearGradient id="deskz" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3a4a63"/>
-      <stop offset="1" stop-color="#20293a"/>
-    </linearGradient>
-    <linearGradient id="panelz" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#f5f6f8"/>
-    </linearGradient>
-    <filter id="popz" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.30"/>
-    </filter>
-    <clipPath id="lefthalf-mbz"><rect x="-30" y="-40" width="30" height="80"/></clipPath>
-  </defs>
-  <rect width="760" height="560" fill="url(#deskz)"/>
-  <rect x="0" y="0" width="760" height="28" fill="#1f2430" opacity="0.9"/>
-  <g fill="#ffffff" font-size="13">
-    <text x="520" y="19">100%</text>
-    <text x="575" y="19">周三 14:32</text>
-  </g>
-  <rect x="672" y="2" width="30" height="24" rx="5" fill="#0a84ff"/>
-  <g transform="translate(687,14) scale(0.42)">
-    <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linejoin="round"/>
-    <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="#ffffff" clip-path="url(#lefthalf-mbz)"/>
-  </g>
-  <g font-size="12.5" fill="#c7ccd6">
-    <text x="24" y="90" font-weight="700" fill="#ffffff">菜单栏弹出面板</text>
-    <text x="24" y="112">点击菜单栏中的盾牌图标，</text>
-    <text x="24" y="128">即可打开此面板。</text>
-  </g>
-  <g filter="url(#popz)">
-    <rect x="430" y="34" width="300" height="480" rx="14" fill="url(#panelz)" stroke="#e2e4e8"/>
-    <path d="M687 34 l-9 -10 l9 0 z" fill="#ffffff"/>
-  </g>
-  <circle cx="456" cy="70" r="7" fill="#28c840"/>
-  <text x="472" y="75" font-size="15" font-weight="700" fill="#111827">已连接</text>
-  <text x="472" y="94" font-size="11.5" fill="#6b7280">隧道与 HTTP 代理已启用</text>
-  <text x="410" y="75" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">①</text>
-  <line x1="446" y1="108" x2="714" y2="108" stroke="#e5e7eb"/>
-  <text x="446" y="132" font-size="11.5" fill="#6b7280">服务器</text>
-  <rect x="600" y="118" width="114" height="20" rx="5" fill="#eef1f5" stroke="#d7dbe2"/>
-  <text x="610" y="132" font-size="11.5" font-weight="600" fill="#111827">我的服务器 ⌄</text>
-  <text x="410" y="132" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">②</text>
-  <text x="446" y="158" font-size="11.5" fill="#6b7280">出口 IP</text>
-  <text x="714" y="158" font-size="11.5" font-weight="600" fill="#111827" text-anchor="end">203.0.113.47</text>
-  <text x="410" y="158" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">③</text>
-  <text x="446" y="182" font-size="11.5" fill="#6b7280">守护进程</text>
-  <text x="714" y="182" font-size="11.5" font-weight="600" fill="#28a745" text-anchor="end">开启</text>
-  <line x1="446" y1="198" x2="714" y2="198" stroke="#e5e7eb"/>
-  <rect x="446" y="212" width="268" height="38" rx="9" fill="#ff3b30"/>
-  <text x="580" y="236" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">断开</text>
-  <text x="410" y="236" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">④</text>
-  <text x="446" y="282" font-size="12" fill="#111827">自动重连（守护进程）</text>
-  <rect x="676" y="272" width="38" height="22" rx="11" fill="#28c840"/>
-  <circle cx="703" cy="283" r="9" fill="#ffffff"/>
-  <text x="446" y="314" font-size="12" fill="#111827">显示网络速度</text>
-  <rect x="676" y="304" width="38" height="22" rx="11" fill="#d1d5db"/>
-  <circle cx="687" cy="315" r="9" fill="#ffffff"/>
-  <text x="446" y="346" font-size="12" fill="#111827">macOS SOCKS 代理</text>
-  <rect x="676" y="336" width="38" height="22" rx="11" fill="#d1d5db"/>
-  <circle cx="687" cy="347" r="9" fill="#ffffff"/>
-  <text x="446" y="378" font-size="12" fill="#111827">登录时启动</text>
-  <rect x="676" y="368" width="38" height="22" rx="11" fill="#28c840"/>
-  <circle cx="703" cy="379" r="9" fill="#ffffff"/>
-  <text x="410" y="330" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑤</text>
-  <line x1="446" y1="400" x2="714" y2="400" stroke="#e5e7eb"/>
-  <text x="446" y="420" font-size="12" fill="#111827">查看日志…</text>
-  <text x="446" y="440" font-size="12" fill="#111827">统计…</text>
-  <text x="446" y="460" font-size="12" fill="#111827">使用手册…</text>
-  <text x="446" y="480" font-size="12" fill="#111827">设置…</text>
-  <text x="446" y="500" font-size="12" fill="#6b7280">退出</text>
-  <text x="410" y="460" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑥</text>
-  <g font-size="12" fill="#c7ccd6">
-    <text x="24" y="170"><tspan fill="#0a84ff" font-weight="800">①</tspan> 状态与说明</text>
-    <text x="24" y="200"><tspan fill="#0a84ff" font-weight="800">②</tspan> 选择要使用的服务器</text>
-    <text x="24" y="230"><tspan fill="#0a84ff" font-weight="800">③</tspan> 互联网看到的 IP</text>
-    <text x="24" y="260"><tspan fill="#0a84ff" font-weight="800">④</tspan> 连接 / 断开</text>
-    <text x="24" y="290"><tspan fill="#0a84ff" font-weight="800">⑤</tspan> 日常开关</text>
-    <text x="24" y="320"><tspan fill="#0a84ff" font-weight="800">⑥</tspan> 日志、统计、手册、设置、退出</text>
-  </g>
-</svg>
+    <iframe src="design/popover.zh.html" title="Tunnel Proxy" scrolling="no"
+            style="width:310px;max-width:100%;height:470px;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>菜单栏弹出面板：带电源圆环、出口 IP 和延迟的状态卡；速度和服务器卡；两个开关卡；一个断开按钮；以及底部的「打开应用 / 退出」。</figcaption>
   </figure>
-  <table>
-    <tr><th>序号</th><th>名称</th><th>作用</th></tr>
-    <tr><td>①</td><td><strong>状态</strong></td><td>彩色圆点和文字表示当前连接状态（见下文）。</td></tr>
-    <tr><td>②</td><td><strong>服务器</strong></td><td>选择要通过哪台服务器连接。</td></tr>
-    <tr><td>③</td><td><strong>出口 IP</strong></td><td>互联网当前看到的你的 IP 地址。仅在已连接时显示。</td></tr>
-    <tr><td>④</td><td><strong>连接 / 断开</strong></td><td>大按钮。开启或停止隧道。</td></tr>
-    <tr><td>⑤</td><td><strong>开关</strong></td><td>常用的开/关选项（见下文说明）。</td></tr>
-    <tr><td>⑥</td><td><strong>菜单项</strong></td><td>打开日志、统计或使用手册窗口，打开设置，或退出应用。</td></tr>
-  </table>
+  <p>弹出面板把要点浓缩在一小块空间里：</p>
+  <ul>
+    <li><strong>状态卡</strong>——电源圆环（点击连接 / 断开）、你的出口 IP，以及当前延迟。</li>
+    <li><strong>速度和服务器卡</strong>——实时速度与当前服务器。点击 <strong>Switch ▾</strong> 即可切换到另一台服务器。</li>
+    <li><strong>开关卡</strong>——<strong>路由 Mac 流量</strong> 和 <strong>自动重连</strong>，各一点即切。</li>
+    <li><strong>断开</strong>——停止隧道。</li>
+    <li><strong>打开应用</strong> / <strong>退出</strong>——打开主窗口，或退出 Tunnel Proxy。</li>
+  </ul>
+
+  <h3>迷你窗口</h3>
+  <p>迷你窗口是一个始终置顶的小浮窗，让你在使用其他应用时也能看到状态和一个 <strong>停止</strong> 按钮。可从弹出面板状态卡中的画中画图标打开，或从菜单栏的 <strong>View → Mini Window</strong>（<kbd>⇧⌘M</kbd>）打开。</p>
+  <figure>
+    <iframe src="design/mini.zh.html" title="Tunnel Proxy" scrolling="no"
+            style="width:300px;max-width:100%;height:150px;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>迷你窗口：一个始终置顶的紧凑浮窗，显示状态、出口 IP、延迟和一个停止按钮。</figcaption>
+  </figure>
 
   <h3>读懂状态图标</h3>
   <p>菜单栏图标的形状和颜色会随连接状态而变化。</p>
@@ -285,14 +242,14 @@
     <tr><td>空心盾牌（灰点）</td><td><strong>未连接</strong></td><td>流量直接连接——隧道已关闭。</td></tr>
     <tr><td><strong>闪烁</strong>的空心盾牌（黄点）</td><td><strong>正在连接 / 正在重连</strong></td><td>正在建立隧道。</td></tr>
     <tr><td>左半填充盾牌（绿点）</td><td><strong>已连接</strong></td><td>隧道与代理已启用，一切就绪。</td></tr>
-    <tr><td>带感叹号的盾牌（红点）</td><td><strong>出错</strong></td><td>出现问题。打开 <strong>查看日志…</strong> 查看原因。</td></tr>
+    <tr><td>带感叹号的盾牌（红点）</td><td><strong>出错</strong></td><td>出现问题。打开 <strong>日志</strong> 标签页查看原因。</td></tr>
   </table>
 
   <h2>首次设置：添加你的服务器</h2>
   <p>在连接之前，你需要先把 SSH 服务器信息告诉应用。</p>
   <ol>
-    <li>点击盾牌图标 → <strong>设置…</strong>（或按 <kbd>⌘,</kbd>）。</li>
-    <li>进入 <strong>服务器</strong> 标签页，点击 <strong>＋ 添加服务器</strong>。</li>
+    <li>打开主窗口，在侧边栏中选择 <strong>服务器</strong> 标签页。</li>
+    <li>点击 <strong>＋ 添加服务器</strong>。</li>
   </ol>
   <figure>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470" font-family="-apple-system, 'PingFang SC', 'SF Pro Text', 'Microsoft YaHei', Helvetica, Arial, sans-serif">
@@ -367,114 +324,76 @@
   </table>
   <p>点击 <strong>保存</strong>。</p>
   <blockquote><p><strong>你的密码很安全。</strong> 密码和密钥口令保存在 <strong>macOS 钥匙串</strong> 中——这是 macOS 用来保管你其他密码的同一个安全保险库，绝不会写入明文文件。</p></blockquote>
-  <p>你可以添加<strong>多台服务器</strong>并在弹出面板中切换。在服务器列表里，点击左侧的圆圈即可把某台服务器设为当前使用的服务器。</p>
+  <p>你可以添加<strong>多台服务器</strong>并在「连接」标签页或菜单栏弹出面板中切换。在 <strong>服务器</strong> 标签页里，点击某一行左侧的圆圈即可把它设为当前使用的服务器。</p>
   <figure>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" font-family="-apple-system, 'PingFang SC', 'SF Pro Text', 'Microsoft YaHei', Helvetica, Arial, sans-serif">
-  <defs>
-    <linearGradient id="s-winz" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#f4f5f7"/>
-    </linearGradient>
-    <filter id="s-shz" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.20"/>
-    </filter>
-  </defs>
-  <rect width="760" height="430" fill="#e9ebef"/>
-  <g filter="url(#s-shz)">
-    <rect x="120" y="30" width="520" height="370" rx="12" fill="url(#s-winz)" stroke="#d6dae1"/>
-  </g>
-  <rect x="120" y="30" width="520" height="52" rx="12" fill="#f0f1f4"/>
-  <rect x="120" y="70" width="520" height="12" fill="#f0f1f4"/>
-  <rect x="176" y="42" width="92" height="34" rx="8" fill="#dfe3ea"/>
-  <text x="222" y="58" font-size="16" text-anchor="middle">🗄️</text>
-  <text x="222" y="72" font-size="10.5" font-weight="600" fill="#111827" text-anchor="middle">服务器</text>
-  <text x="330" y="58" font-size="16" text-anchor="middle">🌐</text>
-  <text x="330" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">隧道</text>
-  <text x="430" y="58" font-size="16" text-anchor="middle">⚙️</text>
-  <text x="430" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">高级</text>
-  <text x="536" y="58" font-size="16" text-anchor="middle">ℹ️</text>
-  <text x="536" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">关于</text>
-  <line x1="120" y1="82" x2="640" y2="82" stroke="#dcdfe5"/>
-  <rect x="148" y="102" width="464" height="52" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
-  <circle cx="172" cy="128" r="7" fill="none" stroke="#0a84ff" stroke-width="4"/>
-  <text x="192" y="124" font-size="12.5" font-weight="600" fill="#111827">我的服务器</text>
-  <text x="192" y="140" font-size="10.5" fill="#6b7280">root@example.com:22 · 密码</text>
-  <text x="560" y="132" font-size="15" fill="#8a93a6">✎  🗑</text>
-  <rect x="148" y="164" width="464" height="52" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
-  <circle cx="172" cy="190" r="7" fill="none" stroke="#c3c8d0" stroke-width="2"/>
-  <text x="192" y="186" font-size="12.5" font-weight="600" fill="#111827">备用服务器</text>
-  <text x="192" y="202" font-size="10.5" fill="#6b7280">me@10.0.0.9:2222 · 私钥文件</text>
-  <text x="560" y="194" font-size="15" fill="#8a93a6">✎  🗑</text>
-  <line x1="148" y1="300" x2="612" y2="300" stroke="#e5e7eb"/>
-  <rect x="148" y="312" width="120" height="28" rx="7" fill="#eceef2" stroke="#d6dae1"/>
-  <text x="208" y="330" font-size="12" fill="#111827" text-anchor="middle">＋ 添加服务器</text>
-  <g font-size="12" fill="#4b5563">
-    <text x="30" y="360" font-weight="700" fill="#111827">五个标签页</text>
-    <text x="30" y="380">服务器 · 隧道 · 高级 · 工具（Claude Code 代理）· 关于</text>
-    <text x="30" y="398" fill="#8a93a6">蓝色实心圆点表示当前使用的服务器。点击某一行即可切换。</text>
-  </g>
-</svg>
+    <iframe src="design/servers.zh.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>服务器标签页：添加、编辑、删除服务器。高亮的一行是当前使用的服务器；点击某一行的圆圈即可切换。</figcaption>
   </figure>
 
   <h2>连接</h2>
   <ol>
-    <li>点击盾牌图标。</li>
-    <li>确认 <strong>服务器</strong> 一行中已选中正确的服务器。</li>
-    <li>点击 <strong>连接</strong>。</li>
+    <li>打开 <strong>连接</strong> 标签页（或点击盾牌图标打开弹出面板）。</li>
+    <li>确认 <strong>服务器</strong> 卡片中已选中正确的服务器。</li>
+    <li>点击 <strong>电源圆环</strong>。</li>
   </ol>
   <p>几秒钟后，状态会变为<strong>绿色 / 已连接</strong>，并显示 <strong>出口 IP</strong>。这个 IP 就是你服务器的地址——证明你的流量正通过隧道传输。</p>
-  <p>要停止，点击盾牌图标并按 <strong>断开</strong>。</p>
+  <p>要停止，再次点击电源圆环（或在弹出面板中按 <strong>断开</strong>）。</p>
 
-  <h2>日常开关</h2>
-  <p>这些开关位于弹出面板中「连接」按钮的下方。</p>
-  <h3>自动重连（守护进程）</h3>
+  <h2>日常选项</h2>
+  <p>这些是 <strong>连接</strong> 标签页上一点即切的选项卡片（其中两个也会作为开关卡出现在弹出面板中）。它们一点即生效。</p>
+  <h3>自动重连</h3>
   <p>建议保持<strong>开启</strong>。如果隧道意外中断——比如 Wi-Fi 抖动一下——应用会在后台悄悄为你重新连接。重连时你可能会短暂看到黄色的「<em>正在重新连接…</em>」状态。</p>
-  <h3>显示网络速度</h3>
-  <p><strong>开启</strong>后，菜单栏图标旁边会显示实时的上传/下载速度，方便你一眼看到流量在流动。</p>
-  <h3>macOS SOCKS 代理</h3>
+  <h3>路由 Mac 流量</h3>
   <ul>
     <li><strong>关闭（默认）：</strong> 只有你手动指向代理的应用才会走隧道。</li>
     <li><strong>开启：</strong> 应用会修改你 Mac 的<strong>全局</strong>网络设置，让<em>所有</em>应用自动走隧道。</li>
   </ul>
   <p>如果你希望 Mac 上的一切都走隧道、而不必逐个配置应用，就把它<strong>开启</strong>。断开或退出时，如果你想恢复直连，记得把它重新关闭。</p>
   <h3>登录时启动</h3>
-  <p><strong>开启</strong>后，每次登录 Mac 时 Tunnel Proxy 都会自动启动，盾牌图标始终守候在菜单栏中。</p>
-  <blockquote><p><strong>设置 → 高级</strong> 里还有一个 <strong>启动时自动连接</strong> 选项。两者都开启，隧道就会在你每次开机时自动建立。</p></blockquote>
+  <p><strong>开启</strong>后，每次登录 Mac 时 Tunnel Proxy 都会自动启动，始终守候在菜单栏中。</p>
+  <blockquote><p><strong>设置</strong> 标签页里还有一个 <strong>启动时自动连接</strong> 选项。两者都开启，隧道就会在你每次开机时自动建立。</p></blockquote>
+  <blockquote><p><strong>显示网络速度</strong> 位于 <strong>设置</strong> 标签页的 <em>菜单栏</em> 分组中。开启后，菜单栏图标旁边会显示实时的上传/下载速度，方便你一眼看到流量在流动。</p></blockquote>
 
-  <h2>设置项说明</h2>
-  <p>点击盾牌图标 → <strong>设置…</strong>（<kbd>⌘,</kbd>）打开。共有五个标签页。</p>
-  <h3>服务器</h3>
-  <p>添加、编辑、删除，以及选择当前使用的服务器。（见「<em>首次设置</em>」。）</p>
-  <h3>隧道</h3>
+  <h2>设置标签页</h2>
+  <p><strong>设置</strong> 标签页汇集了应用的所有选项，按卡片分组。这里<strong>没有保存按钮——所有更改即时生效</strong>。如果你输入了无效的值，相应卡片下方会出现橙色提示。</p>
+  <figure>
+    <iframe src="design/settings.zh.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/640;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>设置标签页：所有更改即时生效——没有保存按钮。</figcaption>
+  </figure>
   <ul>
-    <li><strong>SOCKS 端口</strong> / <strong>HTTP 代理端口</strong>——应用在本机监听的端口号（默认 <code>1080</code> 和 <code>8118</code>）。仅在与其他程序冲突时才需修改。</li>
-    <li><strong>网络服务</strong>——<em>macOS SOCKS 代理</em> 开关作用于哪个网络连接（Wi-Fi、以太网……）。通常保持默认即可。</li>
-    <li><strong>守护进程间隔（秒）</strong>——自动重连检查的运行频率。</li>
-    <li><strong>运行环境</strong>——<em>privoxy</em>、<em>ssh</em>、<em>curl</em> 旁的绿色 ✓ 表示应用所需的组件都已就绪。</li>
-  </ul>
-  <p>在这里修改任何内容后，请点击 <strong>保存</strong>。</p>
-  <h3>高级</h3>
-  <ul>
-    <li><strong>登录时启动</strong> 与 <strong>启动时自动连接</strong>（见上文）。</li>
-    <li><strong>记录流量统计</strong>——开启后，应用会在本地记录你随时间收发的数据量（见 <a href="#stats">流量统计</a>）。它只记录数据<em>大小</em>——绝不记录你访问的网站——且数据仅保存在你的 Mac 上。<strong>清除统计…</strong> 会永久删除这些记录。</li>
+    <li><strong>端口</strong>——<strong>SOCKS 端口</strong> 和 <strong>HTTP 代理端口</strong>，即应用在本机监听的端口号（默认 <code>1080</code> 和 <code>8118</code>）。仅在与其他程序冲突时才需修改。</li>
+    <li><strong>启动</strong>——<strong>登录时启动</strong> 与 <strong>启动时自动连接</strong>（见上文）。</li>
+    <li><strong>macOS</strong>——<em>路由 Mac 流量</em> 作用于哪个 <strong>网络服务</strong>（Wi-Fi、以太网……）、<strong>自动重连（守护进程）</strong> 开关，以及 <strong>守护进程间隔（秒）</strong>——自动重连检查的运行频率。</li>
+    <li><strong>菜单栏</strong>——<strong>显示菜单栏图标</strong> 和 <strong>显示网络速度</strong>。</li>
+    <li><strong>运行环境</strong>——确认应用所需的组件（<em>privoxy</em> 已内置；<em>ssh</em> 和 <em>curl</em> 由 macOS 自带）都已就绪。</li>
+    <li><strong>流量统计</strong>——<strong>记录流量统计</strong> 会在本地记录你随时间收发的数据量（见 <a href="#stats">流量统计</a>）。它只记录数据<em>大小</em>——绝不记录你访问的网站——且数据仅保存在你的 Mac 上。<strong>清除统计…</strong> 会永久删除这些记录。</li>
     <li><strong>文件</strong>——显示配置文件和日志文件的位置，并提供 <strong>在访达中显示</strong> 按钮。</li>
   </ul>
-  <h3>工具</h3>
-  <p>一键将其他程序指向本应用 HTTP 代理的辅助功能。</p>
+
+  <h2>工具标签页</h2>
+  <p><strong>工具</strong> 标签页提供一键将其他程序指向本应用 HTTP 代理的辅助功能。</p>
+  <figure>
+    <iframe src="design/tools.zh.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>工具标签页：让 Claude Code 走此代理，以及一个用于移除所有代理的应急按钮。</figcaption>
+  </figure>
   <ul>
-    <li><strong>让 Claude Code 走此代理</strong>——开启后，<a href="https://claude.com/claude-code">Claude Code</a> 的流量将通过隧道转发。它会把标准的 HTTP 代理环境变量（<code>http_proxy</code>、<code>https_proxy</code> 及其大写形式，以及针对 <code>localhost</code> 的 <code>no_proxy</code>）写入 <code>~/.claude/settings.json</code>，指向 <code>http://127.0.0.1:8118</code>（或你在「隧道」标签页设置的 <strong>HTTP 代理端口</strong>）。<strong>关闭</strong> 时仅移除这些键，Claude Code 的其他设置保持不变。修改后请重启 Claude Code 使其生效。</li>
-    <li><strong>设置文件</strong>——显示 <code>~/.claude/settings.json</code> 的路径，并提供 <strong>在访达中显示</strong> 按钮。</li>
+    <li><strong>让 Claude Code 走此代理</strong>——开启后，<a href="https://claude.com/claude-code">Claude Code</a> 的流量将通过隧道转发。它会把标准的 HTTP 代理环境变量（<code>http_proxy</code>、<code>https_proxy</code> 及其大写形式，以及针对 <code>localhost</code> 的 <code>no_proxy</code>）写入 <code>~/.claude/settings.json</code>，指向 <code>http://127.0.0.1:8118</code>（或你在「设置」标签页设置的 <strong>HTTP 代理端口</strong>）。<strong>关闭</strong> 时仅移除这些键，Claude Code 的其他设置保持不变。修改后请重启 Claude Code 使其生效。</li>
+    <li><strong>设置文件</strong>——显示 <code>~/.claude/settings.json</code> 的路径，并提供 <strong>Reveal</strong> 按钮。</li>
     <li><strong>移除所有代理</strong>——一个应急按钮，会为当前的<strong>网络服务</strong>关闭<em>所有</em>系统代理（HTTP、HTTPS、SOCKS 以及自动/PAC 代理）。当代理设置意外残留——例如应用崩溃之后——导致 Mac 无法正常直连上网时，可用它来清理。此操作需要管理员密码。</li>
   </ul>
   <blockquote><p>如果之后修改了 HTTP 代理端口，请回到此处将 Claude Code 开关关闭再开启，以写入新的端口。</p></blockquote>
-  <h3>关于</h3>
-  <p>应用名称和一段简短说明。</p>
 
-  <h2>查看日志</h2>
+  <h2>日志标签页</h2>
   <p>如果连接失败或行为异常，日志会准确显示发生了什么。</p>
   <ol>
-    <li>点击盾牌图标 → <strong>查看日志…</strong></li>
-    <li>日志窗口会实时输出：
+    <li>在侧边栏中打开 <strong>日志</strong> 标签页。</li>
+    <li>日志会实时输出：
       <ul>
         <li><strong>筛选…</strong>——输入关键字只显示匹配的行。</li>
         <li><strong>自动滚动</strong>——始终显示最新的日志行。</li>
@@ -482,12 +401,24 @@
       </ul>
     </li>
   </ol>
+  <figure>
+    <iframe src="design/logs.zh.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>日志标签页：实时活动日志，带筛选、自动滚动和清除按钮。</figcaption>
+  </figure>
   <p>日志按颜色区分：绿色表示成功，橙色表示警告，红色表示错误。</p>
 
-  <h2 id="stats">流量统计</h2>
+  <h2 id="stats">流量统计标签页</h2>
   <p>Tunnel Proxy 可以持续统计经隧道传输的数据量，让你了解自己随时间的使用情况。</p>
-  <p>在 <strong>设置 → 高级</strong> 里开启 <strong>记录流量统计</strong> 即可启用。它只记录数据<em>量</em>（上传和下载的字节数），<strong>不会</strong>记录你访问了哪些网站，所有数据都保存在你的 Mac 本地。</p>
-  <p>点击盾牌图标 → <strong>统计…</strong> 即可查看。窗口中包含：</p>
+  <p>在 <strong>设置</strong> 标签页里开启 <strong>记录流量统计</strong> 即可启用。它只记录数据<em>量</em>（上传和下载的字节数），<strong>不会</strong>记录你访问了哪些网站，所有数据都保存在你的 Mac 本地。</p>
+  <figure>
+    <iframe src="design/statistics.zh.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/600;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>流量统计标签页：合计、用量随时间变化图，以及会话列表。</figcaption>
+  </figure>
+  <p>打开 <strong>流量统计</strong> 标签页即可查看：</p>
   <ul>
     <li><strong>时间范围</strong>——在 <strong>今天</strong>、<strong>本周</strong>、<strong>本月</strong>、<strong>全部</strong> 之间切换。</li>
     <li><strong>服务器筛选</strong>——将会话列表限定为某一台服务器，或显示全部。</li>
@@ -496,17 +427,17 @@
     <li><strong>会话</strong>——每一次连接，包含其时间段、所用服务器以及传输的数据量。绿色圆点表示仍在进行中的会话。</li>
     <li><strong>导出…</strong>——将图表数据保存为 <code>.csv</code> 文件，便于在电子表格中使用。</li>
   </ul>
-  <blockquote><p>在你开启之前不会记录，因此早期的会话不会出现。窗口底部的状态栏会显示是否正在记录以及自何时开始。可在 <strong>设置 → 高级</strong> 中使用 <strong>清除统计…</strong> 抹除历史记录。</p></blockquote>
+  <blockquote><p>在你开启之前不会记录，因此早期的会话不会出现。底部的状态栏会显示是否正在记录以及自何时开始。可在 <strong>设置</strong> 标签页中使用 <strong>清除统计…</strong> 抹除历史记录。</p></blockquote>
 
   <h2>疑难解答</h2>
   <table>
     <tr><th>问题</th><th>尝试这样做</th></tr>
-    <tr><td><strong>连接按钮是灰色的</strong></td><td>你还没添加服务器，或设置不完整。打开 <strong>设置 → 服务器</strong> 检查信息。</td></tr>
-    <tr><td><strong>卡在「正在连接…」后报错</strong></td><td>检查 <strong>主机</strong>、<strong>端口</strong> 和 <strong>用户名</strong>。确认能连上服务器（可先在终端里尝试连接）。打开 <strong>查看日志…</strong> 看具体错误。</td></tr>
-    <tr><td><strong>密码 / 密钥错误</strong></td><td>在 <strong>设置 → 服务器</strong> 里重新打开该服务器，点击铅笔图标，重新输入密码或重新选择密钥文件。</td></tr>
-    <tr><td><strong>网站仍显示我的真实 IP</strong></td><td>确认状态为<strong>绿色 / 已连接</strong>。若某个应用忽略代理，请开启 <strong>macOS SOCKS 代理</strong>，让整个系统都走隧道。</td></tr>
-    <tr><td><strong>隧道频繁中断</strong></td><td>开启 <strong>自动重连（守护进程）</strong>。若持续中断，通常说明服务器或网络不稳定。</td></tr>
-    <tr><td><strong>退出应用或崩溃后无法上网</strong></td><td>可能是某个系统代理被残留开启了。打开 <strong>设置 → 工具</strong> 点击 <strong>移除所有代理</strong>，或在弹出面板中关闭 <strong>macOS SOCKS 代理</strong>。</td></tr>
+    <tr><td><strong>电源圆环无法连接</strong></td><td>你还没添加服务器，或设置不完整。打开 <strong>服务器</strong> 标签页检查信息。</td></tr>
+    <tr><td><strong>卡在「正在连接…」后报错</strong></td><td>检查 <strong>主机</strong>、<strong>端口</strong> 和 <strong>用户名</strong>。确认能连上服务器（可先在终端里尝试连接）。打开 <strong>日志</strong> 标签页看具体错误。</td></tr>
+    <tr><td><strong>密码 / 密钥错误</strong></td><td>在 <strong>服务器</strong> 标签页里重新打开该服务器，点击铅笔图标，重新输入密码或重新选择密钥文件。</td></tr>
+    <tr><td><strong>网站仍显示我的真实 IP</strong></td><td>确认状态为<strong>绿色 / 已连接</strong>。若某个应用忽略代理，请开启 <strong>路由 Mac 流量</strong>，让整个系统都走隧道。</td></tr>
+    <tr><td><strong>隧道频繁中断</strong></td><td>开启 <strong>自动重连</strong>。若持续中断，通常说明服务器或网络不稳定。</td></tr>
+    <tr><td><strong>退出应用或崩溃后无法上网</strong></td><td>可能是某个系统代理被残留开启了。打开 <strong>工具</strong> 标签页点击 <strong>移除所有代理</strong>，或关闭 <strong>路由 Mac 流量</strong>。</td></tr>
     <tr><td><strong>提示「内置代理缺失」</strong></td><td>应用文件不完整。请重新下载并从 DMG 重新安装。</td></tr>
     <tr><td><strong>启动后没有盾牌图标</strong></td><td>菜单栏可能已满——按住 ⌘ 拖开其他图标。确认应用是否在运行。</td></tr>
   </table>
@@ -516,10 +447,10 @@
   <p><strong>这是 VPN 吗？</strong><br>对你的流量来说效果类似，但它是连到你<strong>自己服务器</strong>的 <em>SSH 隧道</em>，而不是商业 VPN 服务。服务器由你自己提供。</p>
   <p><strong>我的密码存在哪里？</strong><br>存在 <strong>macOS 钥匙串</strong>——系统的安全保险库里，绝不会以明文形式保存。</p>
   <p><strong>它会拖慢我的网速吗？</strong><br>你的流量会经由服务器多一次中转，因此会有少量额外开销。速度主要取决于你服务器的网络连接。</p>
-  <p><strong>如何彻底卸载？</strong><br>先断开连接，关闭 <strong>登录时启动</strong> 与 <strong>macOS SOCKS 代理</strong>，然后退出应用，把 <strong>Tunnel Proxy</strong> 从「应用程序」拖入废纸篓即可。</p>
+  <p><strong>如何彻底卸载？</strong><br>先断开连接，关闭 <strong>登录时启动</strong> 与 <strong>路由 Mac 流量</strong>，然后退出应用，把 <strong>Tunnel Proxy</strong> 从「应用程序」拖入废纸篓即可。</p>
 
   <hr>
-  <p class="foot">想知道后台到底发生了什么？<strong>查看日志…</strong> 窗口永远是排查问题的第一站。</p>
+  <p class="foot">想知道后台到底发生了什么？<strong>日志</strong> 标签页永远是排查问题的第一站。</p>
 </div>
 </body>
 </html>

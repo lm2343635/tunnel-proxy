@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E7E9EE;-webkit-font-smoothing:antialiased}
+a{color:#0A7CFF;text-decoration:none}a:hover{color:#0060DF;text-decoration:underline}
+</style>
+</helmet>
+<section id="s-turn2" style="font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;color:#1D1D1F;padding:48px 56px 40px">
+<h2 style="font-size:15px;font-weight:600;color:#5F646E;margin:0 0 24px;font-family:'Roboto Mono',monospace">Tunnel Proxy — Combined design (1b sidebar × 1c tiles) · all screens · Tunnel + Advanced merged into Settings</h2>
+<div id="2a" style="position:relative;border:1px dashed #C2C7D1;border-radius:18px;padding:44px 36px 36px;background:rgba(255,255,255,.35)">
+<span style="position:absolute;top:-13px;left:26px;background:#0A7CFF;color:#FFF;font:600 12px 'Roboto Mono',monospace;padding:4px 12px;border-radius:999px">2a</span>
+<div style="margin:-14px 0 26px;font-size:13px;font-weight:600;color:#5F646E">Sidebar navigation + Control-Center tiles · 6 tabs per current code</div>
+<div style="display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start;max-width:1780px">
+
+<figure style="margin:0" data-screen-label="2a · Connection light">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Connection — light · 840×580</figcaption>
+<div style="width:840px;height:580px;background:#F2F2F5;border-radius:11px;box-shadow:0 22px 50px rgba(15,18,26,.25),0 0 0 1px rgba(0,0,0,.07);overflow:hidden;display:flex;position:relative;font-size:13px">
+<div style="width:188px;flex:none;background:#E9E9EB;border-right:1px solid #D9D9DC;display:flex;flex-direction:column;padding:12px 10px;box-sizing:border-box;position:relative">
+<div style="position:absolute;top:15px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#FF5F57"></span><span style="width:12px;height:12px;border-radius:50%;background:#FEBC2E"></span><span style="width:12px;height:12px;border-radius:50%;background:#28C840"></span></div>
+<div style="display:flex;align-items:center;gap:8px;margin:36px 4px 0"><img src="assets/app-icon.svg" width="22" height="22" style="border-radius:5px" alt=""><span style="font-size:13px;font-weight:600">Tunnel Proxy</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;margin-top:16px">
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:#0A7CFF;color:#FFF"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="6.7" fill="none" stroke="currentColor" stroke-width="1.3"></circle><path d="M5.2 9.1l4.6-3.2-1.1 2.6h3.1l-4.6 3.2 1.1-2.6z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path></svg><span style="font-size:13px;font-weight:500">Connection</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="2.8" y="3.2" width="11.4" height="10.6" rx="1.6" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M2.8 6.7h11.4M2.8 10.2h11.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></path></svg><span style="font-size:13px">Servers</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="3.8" y="2.4" width="9.4" height="12.2" rx="1.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M6.2 5.7h4.6M6.2 8.5h4.6M6.2 11.3h3" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Logs</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.7 13.8V9.4M8.5 13.8V3.2M13.3 13.8V6.2" fill="none" stroke="#6E6E73" stroke-width="1.9" stroke-linecap="round"></path></svg><span style="font-size:13px">Statistics</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M8.5 1.9v2.1M8.5 13v2.1M1.9 8.5h2.1M13 8.5h2.1M3.8 3.8l1.5 1.5M11.7 11.7l1.5 1.5M13.2 3.8l-1.5 1.5M5.3 11.7l-1.5 1.5" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Settings</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M13.9 3.1a3 3 0 01-3.7 3.7L4.7 12.3a1.5 1.5 0 11-2.1-2.1l5.5-5.5a3 3 0 013.7-3.7L10.2 2.6l.3 1.8 1.8.3z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path><path d="M3.3 2.4l2.3 2.3M12 10.5l2.4 2.4a1.1 1.1 0 11-1.6 1.6L10.4 12" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Tools</span></div>
+</div>
+<div style="margin-top:auto;background:rgba(255,255,255,.65);border:1px solid #DDDDE0;border-radius:8px;padding:8px 10px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#28CD41"></span><span style="font-size:12px;font-weight:600">Connected</span><span style="margin-left:auto;font-size:10px;color:#1F9E38;font-weight:600">42 ms</span></div>
+<div style="font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:3px">59.136.225.99</div>
+</div>
+</div>
+<div style="flex:1;min-width:0;padding:16px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:13px">
+<div style="grid-column:1/3;background:linear-gradient(120deg,#E4F8E9,#FFFFFF 55%);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:16px 20px;display:flex;align-items:center;gap:20px">
+<div style="position:relative;width:92px;height:92px;flex:none;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;inset:-12px;border-radius:50%;background:radial-gradient(circle,rgba(40,205,65,.28) 0%,rgba(40,205,65,0) 70%)"></div>
+<div style="position:relative;width:84px;height:84px;border-radius:50%;border:8px solid #28CD41;box-sizing:border-box;background:#FFF;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.1)"><svg width="25" height="25" viewBox="0 0 17 17"><path d="M5.3 4.9a5.9 5.9 0 106.4 0" fill="none" stroke="#28CD41" stroke-width="1.25" stroke-linecap="round"></path><path d="M8.5 1.8v6.4" fill="none" stroke="#28CD41" stroke-width="1.25" stroke-linecap="round"></path></svg></div>
+</div>
+<div>
+<div style="font-size:20px;font-weight:800">Connected</div>
+<div style="font-size:12.5px;color:#85858B;margin-top:2px">Tunnel + HTTP proxy active · since 12:37</div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<span style="white-space:nowrap;flex:none;background:#FFF;border:1px solid #E4E4E7;border-radius:6px;padding:4px 9px;font:600 11.5px 'SF Mono','Roboto Mono',ui-monospace,monospace">59.136.225.99</span>
+<span style="white-space:nowrap;flex:none;background:#FFF;border:1px solid #E4E4E7;border-radius:6px;padding:4px 9px;font-size:11.5px;font-weight:600;color:#1F9E38">● 42 ms</span>
+<span style="white-space:nowrap;flex:none;background:#FFF;border:1px solid #E4E4E7;border-radius:6px;padding:4px 9px;font-size:11.5px;font-weight:600;color:#85858B">Watchdog on</span>
+</div>
+</div>
+<div style="margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:6px">
+<span style="background:rgba(255,59,48,.1);color:#E5372B;font-size:13px;font-weight:600;border-radius:8px;padding:7px 22px">Disconnect</span>
+<span style="font-size:11px;color:#85858B">via fczm.site</span>
+</div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:13px 16px;display:flex;flex-direction:column">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">THROUGHPUT</div>
+<div style="display:flex;gap:16px;margin-top:7px"><span style="font-size:15px;font-weight:700;color:#0F7BF5">↓ 1.2 MB/s</span><span style="font-size:15px;font-weight:700;color:#28BD4B">↑ 340 KB/s</span></div>
+<svg width="100%" height="40" viewBox="0 0 200 40" preserveAspectRatio="none" style="display:block;margin-top:auto"><path d="M0 20L200 20" fill="none" stroke="#C9C9CE" stroke-width=".8" stroke-dasharray="1.6 1.6"></path><rect x="1" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="1" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="5" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="5" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="9" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="9" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="13" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="13" y="20" width="2.2" height="3" fill="#0F7BF5"></rect><rect x="17" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="17" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="21" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="21" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="25" y="17" width="2.2" height="3" fill="#28BD4B"></rect><rect x="25" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="29" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="29" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="33" y="7" width="2.2" height="13" fill="#28BD4B"></rect><rect x="33" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="37" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="37" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="41" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="41" y="20" width="2.2" height="3" fill="#0F7BF5"></rect><rect x="45" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="45" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="49" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="49" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="53" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="53" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="57" y="17" width="2.2" height="3" fill="#28BD4B"></rect><rect x="57" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="61" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="61" y="20" width="2.2" height="3" fill="#0F7BF5"></rect><rect x="65" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="65" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="69" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="69" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="73" y="5" width="2.2" height="15" fill="#28BD4B"></rect><rect x="73" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="77" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="77" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="81" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="81" y="20" width="2.2" height="3" fill="#0F7BF5"></rect><rect x="85" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="85" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="89" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="89" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="93" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="93" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="97" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="97" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="101" y="17" width="2.2" height="3" fill="#28BD4B"></rect><rect x="101" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="105" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="105" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="109" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="109" y="20" width="2.2" height="3" fill="#0F7BF5"></rect><rect x="113" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="113" y="20" width="2.2" height="6" fill="#0F7BF5"></rect><rect x="117" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="117" y="20" width="2.2" height="9" fill="#0F7BF5"></rect><rect x="121" y="9" width="2.2" height="11" fill="#28BD4B"></rect><rect x="121" y="20" width="2.2" height="12" fill="#0F7BF5"></rect><rect x="125" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="125" y="20" width="2.2" height="14" fill="#0F7BF5"></rect><rect x="129" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="129" y="20" width="2.2" height="16" fill="#0F7BF5"></rect><rect x="133" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="133" y="20" width="2.2" height="15" fill="#0F7BF5"></rect><rect x="137" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="137" y="20" width="2.2" height="12" fill="#0F7BF5"></rect><rect x="141" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="141" y="20" width="2.2" height="9" fill="#0F7BF5"></rect><rect x="145" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="145" y="20" width="2.2" height="7" fill="#0F7BF5"></rect><rect x="149" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="149" y="20" width="2.2" height="10" fill="#0F7BF5"></rect><rect x="153" y="17" width="2.2" height="3" fill="#28BD4B"></rect><rect x="153" y="20" width="2.2" height="13" fill="#0F7BF5"></rect><rect x="157" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="157" y="20" width="2.2" height="8" fill="#0F7BF5"></rect><rect x="161" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="161" y="20" width="2.2" height="4" fill="#0F7BF5"></rect><rect x="165" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="165" y="20" width="2.2" height="3" fill="#0F7BF5"></rect><rect x="169" y="6" width="2.2" height="14" fill="#28BD4B"></rect><rect x="169" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="173" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="173" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="177" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="177" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="181" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="181" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="185" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="185" y="20" width="2.2" height="3" fill="#0F7BF5"></rect><rect x="189" y="18" width="2.2" height="2" fill="#28BD4B"></rect><rect x="189" y="20" width="2.2" height="2" fill="#0F7BF5"></rect><rect x="193" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="193" y="20" width="2.2" height="1" fill="#0F7BF5"></rect><rect x="197" y="19" width="2.2" height="1" fill="#28BD4B"></rect><rect x="197" y="20" width="2.2" height="2" fill="#0F7BF5"></rect></svg>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:13px 16px;display:flex;flex-direction:column">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">LATENCY</div>
+<div style="display:flex;align-items:flex-end;gap:12px;margin-top:5px">
+<span style="font-size:24px;font-weight:800;color:#1F9E38">42<span style="font-size:13px;font-weight:600;color:#85858B"> ms</span></span>
+
+</div>
+<svg width="100%" height="40" viewBox="0 0 200 40" preserveAspectRatio="none" style="display:block;margin-top:auto"><path d="M0 39.5L200 39.5" fill="none" stroke="#C9C9CE" stroke-width=".8" stroke-dasharray="1.6 1.6"></path><rect x="1" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="5" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="9" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="13" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="17" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="21" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="25" y="29" width="2.2" height="10" fill="#28BD4B"></rect><rect x="29" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="33" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="37" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="41" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="45" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="49" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="53" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="57" y="13" width="2.2" height="26" fill="#28BD4B"></rect><rect x="61" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="65" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="69" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="73" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="77" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="81" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="85" y="29" width="2.2" height="10" fill="#28BD4B"></rect><rect x="89" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="93" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="97" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="101" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="105" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="109" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="113" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="117" y="17" width="2.2" height="22" fill="#28BD4B"></rect><rect x="121" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="125" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="129" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="133" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="137" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="141" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="145" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="149" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="153" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="157" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="161" y="9" width="2.2" height="30" fill="#28BD4B"></rect><rect x="165" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="169" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="173" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="177" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="181" y="30" width="2.2" height="9" fill="#28BD4B"></rect><rect x="185" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="189" y="32" width="2.2" height="7" fill="#28BD4B"></rect><rect x="193" y="31" width="2.2" height="8" fill="#28BD4B"></rect><rect x="197" y="30" width="2.2" height="9" fill="#28BD4B"></rect></svg><div style="font-size:11px;color:#85858B;margin-top:6px">fczm.site · avg over 60 s</div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:13px 16px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">SERVER</div>
+<div style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:15px;height:15px;flex:none"><span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #0A7CFF;box-sizing:border-box"></span><span style="position:absolute;inset:3.5px;border-radius:50%;background:#0A7CFF"></span></span><span style="font-size:12.5px;font-weight:600">fczm.site</span><span style="margin-left:auto;font-size:10.5px;color:#1F9E38;font-weight:600">42 ms</span></div>
+<div style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:15px;height:15px;flex:none"><span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #B4B4B9;box-sizing:border-box"></span></span><span style="font-size:12.5px;color:#4A4A4F">Osaka backup</span><span style="margin-left:auto;font-size:10.5px;color:#85858B">118 ms</span></div>
+<div style="margin-top:auto;font-size:12px;color:#0A7CFF;font-weight:500">+ Add server</div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 14px;display:flex;flex-direction:column;gap:7px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px;padding:2px 2px 0">OPTIONS</div>
+<div style="flex:1;min-height:34px;background:linear-gradient(180deg,#4E96F7,#3873F1);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:0 12px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:12px;font-weight:600;color:#FFF">Route Mac traffic</div><div style="font-size:9.5px;color:rgba(255,255,255,.85);margin-top:2px">On</div></div>
+<div style="flex:1;min-height:34px;background:linear-gradient(180deg,#4E96F7,#3873F1);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:0 12px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:12px;font-weight:600;color:#FFF">Auto-reconnect</div><div style="font-size:9.5px;color:rgba(255,255,255,.85);margin-top:2px">Watchdog · On</div></div>
+<div style="flex:1;min-height:34px;background:#F5F5F7;border-radius:10px;padding:0 12px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:12px;font-weight:600">Launch at login</div><div style="font-size:9.5px;color:#85858B;margin-top:2px">Off</div></div>
+</div>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Connection dark">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Connection — dark · 840×580</figcaption>
+<div style="width:840px;height:580px;background:#151517;border-radius:11px;box-shadow:0 22px 50px rgba(15,18,26,.5),0 0 0 1px rgba(255,255,255,.08);overflow:hidden;display:flex;position:relative;font-size:13px;color:#F2F2F4">
+<div style="width:188px;flex:none;background:#232327;border-right:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column;padding:12px 10px;box-sizing:border-box;position:relative">
+<div style="position:absolute;top:15px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#FF5F57"></span><span style="width:12px;height:12px;border-radius:50%;background:#FEBC2E"></span><span style="width:12px;height:12px;border-radius:50%;background:#28C840"></span></div>
+<div style="display:flex;align-items:center;gap:8px;margin:36px 4px 0"><img src="assets/app-icon.svg" width="22" height="22" style="border-radius:5px" alt=""><span style="font-size:13px;font-weight:600">Tunnel Proxy</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;margin-top:16px">
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:#0A84FF;color:#FFF"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="6.7" fill="none" stroke="currentColor" stroke-width="1.3"></circle><path d="M5.2 9.1l4.6-3.2-1.1 2.6h3.1l-4.6 3.2 1.1-2.6z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path></svg><span style="font-size:13px;font-weight:500">Connection</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#C9C9CE"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="2.8" y="3.2" width="11.4" height="10.6" rx="1.6" fill="none" stroke="#9A9AA2" stroke-width="1.3"></rect><path d="M2.8 6.7h11.4M2.8 10.2h11.4" fill="none" stroke="#9A9AA2" stroke-width="1.3"></path></svg><span style="font-size:13px">Servers</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#C9C9CE"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="3.8" y="2.4" width="9.4" height="12.2" rx="1.4" fill="none" stroke="#9A9AA2" stroke-width="1.3"></rect><path d="M6.2 5.7h4.6M6.2 8.5h4.6M6.2 11.3h3" fill="none" stroke="#9A9AA2" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Logs</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#C9C9CE"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.7 13.8V9.4M8.5 13.8V3.2M13.3 13.8V6.2" fill="none" stroke="#9A9AA2" stroke-width="1.9" stroke-linecap="round"></path></svg><span style="font-size:13px">Statistics</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#C9C9CE"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.7" fill="none" stroke="#9A9AA2" stroke-width="1.3"></circle><path d="M8.5 1.9v2.1M8.5 13v2.1M1.9 8.5h2.1M13 8.5h2.1M3.8 3.8l1.5 1.5M11.7 11.7l1.5 1.5M13.2 3.8l-1.5 1.5M5.3 11.7l-1.5 1.5" fill="none" stroke="#9A9AA2" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Settings</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#C9C9CE"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M13.9 3.1a3 3 0 01-3.7 3.7L4.7 12.3a1.5 1.5 0 11-2.1-2.1l5.5-5.5a3 3 0 013.7-3.7L10.2 2.6l.3 1.8 1.8.3z" fill="none" stroke="#9A9AA2" stroke-width="1.3" stroke-linejoin="round"></path><path d="M3.3 2.4l2.3 2.3M12 10.5l2.4 2.4a1.1 1.1 0 11-1.6 1.6L10.4 12" fill="none" stroke="#9A9AA2" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Tools</span></div>
+</div>
+<div style="margin-top:auto;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:8px 10px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#32D74B"></span><span style="font-size:12px;font-weight:600">Connected</span><span style="margin-left:auto;font-size:10px;color:#32D74B;font-weight:600">42 ms</span></div>
+<div style="font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#9A9AA2;margin-top:3px">59.136.225.99</div>
+</div>
+</div>
+<div style="flex:1;min-width:0;padding:16px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:13px">
+<div style="grid-column:1/3;background:linear-gradient(120deg,rgba(50,215,75,.14),#232327 60%);border-radius:16px;border:1px solid rgba(255,255,255,.06);padding:16px 20px;display:flex;align-items:center;gap:20px">
+<div style="position:relative;width:92px;height:92px;flex:none;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;inset:-12px;border-radius:50%;background:radial-gradient(circle,rgba(50,215,75,.25) 0%,rgba(50,215,75,0) 70%)"></div>
+<div style="position:relative;width:84px;height:84px;border-radius:50%;border:8px solid #32D74B;box-sizing:border-box;background:#2A2A2E;display:flex;align-items:center;justify-content:center"><svg width="25" height="25" viewBox="0 0 17 17"><path d="M5.3 4.9a5.9 5.9 0 106.4 0" fill="none" stroke="#32D74B" stroke-width="1.25" stroke-linecap="round"></path><path d="M8.5 1.8v6.4" fill="none" stroke="#32D74B" stroke-width="1.25" stroke-linecap="round"></path></svg></div>
+</div>
+<div>
+<div style="font-size:20px;font-weight:800">Connected</div>
+<div style="font-size:12.5px;color:#9A9AA2;margin-top:2px">Tunnel + HTTP proxy active · since 12:37</div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<span style="white-space:nowrap;flex:none;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:6px;padding:4px 9px;font:600 11.5px 'SF Mono','Roboto Mono',ui-monospace,monospace">59.136.225.99</span>
+<span style="white-space:nowrap;flex:none;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:6px;padding:4px 9px;font-size:11.5px;font-weight:600;color:#32D74B">● 42 ms</span>
+<span style="white-space:nowrap;flex:none;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:6px;padding:4px 9px;font-size:11.5px;font-weight:600;color:#9A9AA2">Watchdog on</span>
+</div>
+</div>
+<div style="margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:6px">
+<span style="background:rgba(255,69,58,.16);color:#FF6B60;font-size:13px;font-weight:600;border-radius:8px;padding:7px 22px">Disconnect</span>
+<span style="font-size:11px;color:#9A9AA2">via fczm.site</span>
+</div>
+</div>
+<div style="background:#232327;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:13px 16px;display:flex;flex-direction:column">
+<div style="font-size:10.5px;font-weight:700;color:#9A9AA2;letter-spacing:.6px">THROUGHPUT</div>
+<div style="display:flex;gap:16px;margin-top:7px"><span style="font-size:15px;font-weight:700;color:#409CFF">↓ 1.2 MB/s</span><span style="font-size:15px;font-weight:700;color:#32D74B">↑ 340 KB/s</span></div>
+<svg width="100%" height="40" viewBox="0 0 200 40" preserveAspectRatio="none" style="display:block;margin-top:auto"><path d="M0 20L200 20" fill="none" stroke="#55555C" stroke-width=".8" stroke-dasharray="1.6 1.6"></path><rect x="1" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="1" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="5" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="5" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="9" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="9" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="13" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="13" y="20" width="2.2" height="3" fill="#409CFF"></rect><rect x="17" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="17" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="21" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="21" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="25" y="17" width="2.2" height="3" fill="#32D74B"></rect><rect x="25" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="29" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="29" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="33" y="7" width="2.2" height="13" fill="#32D74B"></rect><rect x="33" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="37" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="37" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="41" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="41" y="20" width="2.2" height="3" fill="#409CFF"></rect><rect x="45" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="45" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="49" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="49" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="53" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="53" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="57" y="17" width="2.2" height="3" fill="#32D74B"></rect><rect x="57" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="61" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="61" y="20" width="2.2" height="3" fill="#409CFF"></rect><rect x="65" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="65" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="69" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="69" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="73" y="5" width="2.2" height="15" fill="#32D74B"></rect><rect x="73" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="77" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="77" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="81" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="81" y="20" width="2.2" height="3" fill="#409CFF"></rect><rect x="85" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="85" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="89" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="89" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="93" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="93" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="97" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="97" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="101" y="17" width="2.2" height="3" fill="#32D74B"></rect><rect x="101" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="105" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="105" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="109" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="109" y="20" width="2.2" height="3" fill="#409CFF"></rect><rect x="113" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="113" y="20" width="2.2" height="6" fill="#409CFF"></rect><rect x="117" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="117" y="20" width="2.2" height="9" fill="#409CFF"></rect><rect x="121" y="9" width="2.2" height="11" fill="#32D74B"></rect><rect x="121" y="20" width="2.2" height="12" fill="#409CFF"></rect><rect x="125" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="125" y="20" width="2.2" height="14" fill="#409CFF"></rect><rect x="129" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="129" y="20" width="2.2" height="16" fill="#409CFF"></rect><rect x="133" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="133" y="20" width="2.2" height="15" fill="#409CFF"></rect><rect x="137" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="137" y="20" width="2.2" height="12" fill="#409CFF"></rect><rect x="141" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="141" y="20" width="2.2" height="9" fill="#409CFF"></rect><rect x="145" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="145" y="20" width="2.2" height="7" fill="#409CFF"></rect><rect x="149" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="149" y="20" width="2.2" height="10" fill="#409CFF"></rect><rect x="153" y="17" width="2.2" height="3" fill="#32D74B"></rect><rect x="153" y="20" width="2.2" height="13" fill="#409CFF"></rect><rect x="157" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="157" y="20" width="2.2" height="8" fill="#409CFF"></rect><rect x="161" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="161" y="20" width="2.2" height="4" fill="#409CFF"></rect><rect x="165" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="165" y="20" width="2.2" height="3" fill="#409CFF"></rect><rect x="169" y="6" width="2.2" height="14" fill="#32D74B"></rect><rect x="169" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="173" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="173" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="177" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="177" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="181" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="181" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="185" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="185" y="20" width="2.2" height="3" fill="#409CFF"></rect><rect x="189" y="18" width="2.2" height="2" fill="#32D74B"></rect><rect x="189" y="20" width="2.2" height="2" fill="#409CFF"></rect><rect x="193" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="193" y="20" width="2.2" height="1" fill="#409CFF"></rect><rect x="197" y="19" width="2.2" height="1" fill="#32D74B"></rect><rect x="197" y="20" width="2.2" height="2" fill="#409CFF"></rect></svg>
+</div>
+<div style="background:#232327;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:13px 16px;display:flex;flex-direction:column">
+<div style="font-size:10.5px;font-weight:700;color:#9A9AA2;letter-spacing:.6px">LATENCY</div>
+<div style="display:flex;align-items:flex-end;gap:12px;margin-top:5px">
+<span style="font-size:24px;font-weight:800;color:#32D74B">42<span style="font-size:13px;font-weight:600;color:#9A9AA2"> ms</span></span>
+
+</div>
+<svg width="100%" height="40" viewBox="0 0 200 40" preserveAspectRatio="none" style="display:block;margin-top:auto"><path d="M0 39.5L200 39.5" fill="none" stroke="#55555C" stroke-width=".8" stroke-dasharray="1.6 1.6"></path><rect x="1" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="5" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="9" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="13" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="17" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="21" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="25" y="29" width="2.2" height="10" fill="#32D74B"></rect><rect x="29" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="33" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="37" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="41" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="45" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="49" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="53" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="57" y="13" width="2.2" height="26" fill="#32D74B"></rect><rect x="61" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="65" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="69" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="73" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="77" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="81" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="85" y="29" width="2.2" height="10" fill="#32D74B"></rect><rect x="89" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="93" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="97" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="101" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="105" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="109" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="113" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="117" y="17" width="2.2" height="22" fill="#32D74B"></rect><rect x="121" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="125" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="129" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="133" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="137" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="141" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="145" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="149" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="153" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="157" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="161" y="9" width="2.2" height="30" fill="#32D74B"></rect><rect x="165" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="169" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="173" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="177" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="181" y="30" width="2.2" height="9" fill="#32D74B"></rect><rect x="185" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="189" y="32" width="2.2" height="7" fill="#32D74B"></rect><rect x="193" y="31" width="2.2" height="8" fill="#32D74B"></rect><rect x="197" y="30" width="2.2" height="9" fill="#32D74B"></rect></svg><div style="font-size:11px;color:#9A9AA2;margin-top:6px">fczm.site · avg over 60 s</div>
+</div>
+<div style="background:#232327;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:13px 16px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:10.5px;font-weight:700;color:#9A9AA2;letter-spacing:.6px">SERVER</div>
+<div style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:15px;height:15px;flex:none"><span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #0A84FF;box-sizing:border-box"></span><span style="position:absolute;inset:3.5px;border-radius:50%;background:#0A84FF"></span></span><span style="font-size:12.5px;font-weight:600">fczm.site</span><span style="margin-left:auto;font-size:10.5px;color:#32D74B;font-weight:600">42 ms</span></div>
+<div style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:15px;height:15px;flex:none"><span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #55555C;box-sizing:border-box"></span></span><span style="font-size:12.5px;color:#C9C9CE">Osaka backup</span><span style="margin-left:auto;font-size:10.5px;color:#9A9AA2">118 ms</span></div>
+<div style="margin-top:auto;font-size:12px;color:#0A84FF;font-weight:500">+ Add server</div>
+</div>
+<div style="background:#232327;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:7px">
+<div style="font-size:10.5px;font-weight:700;color:#9A9AA2;letter-spacing:.6px;padding:2px 2px 0">OPTIONS</div>
+<div style="flex:1;min-height:34px;background:#0A84FF;border-radius:10px;padding:0 12px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:12px;font-weight:600;color:#FFF">Route Mac traffic</div><div style="font-size:9.5px;color:rgba(255,255,255,.85);margin-top:2px">On</div></div>
+<div style="flex:1;min-height:34px;background:#0A84FF;border-radius:10px;padding:0 12px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:12px;font-weight:600;color:#FFF">Auto-reconnect</div><div style="font-size:9.5px;color:rgba(255,255,255,.85);margin-top:2px">Watchdog · On</div></div>
+<div style="flex:1;min-height:34px;background:rgba(255,255,255,.05);border-radius:10px;padding:0 12px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:12px;font-weight:600;color:#F2F2F4">Launch at login</div><div style="font-size:9.5px;color:#9A9AA2;margin-top:2px">Off</div></div>
+</div>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Connection disconnected">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Connection — disconnected · 840×580</figcaption>
+<div style="width:840px;height:580px;background:#F2F2F5;border-radius:11px;box-shadow:0 22px 50px rgba(15,18,26,.25),0 0 0 1px rgba(0,0,0,.07);overflow:hidden;display:flex;position:relative;font-size:13px">
+<div style="width:188px;flex:none;background:#E9E9EB;border-right:1px solid #D9D9DC;display:flex;flex-direction:column;padding:12px 10px;box-sizing:border-box;position:relative"><div style="position:absolute;top:15px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#FF5F57"></span><span style="width:12px;height:12px;border-radius:50%;background:#FEBC2E"></span><span style="width:12px;height:12px;border-radius:50%;background:#28C840"></span></div><div style="display:flex;align-items:center;gap:8px;margin:36px 4px 0"><img src="assets/app-icon.svg" width="22" height="22" style="border-radius:5px" alt=""><span style="font-size:13px;font-weight:600">Tunnel Proxy</span></div><div style="display:flex;flex-direction:column;gap:2px;margin-top:16px"><div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:#0A7CFF;color:#FFF"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="6.7" fill="none" stroke="currentColor" stroke-width="1.3"></circle><path d="M5.2 9.1l4.6-3.2-1.1 2.6h3.1l-4.6 3.2 1.1-2.6z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path></svg><span style="font-size:13px;font-weight:500">Connection</span></div><div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="2.8" y="3.2" width="11.4" height="10.6" rx="1.6" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M2.8 6.7h11.4M2.8 10.2h11.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></path></svg><span style="font-size:13px">Servers</span></div><div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="3.8" y="2.4" width="9.4" height="12.2" rx="1.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M6.2 5.7h4.6M6.2 8.5h4.6M6.2 11.3h3" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Logs</span></div><div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.7 13.8V9.4M8.5 13.8V3.2M13.3 13.8V6.2" fill="none" stroke="#6E6E73" stroke-width="1.9" stroke-linecap="round"></path></svg><span style="font-size:13px">Statistics</span></div><div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M8.5 1.9v2.1M8.5 13v2.1M1.9 8.5h2.1M13 8.5h2.1M3.8 3.8l1.5 1.5M11.7 11.7l1.5 1.5M13.2 3.8l-1.5 1.5M5.3 11.7l-1.5 1.5" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Settings</span></div><div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M13.9 3.1a3 3 0 01-3.7 3.7L4.7 12.3a1.5 1.5 0 11-2.1-2.1l5.5-5.5a3 3 0 013.7-3.7L10.2 2.6l.3 1.8 1.8.3z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path><path d="M3.3 2.4l2.3 2.3M12 10.5l2.4 2.4a1.1 1.1 0 11-1.6 1.6L10.4 12" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Tools</span></div></div><div style="margin-top:auto;background:rgba(255,255,255,.65);border:1px solid #DDDDE0;border-radius:8px;padding:8px 10px"><div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#B0B0B5"></span><span style="font-size:12px;font-weight:600">Disconnected</span></div><div style="font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:3px">—</div></div></div>
+<div style="flex:1;min-width:0;padding:16px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:13px">
+<div style="grid-column:1/3;background:linear-gradient(120deg,#F1F1F4,#FFFFFF 55%);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:16px 20px;display:flex;align-items:center;gap:20px">
+<div style="position:relative;width:92px;height:92px;flex:none;display:flex;align-items:center;justify-content:center">
+<div style="position:relative;width:84px;height:84px;border-radius:50%;border:8px solid #D2D2D7;box-sizing:border-box;background:#FFF;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.08)"><svg width="25" height="25" viewBox="0 0 17 17"><path d="M5.3 4.9a5.9 5.9 0 106.4 0" fill="none" stroke="#85858B" stroke-width="1.25" stroke-linecap="round"></path><path d="M8.5 1.8v6.4" fill="none" stroke="#85858B" stroke-width="1.25" stroke-linecap="round"></path></svg></div>
+</div>
+<div>
+<div style="font-size:20px;font-weight:800">Disconnected</div>
+<div style="font-size:12.5px;color:#85858B;margin-top:2px">Traffic goes out directly</div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<span style="white-space:nowrap;flex:none;background:#FFF;border:1px solid #E4E4E7;border-radius:6px;padding:4px 9px;font-size:11.5px;font-weight:600;color:#85858B">Watchdog on</span>
+</div>
+</div>
+<div style="margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:6px">
+<span style="background:rgba(10,124,255,.12);color:#0A7CFF;font-size:13px;font-weight:600;border-radius:8px;padding:7px 26px">Connect</span>
+<span style="font-size:11px;color:#85858B">via fczm.site</span>
+</div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:13px 16px;display:flex;flex-direction:column">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">THROUGHPUT</div>
+<div style="display:flex;gap:16px;margin-top:7px"><span style="font-size:15px;font-weight:700;color:#0F7BF5">↓ 0 KB/s</span><span style="font-size:15px;font-weight:700;color:#28BD4B">↑ 0 KB/s</span></div>
+<svg width="100%" height="40" viewBox="0 0 200 40" preserveAspectRatio="none" style="display:block;margin-top:auto"><path d="M0 20L200 20" fill="none" stroke="#D2D2D7" stroke-width=".8" stroke-dasharray="1.6 1.6"></path></svg>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:13px 16px;display:flex;flex-direction:column">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">LATENCY</div>
+<div style="display:flex;align-items:flex-end;gap:12px;margin-top:5px">
+<span style="font-size:24px;font-weight:800;color:#B0B0B5">—</span>
+
+</div>
+<svg width="100%" height="40" viewBox="0 0 200 40" preserveAspectRatio="none" style="display:block;margin-top:auto"><path d="M0 39.5L200 39.5" fill="none" stroke="#D2D2D7" stroke-width=".8" stroke-dasharray="1.6 1.6"></path></svg><div style="font-size:11px;color:#85858B;margin-top:6px">fczm.site · not connected</div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:13px 16px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">SERVER</div>
+<div style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:15px;height:15px;flex:none"><span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #0A7CFF;box-sizing:border-box"></span><span style="position:absolute;inset:3.5px;border-radius:50%;background:#0A7CFF"></span></span><span style="font-size:12.5px;font-weight:600">fczm.site</span><span style="margin-left:auto;font-size:10.5px;color:#B0B0B5">—</span></div>
+<div style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:15px;height:15px;flex:none"><span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #B4B4B9;box-sizing:border-box"></span></span><span style="font-size:12.5px;color:#4A4A4F">Osaka backup</span><span style="margin-left:auto;font-size:10.5px;color:#B0B0B5">—</span></div>
+<div style="margin-top:auto;font-size:12px;color:#0A7CFF;font-weight:500">+ Add server</div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 14px;display:flex;flex-direction:column;gap:7px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px;padding:2px 2px 0">OPTIONS</div>
+<div style="flex:1;min-height:34px;background:#F5F5F7;border-radius:10px;padding:0 12px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:12px;font-weight:600">Route Mac traffic</div><div style="font-size:9.5px;color:#85858B;margin-top:2px">Off</div></div>
+<div style="flex:1;min-height:34px;background:linear-gradient(180deg,#4E96F7,#3873F1);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:0 12px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:12px;font-weight:600;color:#FFF">Auto-reconnect</div><div style="font-size:9.5px;color:rgba(255,255,255,.85);margin-top:2px">Watchdog · On</div></div>
+<div style="flex:1;min-height:34px;background:linear-gradient(180deg,#4E96F7,#3873F1);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:0 12px;display:flex;flex-direction:column;justify-content:center"><div style="font-size:12px;font-weight:600;color:#FFF">Launch at login</div><div style="font-size:9.5px;color:rgba(255,255,255,.85);margin-top:2px">On</div></div>
+</div>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Servers">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Servers — light · 840×580</figcaption>
+<div style="width:840px;height:580px;background:#F2F2F5;border-radius:11px;box-shadow:0 22px 50px rgba(15,18,26,.25),0 0 0 1px rgba(0,0,0,.07);overflow:hidden;display:flex;position:relative;font-size:13px">
+<div style="width:188px;flex:none;background:#E9E9EB;border-right:1px solid #D9D9DC;display:flex;flex-direction:column;padding:12px 10px;box-sizing:border-box;position:relative">
+<div style="position:absolute;top:15px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#FF5F57"></span><span style="width:12px;height:12px;border-radius:50%;background:#FEBC2E"></span><span style="width:12px;height:12px;border-radius:50%;background:#28C840"></span></div>
+<div style="display:flex;align-items:center;gap:8px;margin:36px 4px 0"><img src="assets/app-icon.svg" width="22" height="22" style="border-radius:5px" alt=""><span style="font-size:13px;font-weight:600">Tunnel Proxy</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;margin-top:16px">
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="6.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M5.2 9.1l4.6-3.2-1.1 2.6h3.1l-4.6 3.2 1.1-2.6z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path></svg><span style="font-size:13px">Connection</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:#0A7CFF;color:#FFF"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="2.8" y="3.2" width="11.4" height="10.6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.3"></rect><path d="M2.8 6.7h11.4M2.8 10.2h11.4" fill="none" stroke="currentColor" stroke-width="1.3"></path></svg><span style="font-size:13px;font-weight:500">Servers</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="3.8" y="2.4" width="9.4" height="12.2" rx="1.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M6.2 5.7h4.6M6.2 8.5h4.6M6.2 11.3h3" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Logs</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.7 13.8V9.4M8.5 13.8V3.2M13.3 13.8V6.2" fill="none" stroke="#6E6E73" stroke-width="1.9" stroke-linecap="round"></path></svg><span style="font-size:13px">Statistics</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M8.5 1.9v2.1M8.5 13v2.1M1.9 8.5h2.1M13 8.5h2.1M3.8 3.8l1.5 1.5M11.7 11.7l1.5 1.5M13.2 3.8l-1.5 1.5M5.3 11.7l-1.5 1.5" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Settings</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M13.9 3.1a3 3 0 01-3.7 3.7L4.7 12.3a1.5 1.5 0 11-2.1-2.1l5.5-5.5a3 3 0 013.7-3.7L10.2 2.6l.3 1.8 1.8.3z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path><path d="M3.3 2.4l2.3 2.3M12 10.5l2.4 2.4a1.1 1.1 0 11-1.6 1.6L10.4 12" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Tools</span></div>
+</div>
+<div style="margin-top:auto;background:rgba(255,255,255,.65);border:1px solid #DDDDE0;border-radius:8px;padding:8px 10px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#28CD41"></span><span style="font-size:12px;font-weight:600">Connected</span><span style="margin-left:auto;font-size:10px;color:#1F9E38;font-weight:600">42 ms</span></div>
+<div style="font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:3px">59.136.225.99</div>
+</div>
+</div>
+<div style="flex:1;min-width:0;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center"><span style="font-size:16px;font-weight:700">Servers</span><span style="flex:1"></span><span style="display:flex;align-items:center;gap:6px;background:#0A7CFF;color:#FFF;border-radius:8px;padding:6px 14px;font-size:12.5px;font-weight:600"><svg width="11" height="11" viewBox="0 0 17 17"><path d="M8.5 3.6v9.8M3.6 8.5h9.8" fill="none" stroke="#FFF" stroke-width="1.8" stroke-linecap="round"></path></svg>Add Server</span></div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:14px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid #0A7CFF">
+<span style="position:relative;width:16px;height:16px;flex:none"><span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #0A7CFF;box-sizing:border-box"></span><span style="position:absolute;inset:3.5px;border-radius:50%;background:#0A7CFF"></span></span>
+<span style="min-width:0"><span style="display:block;font-size:13.5px;font-weight:600">fczm.site</span><span style="display:block;font-size:11px;color:#85858B;margin-top:2px">root@fczm.site:22 · Default keys / agent</span></span>
+<span style="margin-left:auto;display:flex;align-items:center;gap:14px">
+<span style="font-size:10.5px;color:#1F9E38;font-weight:600">● active · 42 ms</span>
+<svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.1 13.9l.7-2.9 7.3-7.3 2.2 2.2-7.3 7.3zM10.1 4.7l2.2 2.2" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.4 4.7h10.2M6.6 4.7V3.3h3.8v1.4M4.7 4.7l.7 9h6.2l.7-9M7.1 7.2v4M9.9 7.2v4" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:14px 16px;display:flex;align-items:center;gap:12px">
+<span style="position:relative;width:16px;height:16px;flex:none"><span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #B4B4B9;box-sizing:border-box"></span></span>
+<span style="min-width:0"><span style="display:block;font-size:13.5px;font-weight:600;color:#4A4A4F">Osaka backup</span><span style="display:block;font-size:11px;color:#85858B;margin-top:2px">deploy@osaka.example.net:22 · Private key file</span></span>
+<span style="margin-left:auto;display:flex;align-items:center;gap:14px">
+<span style="font-size:10.5px;color:#85858B">118 ms</span>
+<svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.1 13.9l.7-2.9 7.3-7.3 2.2 2.2-7.3 7.3zM10.1 4.7l2.2 2.2" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.4 4.7h10.2M6.6 4.7V3.3h3.8v1.4M4.7 4.7l.7 9h6.2l.7-9M7.1 7.2v4M9.9 7.2v4" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+</div>
+<div style="border:1.5px dashed #C9C9CE;border-radius:16px;padding:14px 16px;display:flex;align-items:center;justify-content:center;gap:8px;color:#85858B">
+<svg width="12" height="12" viewBox="0 0 17 17"><path d="M8.5 3.6v9.8M3.6 8.5h9.8" fill="none" stroke="#85858B" stroke-width="1.6" stroke-linecap="round"></path></svg><span style="font-size:12.5px">Add an SSH server to connect through</span>
+</div>
+<div style="margin-top:auto;font-size:11px;color:#85858B;padding:0 4px">Secrets are stored in the macOS Keychain — never in config.json. Click a card to make it active; editing opens the editor sheet.</div>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Logs">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Logs — light · 840×580</figcaption>
+<div style="width:840px;height:580px;background:#F2F2F5;border-radius:11px;box-shadow:0 22px 50px rgba(15,18,26,.25),0 0 0 1px rgba(0,0,0,.07);overflow:hidden;display:flex;position:relative;font-size:13px">
+<div style="width:188px;flex:none;background:#E9E9EB;border-right:1px solid #D9D9DC;display:flex;flex-direction:column;padding:12px 10px;box-sizing:border-box;position:relative">
+<div style="position:absolute;top:15px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#FF5F57"></span><span style="width:12px;height:12px;border-radius:50%;background:#FEBC2E"></span><span style="width:12px;height:12px;border-radius:50%;background:#28C840"></span></div>
+<div style="display:flex;align-items:center;gap:8px;margin:36px 4px 0"><img src="assets/app-icon.svg" width="22" height="22" style="border-radius:5px" alt=""><span style="font-size:13px;font-weight:600">Tunnel Proxy</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;margin-top:16px">
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="6.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M5.2 9.1l4.6-3.2-1.1 2.6h3.1l-4.6 3.2 1.1-2.6z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path></svg><span style="font-size:13px">Connection</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="2.8" y="3.2" width="11.4" height="10.6" rx="1.6" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M2.8 6.7h11.4M2.8 10.2h11.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></path></svg><span style="font-size:13px">Servers</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:#0A7CFF;color:#FFF"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="3.8" y="2.4" width="9.4" height="12.2" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.3"></rect><path d="M6.2 5.7h4.6M6.2 8.5h4.6M6.2 11.3h3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px;font-weight:500">Logs</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.7 13.8V9.4M8.5 13.8V3.2M13.3 13.8V6.2" fill="none" stroke="#6E6E73" stroke-width="1.9" stroke-linecap="round"></path></svg><span style="font-size:13px">Statistics</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M8.5 1.9v2.1M8.5 13v2.1M1.9 8.5h2.1M13 8.5h2.1M3.8 3.8l1.5 1.5M11.7 11.7l1.5 1.5M13.2 3.8l-1.5 1.5M5.3 11.7l-1.5 1.5" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Settings</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M13.9 3.1a3 3 0 01-3.7 3.7L4.7 12.3a1.5 1.5 0 11-2.1-2.1l5.5-5.5a3 3 0 013.7-3.7L10.2 2.6l.3 1.8 1.8.3z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path><path d="M3.3 2.4l2.3 2.3M12 10.5l2.4 2.4a1.1 1.1 0 11-1.6 1.6L10.4 12" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Tools</span></div>
+</div>
+<div style="margin-top:auto;background:rgba(255,255,255,.65);border:1px solid #DDDDE0;border-radius:8px;padding:8px 10px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#28CD41"></span><span style="font-size:12px;font-weight:600">Connected</span><span style="margin-left:auto;font-size:10px;color:#1F9E38;font-weight:600">42 ms</span></div>
+<div style="font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:3px">59.136.225.99</div>
+</div>
+</div>
+<div style="flex:1;min-width:0;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px;font-weight:700">Logs</span>
+<span style="flex:1"></span>
+<span style="width:220px;background:#FFF;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:6px 10px;font-size:12.5px;color:#A9A9AE;box-sizing:border-box">Filter…</span>
+<span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3.5px;background:linear-gradient(180deg,#4C9AFF,#2E7BF6);display:flex;align-items:center;justify-content:center"><svg width="10" height="10" viewBox="0 0 17 17"><path d="M3.8 9.1l3 3.1 6.4-7" fill="none" stroke="#FFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12.5px">Auto-scroll</span></span>
+<span style="display:flex;align-items:center;gap:6px;background:#FFF;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:6px 12px"><svg width="13" height="13" viewBox="0 0 17 17"><path d="M3.4 4.7h10.2M6.6 4.7V3.3h3.8v1.4M4.7 4.7l.7 9h6.2l.7-9M7.1 7.2v4M9.9 7.2v4" fill="none" stroke="#1D1D1F" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-size:12.5px">Clear</span></span>
+</div>
+<div style="flex:1;min-height:0;background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:14px 16px;font:11.5px 'SF Mono','Roboto Mono',ui-monospace,monospace;line-height:1.8;overflow:hidden">
+<div>[12:37:01] Connecting to fczm.site…</div>
+<div>[12:37:01] $ ssh -N -D 1080 root@fczm.site -p 22</div>
+<div>[12:37:02] SOCKS5 tunnel listening on 127.0.0.1:1080</div>
+<div>[12:37:02] privoxy 3.0.34 starting on 127.0.0.1:8118</div>
+<div>[12:37:03] privoxy: listen-address 127.0.0.1:8118 OK</div>
+<div style="color:#1F9E38">[12:37:04] Health check passed — exit IP 59.136.225.99</div>
+<div style="color:#1F9E38">[12:37:04] ✓ Connected — tunnel + HTTP proxy active</div>
+<div>[12:39:12] watchdog: check OK (2.1s)</div>
+<div>[12:41:12] watchdog: check OK (1.7s)</div>
+<div>[12:45:30] watchdog: check OK (1.8s)</div>
+<div>[12:47:02] networksetup: SOCKS proxy enabled on Wi-Fi</div>
+<div style="color:#C77800">[12:50:44] watchdog: sluggish response (4.9s)</div>
+<div>[12:50:52] watchdog: check OK (1.4s)</div>
+<div>[12:52:12] watchdog: check OK (1.6s)</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px">
+<span style="width:8px;height:8px;border-radius:50%;background:#28CD41"></span><span style="font-size:11px;color:#85858B">Streaming · 128 lines</span>
+<span style="flex:1"></span><span style="font-size:11px;color:#B0B0B5">~/Library/Application Support/TunnelProxy/tunnel.log</span>
+</div>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Statistics">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Statistics — light · 840×600</figcaption>
+<div style="width:840px;height:600px;background:#F2F2F5;border-radius:11px;box-shadow:0 22px 50px rgba(15,18,26,.25),0 0 0 1px rgba(0,0,0,.07);overflow:hidden;display:flex;position:relative;font-size:13px">
+<div style="width:188px;flex:none;background:#E9E9EB;border-right:1px solid #D9D9DC;display:flex;flex-direction:column;padding:12px 10px;box-sizing:border-box;position:relative">
+<div style="position:absolute;top:15px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#FF5F57"></span><span style="width:12px;height:12px;border-radius:50%;background:#FEBC2E"></span><span style="width:12px;height:12px;border-radius:50%;background:#28C840"></span></div>
+<div style="display:flex;align-items:center;gap:8px;margin:36px 4px 0"><img src="assets/app-icon.svg" width="22" height="22" style="border-radius:5px" alt=""><span style="font-size:13px;font-weight:600">Tunnel Proxy</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;margin-top:16px">
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="6.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M5.2 9.1l4.6-3.2-1.1 2.6h3.1l-4.6 3.2 1.1-2.6z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path></svg><span style="font-size:13px">Connection</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="2.8" y="3.2" width="11.4" height="10.6" rx="1.6" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M2.8 6.7h11.4M2.8 10.2h11.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></path></svg><span style="font-size:13px">Servers</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="3.8" y="2.4" width="9.4" height="12.2" rx="1.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M6.2 5.7h4.6M6.2 8.5h4.6M6.2 11.3h3" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Logs</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:#0A7CFF;color:#FFF"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.7 13.8V9.4M8.5 13.8V3.2M13.3 13.8V6.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg><span style="font-size:13px;font-weight:500">Statistics</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M8.5 1.9v2.1M8.5 13v2.1M1.9 8.5h2.1M13 8.5h2.1M3.8 3.8l1.5 1.5M11.7 11.7l1.5 1.5M13.2 3.8l-1.5 1.5M5.3 11.7l-1.5 1.5" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Settings</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M13.9 3.1a3 3 0 01-3.7 3.7L4.7 12.3a1.5 1.5 0 11-2.1-2.1l5.5-5.5a3 3 0 013.7-3.7L10.2 2.6l.3 1.8 1.8.3z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path><path d="M3.3 2.4l2.3 2.3M12 10.5l2.4 2.4a1.1 1.1 0 11-1.6 1.6L10.4 12" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Tools</span></div>
+</div>
+<div style="margin-top:auto;background:rgba(255,255,255,.65);border:1px solid #DDDDE0;border-radius:8px;padding:8px 10px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#28CD41"></span><span style="font-size:12px;font-weight:600">Connected</span><span style="margin-left:auto;font-size:10px;color:#1F9E38;font-weight:600">42 ms</span></div>
+<div style="font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:3px">59.136.225.99</div>
+</div>
+</div>
+<div style="flex:1;min-width:0;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:12px"><span style="font-size:16px;font-weight:700">Statistics</span>
+<span style="flex:1"></span>
+<span style="display:flex;background:#E7E7EA;border-radius:7px;padding:1px;height:24px;box-sizing:border-box;align-items:center"><span style="display:flex;align-items:center;justify-content:center;width:62px;height:20px;background:#FFF;border-radius:6px;box-shadow:0 1px 2.5px rgba(0,0,0,.15);font-size:12.5px">Today</span><span style="width:62px;text-align:center;font-size:12.5px;color:#4A4A4F">Week</span><span style="width:62px;text-align:center;font-size:12.5px;color:#4A4A4F">Month</span><span style="width:50px;text-align:center;font-size:12.5px;color:#4A4A4F">All</span></span>
+<span style="display:flex;align-items:center;gap:14px;background:#FFF;border-radius:6px;box-shadow:0 0 0 .5px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.08);padding:2px 2px 2px 10px"><span style="font-size:12.5px">All servers</span><span style="width:18px;height:18px;border-radius:4.5px;background:linear-gradient(180deg,#4C9AFF,#2E7BF6);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 17 17"><path d="M5.3 6.4l3.2-3.2 3.2 3.2M5.3 10.6l3.2 3.2 3.2-3.2" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></span>
+</div>
+<div style="display:flex;gap:12px">
+<span style="flex:1;background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px"><span style="display:block;font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">DOWNLOADED</span><span style="display:block;font-size:21px;font-weight:800;color:#0F7BF5;margin-top:4px">364.9 MB</span></span>
+<span style="flex:1;background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px"><span style="display:block;font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">UPLOADED</span><span style="display:block;font-size:21px;font-weight:800;color:#28BD4B;margin-top:4px">1.20 GB</span></span>
+<span style="flex:1;background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px"><span style="display:block;font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">TOTAL</span><span style="display:block;font-size:21px;font-weight:800;margin-top:4px">1.55 GB</span></span>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:13px 16px;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center"><span style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">USAGE OVER TIME</span><span style="flex:1"></span><span style="display:flex;gap:12px;font-size:11px;color:#5F5F65"><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:2px;background:#0F7BF5"></span>Down</span><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:2px;background:#28BD4B"></span>Up</span></span></div>
+<div style="position:relative;height:110px;margin-top:10px">
+<div style="position:absolute;left:0;right:0;top:0;border-top:1px dashed #ECECEF"></div>
+<div style="position:absolute;left:0;right:0;top:50%;border-top:1px dashed #ECECEF"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;border-top:1px solid #E4E4E7"></div>
+<div style="position:absolute;bottom:0;left:16%;width:16px;height:2px;background:#28BD4B;border-radius:2px"></div>
+<div style="position:absolute;bottom:0;left:22%;width:16px;height:3px;background:#28BD4B;border-radius:2px"></div>
+<div style="position:absolute;bottom:0;left:58%;width:16px;height:35px;background:#0F7BF5;border-radius:4px 4px 0 0"></div>
+<div style="position:absolute;bottom:0;left:63%;width:16px;height:29px;background:#28BD4B;border-radius:4px 4px 0 0"></div>
+<div style="position:absolute;bottom:0;left:71%;width:16px;height:5px;background:#28BD4B;border-radius:2px"></div>
+<div style="position:absolute;bottom:0;left:78%;width:16px;height:17px;background:#28BD4B;border-radius:4px 4px 0 0"></div>
+<div style="position:absolute;bottom:0;left:87%;width:16px;height:97px;background:#28BD4B;border-radius:4px 4px 0 0"></div>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:10.5px;color:#B0B0B5;margin-top:5px"><span>00</span><span>03</span><span>06</span><span>09</span><span>12</span></div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:4px 16px;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px solid #F2F2F4"><span style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">SESSIONS</span><span style="flex:1"></span><span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#0A7CFF"><svg width="12" height="12" viewBox="0 0 17 17"><path d="M8.5 1.8v8M5.6 4.4l2.9-2.8 2.9 2.8M4.6 7.2H3.4v7.4h10.2V7.2h-1.2" fill="none" stroke="#0A7CFF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>Export CSV</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:7px 0"><span style="width:8px;height:8px;border-radius:50%;background:#28CD41;flex:none"></span><span style="width:126px;font:12px 'SF Mono','Roboto Mono',ui-monospace,monospace">12:50:00–…</span><span style="font-size:12px;color:#85858B">fczm.site</span><span style="flex:1"></span><span style="width:80px;text-align:right;font-size:12px;color:#0F7BF5">↓ 792 KB</span><span style="width:80px;text-align:right;font-size:12px;color:#28BD4B">↑ 61.7 MB</span></div>
+<div style="height:1px;background:#F2F2F4"></div>
+<div style="display:flex;align-items:center;gap:10px;padding:7px 0"><span style="width:8px;height:8px;border-radius:50%;background:#28CD41;flex:none"></span><span style="width:126px;font:12px 'SF Mono','Roboto Mono',ui-monospace,monospace">12:47:00–…</span><span style="font-size:12px;color:#85858B">fczm.site</span><span style="flex:1"></span><span style="width:80px;text-align:right;font-size:12px;color:#0F7BF5">↓ 167 KB</span><span style="width:80px;text-align:right;font-size:12px;color:#28BD4B">↑ 74.4 MB</span></div>
+<div style="height:1px;background:#F2F2F4"></div>
+<div style="display:flex;align-items:center;gap:10px;padding:7px 0"><span style="width:8px;height:8px;border-radius:50%;background:#28CD41;flex:none"></span><span style="width:126px;font:12px 'SF Mono','Roboto Mono',ui-monospace,monospace">12:45:00–…</span><span style="font-size:12px;color:#85858B">fczm.site</span><span style="flex:1"></span><span style="width:80px;text-align:right;font-size:12px;color:#0F7BF5">↓ 98 KB</span><span style="width:80px;text-align:right;font-size:12px;color:#28BD4B">↑ 46.0 MB</span></div>
+<div style="margin-top:auto;display:flex;align-items:center;gap:6px;padding:7px 0;border-top:1px solid #F2F2F4"><span style="width:7px;height:7px;border-radius:50%;background:#28CD41"></span><span style="font-size:11px;color:#85858B">Recording since Jul 15, 2026</span></div>
+</div>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Settings (Tunnel + Advanced merged)">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Settings — merged Tunnel + Advanced · 840×640</figcaption>
+<div style="width:840px;height:640px;background:#F2F2F5;border-radius:11px;box-shadow:0 22px 50px rgba(15,18,26,.25),0 0 0 1px rgba(0,0,0,.07);overflow:hidden;display:flex;position:relative;font-size:13px">
+<div style="width:188px;flex:none;background:#E9E9EB;border-right:1px solid #D9D9DC;display:flex;flex-direction:column;padding:12px 10px;box-sizing:border-box;position:relative">
+<div style="position:absolute;top:15px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#FF5F57"></span><span style="width:12px;height:12px;border-radius:50%;background:#FEBC2E"></span><span style="width:12px;height:12px;border-radius:50%;background:#28C840"></span></div>
+<div style="display:flex;align-items:center;gap:8px;margin:36px 4px 0"><img src="assets/app-icon.svg" width="22" height="22" style="border-radius:5px" alt=""><span style="font-size:13px;font-weight:600">Tunnel Proxy</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;margin-top:16px">
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="6.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M5.2 9.1l4.6-3.2-1.1 2.6h3.1l-4.6 3.2 1.1-2.6z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path></svg><span style="font-size:13px">Connection</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="2.8" y="3.2" width="11.4" height="10.6" rx="1.6" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M2.8 6.7h11.4M2.8 10.2h11.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></path></svg><span style="font-size:13px">Servers</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="3.8" y="2.4" width="9.4" height="12.2" rx="1.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M6.2 5.7h4.6M6.2 8.5h4.6M6.2 11.3h3" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Logs</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.7 13.8V9.4M8.5 13.8V3.2M13.3 13.8V6.2" fill="none" stroke="#6E6E73" stroke-width="1.9" stroke-linecap="round"></path></svg><span style="font-size:13px">Statistics</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:#0A7CFF;color:#FFF"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.7" fill="none" stroke="currentColor" stroke-width="1.3"></circle><path d="M8.5 1.9v2.1M8.5 13v2.1M1.9 8.5h2.1M13 8.5h2.1M3.8 3.8l1.5 1.5M11.7 11.7l1.5 1.5M13.2 3.8l-1.5 1.5M5.3 11.7l-1.5 1.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px;font-weight:500">Settings</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M13.9 3.1a3 3 0 01-3.7 3.7L4.7 12.3a1.5 1.5 0 11-2.1-2.1l5.5-5.5a3 3 0 013.7-3.7L10.2 2.6l.3 1.8 1.8.3z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path><path d="M3.3 2.4l2.3 2.3M12 10.5l2.4 2.4a1.1 1.1 0 11-1.6 1.6L10.4 12" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Tools</span></div>
+</div>
+<div style="margin-top:auto;background:rgba(255,255,255,.65);border:1px solid #DDDDE0;border-radius:8px;padding:8px 10px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#28CD41"></span><span style="font-size:12px;font-weight:600">Connected</span><span style="margin-left:auto;font-size:10px;color:#1F9E38;font-weight:600">42 ms</span></div>
+<div style="font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:3px">59.136.225.99</div>
+</div>
+</div>
+<div style="flex:1;min-width:0;padding:16px;display:flex;flex-direction:column;gap:11px;overflow:hidden">
+<div style="display:flex;align-items:center"><span style="font-size:16px;font-weight:700">Settings</span><span style="flex:1"></span><span style="font-size:11px;color:#85858B">Changes apply immediately</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;align-content:start;flex:1;min-height:0">
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">PORTS</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px"><span style="font-size:12.5px">SOCKS Port</span><span style="background:#F5F5F7;border:1px solid #E4E4E7;border-radius:6px;padding:2px 8px;font:12px 'SF Mono','Roboto Mono',ui-monospace,monospace;min-width:48px;text-align:right">1080</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:12.5px">HTTP Proxy Port</span><span style="background:#F5F5F7;border:1px solid #E4E4E7;border-radius:6px;padding:2px 8px;font:12px 'SF Mono','Roboto Mono',ui-monospace,monospace;min-width:48px;text-align:right">8118</span></div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">STARTUP</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px"><span style="font-size:12.5px">Launch at login</span><span style="flex:none;width:34px;height:20px;border-radius:10px;background:linear-gradient(180deg,#4E96F7,#3873F1);display:inline-flex;justify-content:flex-end;padding:1.5px;box-sizing:border-box"><span style="width:17px;height:17px;border-radius:50%;background:#FFF;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:12.5px">Auto-connect on launch</span><span style="flex:none;width:34px;height:20px;border-radius:10px;background:#D2D2D7;display:inline-flex;justify-content:flex-start;padding:1.5px;box-sizing:border-box"><span style="width:17px;height:17px;border-radius:50%;background:#FFF;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">MACOS</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px"><span style="font-size:12.5px">Network Service</span><span style="display:flex;align-items:center;gap:12px;background:#FFF;border-radius:6px;box-shadow:0 0 0 .5px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.08);padding:2px 2px 2px 9px"><span style="font-size:12px">Wi-Fi</span><span style="width:16px;height:16px;border-radius:4px;background:linear-gradient(180deg,#4C9AFF,#2E7BF6);display:flex;align-items:center;justify-content:center"><svg width="10" height="10" viewBox="0 0 17 17"><path d="M5.3 6.4l3.2-3.2 3.2 3.2M5.3 10.6l3.2 3.2 3.2-3.2" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:12.5px">Auto-reconnect (watchdog)</span><span style="flex:none;width:34px;height:20px;border-radius:10px;background:linear-gradient(180deg,#4E96F7,#3873F1);display:inline-flex;justify-content:flex-end;padding:1.5px;box-sizing:border-box"><span style="width:17px;height:17px;border-radius:50%;background:#FFF;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:12.5px">Watchdog Interval (s)</span><span style="background:#F5F5F7;border:1px solid #E4E4E7;border-radius:6px;padding:2px 8px;font:12px 'SF Mono','Roboto Mono',ui-monospace,monospace;min-width:48px;text-align:right">15</span></div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">MENU BAR</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px"><span style="font-size:12.5px">Show menu bar icon</span><span style="flex:none;width:34px;height:20px;border-radius:10px;background:linear-gradient(180deg,#4E96F7,#3873F1);display:inline-flex;justify-content:flex-end;padding:1.5px;box-sizing:border-box"><span style="width:17px;height:17px;border-radius:50%;background:#FFF;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:12.5px">Show network speed</span><span style="flex:none;width:34px;height:20px;border-radius:10px;background:linear-gradient(180deg,#4E96F7,#3873F1);display:inline-flex;justify-content:flex-end;padding:1.5px;box-sizing:border-box"><span style="width:17px;height:17px;border-radius:50%;background:#FFF;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">RUNTIME</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:9px"><span style="width:15px;height:15px;border-radius:50%;background:#28BD4B;display:flex;align-items:center;justify-content:center;flex:none"><svg width="9" height="9" viewBox="0 0 17 17"><path d="M3.8 9.1l3 3.1 6.4-7" fill="none" stroke="#FFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12.5px">privoxy (bundled)</span><span style="margin-left:auto;font-size:10.5px;color:#85858B">included</span></div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:8px"><span style="width:15px;height:15px;border-radius:50%;background:#28BD4B;display:flex;align-items:center;justify-content:center;flex:none"><svg width="9" height="9" viewBox="0 0 17 17"><path d="M3.8 9.1l3 3.1 6.4-7" fill="none" stroke="#FFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12.5px">ssh</span><span style="margin-left:auto;font:10.5px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B">/usr/bin/ssh</span></div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:8px"><span style="width:15px;height:15px;border-radius:50%;background:#28BD4B;display:flex;align-items:center;justify-content:center;flex:none"><svg width="9" height="9" viewBox="0 0 17 17"><path d="M3.8 9.1l3 3.1 6.4-7" fill="none" stroke="#FFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12.5px">curl</span><span style="margin-left:auto;font:10.5px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B">/usr/bin/curl</span></div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">STATISTICS</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px"><span style="font-size:12.5px">Record traffic statistics</span><span style="flex:none;width:34px;height:20px;border-radius:10px;background:linear-gradient(180deg,#4E96F7,#3873F1);display:inline-flex;justify-content:flex-end;padding:1.5px;box-sizing:border-box"><span style="width:17px;height:17px;border-radius:50%;background:#FFF;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+<div style="font-size:10.5px;color:#85858B;margin-top:7px;line-height:1.5">Records byte volume over time — not the sites you visit. Stored locally only.</div>
+<div style="font-size:12px;color:#E5372B;margin-top:8px">Clear statistics…</div>
+</div>
+<div style="grid-column:1/3;background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 16px">
+<div style="font-size:10.5px;font-weight:700;color:#85858B;letter-spacing:.6px">FILES</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:9px"><span style="font-size:12.5px">Config</span><span style="font:10.5px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B">~/Library/Application Support/TunnelProxy/config.json</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:8px"><span style="font-size:12.5px">Logs</span><span style="font:10.5px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B">~/Library/Application Support/TunnelProxy/tunnel.log</span></div>
+<div style="font-size:12px;color:#0A7CFF;margin-top:8px">Reveal in Finder</div>
+</div>
+</div>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Tools">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Tools — light · 840×580</figcaption>
+<div style="width:840px;height:580px;background:#F2F2F5;border-radius:11px;box-shadow:0 22px 50px rgba(15,18,26,.25),0 0 0 1px rgba(0,0,0,.07);overflow:hidden;display:flex;position:relative;font-size:13px">
+<div style="width:188px;flex:none;background:#E9E9EB;border-right:1px solid #D9D9DC;display:flex;flex-direction:column;padding:12px 10px;box-sizing:border-box;position:relative">
+<div style="position:absolute;top:15px;left:16px;display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#FF5F57"></span><span style="width:12px;height:12px;border-radius:50%;background:#FEBC2E"></span><span style="width:12px;height:12px;border-radius:50%;background:#28C840"></span></div>
+<div style="display:flex;align-items:center;gap:8px;margin:36px 4px 0"><img src="assets/app-icon.svg" width="22" height="22" style="border-radius:5px" alt=""><span style="font-size:13px;font-weight:600">Tunnel Proxy</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;margin-top:16px">
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="6.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M5.2 9.1l4.6-3.2-1.1 2.6h3.1l-4.6 3.2 1.1-2.6z" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linejoin="round"></path></svg><span style="font-size:13px">Connection</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="2.8" y="3.2" width="11.4" height="10.6" rx="1.6" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M2.8 6.7h11.4M2.8 10.2h11.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></path></svg><span style="font-size:13px">Servers</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><rect x="3.8" y="2.4" width="9.4" height="12.2" rx="1.4" fill="none" stroke="#6E6E73" stroke-width="1.3"></rect><path d="M6.2 5.7h4.6M6.2 8.5h4.6M6.2 11.3h3" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Logs</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M3.7 13.8V9.4M8.5 13.8V3.2M13.3 13.8V6.2" fill="none" stroke="#6E6E73" stroke-width="1.9" stroke-linecap="round"></path></svg><span style="font-size:13px">Statistics</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;color:#1D1D1F"><svg width="15" height="15" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="2.7" fill="none" stroke="#6E6E73" stroke-width="1.3"></circle><path d="M8.5 1.9v2.1M8.5 13v2.1M1.9 8.5h2.1M13 8.5h2.1M3.8 3.8l1.5 1.5M11.7 11.7l1.5 1.5M13.2 3.8l-1.5 1.5M5.3 11.7l-1.5 1.5" fill="none" stroke="#6E6E73" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px">Settings</span></div>
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:#0A7CFF;color:#FFF"><svg width="15" height="15" viewBox="0 0 17 17"><path d="M13.9 3.1a3 3 0 01-3.7 3.7L4.7 12.3a1.5 1.5 0 11-2.1-2.1l5.5-5.5a3 3 0 013.7-3.7L10.2 2.6l.3 1.8 1.8.3z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path><path d="M3.3 2.4l2.3 2.3M12 10.5l2.4 2.4a1.1 1.1 0 11-1.6 1.6L10.4 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg><span style="font-size:13px;font-weight:500">Tools</span></div>
+</div>
+<div style="margin-top:auto;background:rgba(255,255,255,.65);border:1px solid #DDDDE0;border-radius:8px;padding:8px 10px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#28CD41"></span><span style="font-size:12px;font-weight:600">Connected</span><span style="margin-left:auto;font-size:10px;color:#1F9E38;font-weight:600">42 ms</span></div>
+<div style="font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:3px">59.136.225.99</div>
+</div>
+</div>
+<div style="flex:1;min-width:0;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:16px;font-weight:700">Tools</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:14px 16px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span><span style="display:block;font-size:13.5px;font-weight:600">Route Claude Code through this proxy</span><span style="display:block;font-size:11px;color:#85858B;margin-top:3px;line-height:1.5">Adds the HTTP proxy env keys to ~/.claude/settings.json, pointing Claude Code at http://127.0.0.1:8118. Other settings are left untouched.</span></span><span style="flex:none;width:34px;height:20px;border-radius:10px;background:linear-gradient(180deg,#4E96F7,#3873F1);display:inline-flex;justify-content:flex-end;padding:1.5px;box-sizing:border-box;margin-left:20px"><span style="width:17px;height:17px;border-radius:50%;background:#FFF;box-shadow:0 1px 2px rgba(0,0,0,.3)"></span></span></div>
+<div style="font-size:11px;color:#1F9E38;margin-top:8px">Claude Code will use this proxy.</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:10px;padding-top:10px;border-top:1px solid #F2F2F4"><span style="font-size:12.5px">Settings file</span><span style="display:flex;align-items:center;gap:12px"><span style="font:10.5px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B">~/.claude/settings.json</span><span style="font-size:12px;color:#0A7CFF">Reveal</span></span></div>
+</div>
+<div style="background:#FFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:14px 16px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span><span style="display:block;font-size:13.5px;font-weight:600;color:#E5372B">Remove All Proxies</span><span style="display:block;font-size:11px;color:#85858B;margin-top:3px;line-height:1.5">Turns off HTTP, HTTPS, SOCKS, and auto (PAC) proxies for the Wi-Fi network service.</span></span><span style="flex:none;background:rgba(255,59,48,.1);color:#E5372B;font-size:12px;font-weight:600;border-radius:8px;padding:6px 16px;margin-left:20px">Remove…</span></div>
+</div>
+<div style="margin-top:auto;font-size:11px;color:#85858B;padding:0 4px">Requires admin rights — macOS prompts when toggling system proxies.</div>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Popover">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Menu bar popover</figcaption>
+<div style="width:310px;background:#F2F2F5;border-radius:14px;box-shadow:0 18px 44px rgba(15,18,26,.32),0 0 0 .5px rgba(0,0,0,.12);padding:12px;box-sizing:border-box">
+<div style="background:linear-gradient(120deg,#E4F8E9,#FFFFFF 60%);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 14px;display:flex;align-items:center;gap:12px">
+<div style="width:46px;height:46px;border-radius:50%;border:5px solid #28CD41;box-sizing:border-box;background:#FFF;display:flex;align-items:center;justify-content:center;flex:none"><svg width="17" height="17" viewBox="0 0 17 17"><path d="M5.3 4.9a5.9 5.9 0 106.4 0" fill="none" stroke="#28CD41" stroke-width="1.4" stroke-linecap="round"></path><path d="M8.5 1.8v6.4" fill="none" stroke="#28CD41" stroke-width="1.4" stroke-linecap="round"></path></svg></div>
+<span><span style="display:block;font-size:14px;font-weight:800">Connected</span><span style="display:block;font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:2px">59.136.225.99</span></span>
+<span style="margin-left:auto;font-size:11px;font-weight:600;color:#1F9E38">● 42 ms</span>
+</div>
+<div style="display:flex;gap:8px;margin-top:8px">
+<div style="flex:1;background:#FFF;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:10px 12px">
+<div style="font-size:9.5px;font-weight:700;color:#85858B;letter-spacing:.6px">SPEED</div>
+<div style="font-size:12px;font-weight:700;color:#0F7BF5;margin-top:4px">↓ 1.2 MB/s</div>
+<div style="font-size:12px;font-weight:700;color:#28BD4B;margin-top:1px">↑ 340 KB/s</div>
+</div>
+<div style="flex:1;background:#FFF;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:10px 12px">
+<div style="font-size:9.5px;font-weight:700;color:#85858B;letter-spacing:.6px">SERVER</div>
+<div style="font-size:12px;font-weight:600;margin-top:4px">fczm.site</div>
+<div style="font-size:10.5px;color:#0A7CFF;margin-top:2px">Switch ▾</div>
+</div>
+</div>
+<div style="display:flex;gap:8px;margin-top:8px">
+<div style="flex:1;background:linear-gradient(180deg,#4E96F7,#3873F1);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:10px 12px"><div style="font-size:11.5px;font-weight:600;color:#FFF">Route Mac traffic</div><div style="font-size:10px;color:rgba(255,255,255,.85);margin-top:3px">On</div></div>
+<div style="flex:1;background:linear-gradient(180deg,#4E96F7,#3873F1);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:10px 12px"><div style="font-size:11.5px;font-weight:600;color:#FFF">Auto-reconnect</div><div style="font-size:10px;color:rgba(255,255,255,.85);margin-top:3px">Watchdog · On</div></div>
+</div>
+<div style="background:rgba(255,59,48,.1);color:#E5372B;border-radius:10px;padding:8px 0;text-align:center;font-size:13px;font-weight:700;margin-top:8px">Disconnect</div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<span style="flex:1;text-align:center;background:#FFF;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:8px 0;font-size:12.5px;font-weight:600;color:#0A7CFF">Open App</span>
+<span style="flex:1;text-align:center;background:#FFF;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:8px 0;font-size:12.5px;font-weight:600;color:#5F5F65">Quit</span>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Popover disconnected">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Menu bar popover — disconnected</figcaption>
+<div style="width:310px;background:#F2F2F5;border-radius:14px;box-shadow:0 18px 44px rgba(15,18,26,.32),0 0 0 .5px rgba(0,0,0,.12);padding:12px;box-sizing:border-box">
+<div style="background:linear-gradient(120deg,#F1F1F4,#FFFFFF 60%);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 14px;display:flex;align-items:center;gap:12px">
+<div style="width:46px;height:46px;border-radius:50%;border:5px solid #D2D2D7;box-sizing:border-box;background:#FFF;display:flex;align-items:center;justify-content:center;flex:none"><svg width="17" height="17" viewBox="0 0 17 17"><path d="M5.3 4.9a5.9 5.9 0 106.4 0" fill="none" stroke="#85858B" stroke-width="1.4" stroke-linecap="round"></path><path d="M8.5 1.8v6.4" fill="none" stroke="#85858B" stroke-width="1.4" stroke-linecap="round"></path></svg></div>
+<span><span style="display:block;font-size:14px;font-weight:800">Disconnected</span><span style="display:block;font-size:11px;color:#85858B;margin-top:2px">Traffic goes out directly</span></span>
+</div>
+<div style="display:flex;gap:8px;margin-top:8px">
+<div style="flex:1;background:#FFF;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:10px 12px">
+<div style="font-size:9.5px;font-weight:700;color:#85858B;letter-spacing:.6px">SPEED</div>
+<div style="font-size:12px;font-weight:700;color:#0F7BF5;margin-top:4px">↓ 0 KB/s</div>
+<div style="font-size:12px;font-weight:700;color:#28BD4B;margin-top:1px">↑ 0 KB/s</div>
+</div>
+<div style="flex:1;background:#FFF;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:10px 12px">
+<div style="font-size:9.5px;font-weight:700;color:#85858B;letter-spacing:.6px">SERVER</div>
+<div style="font-size:12px;font-weight:600;margin-top:4px">fczm.site</div>
+<div style="font-size:10.5px;color:#0A7CFF;margin-top:2px">Switch ▾</div>
+</div>
+</div>
+<div style="display:flex;gap:8px;margin-top:8px">
+<div style="flex:1;background:#FFF;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:10px 12px"><div style="font-size:11.5px;font-weight:600">Route Mac traffic</div><div style="font-size:10px;color:#85858B;margin-top:3px">Off</div></div>
+<div style="flex:1;background:linear-gradient(180deg,#4E96F7,#3873F1);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:10px 12px"><div style="font-size:11.5px;font-weight:600;color:#FFF">Auto-reconnect</div><div style="font-size:10px;color:rgba(255,255,255,.85);margin-top:3px">Watchdog · On</div></div>
+</div>
+<div style="background:rgba(10,124,255,.12);color:#0A7CFF;border-radius:10px;padding:8px 0;text-align:center;font-size:13px;font-weight:700;margin-top:8px">Connect</div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<span style="flex:1;text-align:center;background:#FFF;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:8px 0;font-size:12.5px;font-weight:600;color:#0A7CFF">Open App</span>
+<span style="flex:1;text-align:center;background:#FFF;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:8px 0;font-size:12.5px;font-weight:600;color:#5F5F65">Quit</span>
+</div>
+</div>
+</figure>
+
+<figure style="margin:0" data-screen-label="2a · Mini window">
+<figcaption style="font:12px 'Roboto Mono',monospace;color:#8A8F99;margin:0 0 10px 2px">Compact mini-window</figcaption>
+<div style="width:300px;background:linear-gradient(120deg,#E4F8E9,#FFFFFF 60%);border-radius:16px;box-shadow:0 16px 38px rgba(15,18,26,.28),0 0 0 1px rgba(0,0,0,.06);padding:14px 16px;box-sizing:border-box">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:52px;height:52px;border-radius:50%;border:5.5px solid #28CD41;box-sizing:border-box;background:#FFF;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 2px 5px rgba(0,0,0,.1)"><svg width="18" height="18" viewBox="0 0 17 17"><path d="M5.3 4.9a5.9 5.9 0 106.4 0" fill="none" stroke="#28CD41" stroke-width="1.35" stroke-linecap="round"></path><path d="M8.5 1.8v6.4" fill="none" stroke="#28CD41" stroke-width="1.35" stroke-linecap="round"></path></svg></div>
+<span><span style="display:block;font-size:14px;font-weight:800">Connected</span><span style="display:block;font:11px 'SF Mono','Roboto Mono',ui-monospace,monospace;color:#85858B;margin-top:2px">59.136.225.99</span></span>
+<span style="margin-left:auto;align-self:flex-start;font-size:10.5px;font-weight:600;color:#1F9E38">42 ms</span>
+</div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<span style="flex:1;background:rgba(255,255,255,.75);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;color:#0F7BF5">↓ 1.2 MB/s</span>
+<span style="flex:1;background:rgba(255,255,255,.75);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;color:#28BD4B">↑ 340 KB/s</span>
+<span style="flex:none;background:rgba(255,59,48,.1);color:#E5372B;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700">Stop</span>
+</div>
+</div>
+<div style="font:11px 'Roboto Mono',monospace;color:#8A8F99;margin-top:8px;max-width:300px">⌥-click the menu bar icon → always-on-top panel</div>
+</figure>
+</div>
+</div>
+</section>
+
+</x-dc>
+</body>
+</html>

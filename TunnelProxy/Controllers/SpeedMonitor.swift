@@ -25,6 +25,19 @@ final class SpeedMonitor: ObservableObject {
     @Published private(set) var downText: String = "0 KB/s"
     @Published private(set) var upText: String = "0 KB/s"
 
+    /// Live down/up byte-rate values (bytes per second), for the tiles that show
+    /// numeric throughput without re-parsing the formatted text.
+    @Published private(set) var downRate: Double = 0
+    @Published private(set) var upRate: Double = 0
+
+    /// A rolling window of recent per-second throughput samples, oldest first.
+    /// Drives the Connection tab's sparkline. Capped at `historyCapacity`.
+    @Published private(set) var history: [SpeedSample] = []
+    private let historyCapacity = 60
+    /// The rolling-window size, exposed so charts can pin their x-domain to the
+    /// full width (bars fill from the left, then scroll).
+    var historyCapacityValue: Int { historyCapacity }
+
     /// Invoked once per sampling tick with the bytes transferred since the last
     /// tick and the elapsed interval. `TrafficRecorder` subscribes to persist a
     /// usage time-series — reusing these deltas means no second sampling pass and
@@ -61,6 +74,9 @@ final class SpeedMonitor: ObservableObject {
         prev = [:]
         prevAt = nil
         showZero()
+        downRate = 0
+        upRate = 0
+        history.removeAll()
     }
 
     /// Follow a SOCKS port change from Settings.
@@ -106,9 +122,15 @@ final class SpeedMonitor: ObservableObject {
                 }
                 if conns.isEmpty {
                     self.showZero()                            // tunnel down
+                    self.record(down: 0, up: 0)
                 } else {
-                    self.downText = Self.format(bytesPerSec: Double(dRx) / elapsed)
-                    self.upText = Self.format(bytesPerSec: Double(dTx) / elapsed)
+                    let down = Double(dRx) / elapsed
+                    let up = Double(dTx) / elapsed
+                    self.downRate = down
+                    self.upRate = up
+                    self.downText = Self.format(bytesPerSec: down)
+                    self.upText = Self.format(bytesPerSec: up)
+                    self.record(down: down, up: up)
                     // Feed the recorder the same deltas we just formatted. Only
                     // reached when both samples exist, so reconnected tunnels
                     // (new 4-tuples) contribute 0 this tick — no spikes.
@@ -121,6 +143,17 @@ final class SpeedMonitor: ObservableObject {
     private func showZero() {
         if downText != "0 KB/s" { downText = "0 KB/s" }
         if upText != "0 KB/s" { upText = "0 KB/s" }
+        downRate = 0
+        upRate = 0
+    }
+
+    /// Append one throughput sample to the rolling window, evicting the oldest
+    /// when full so the sparkline always shows the most recent `historyCapacity`.
+    private func record(down: Double, up: Double) {
+        history.append(SpeedSample(down: down, up: up))
+        if history.count > historyCapacity {
+            history.removeFirst(history.count - historyCapacity)
+        }
     }
 
     // MARK: - Kernel TCP table
@@ -234,5 +267,23 @@ final class SpeedMonitor: ObservableObject {
         if kb < 1024 { return "\(Int(kb.rounded()))KB/s" }
         let mb = kb / 1024
         return String(format: "%.2fMB/s", mb)
+    }
+}
+
+/// One 1-Hz throughput sample: down/up rates in bytes per second. Identifiable by
+/// a monotonic sequence so `Chart` can plot the rolling window on an index axis
+/// without needing wall-clock timestamps.
+struct SpeedSample: Identifiable, Equatable {
+    private static var counter: UInt64 = 0
+    let id: UInt64
+    let down: Double
+    let up: Double
+
+    @MainActor
+    init(down: Double, up: Double) {
+        Self.counter &+= 1
+        self.id = Self.counter
+        self.down = down
+        self.up = up
     }
 }

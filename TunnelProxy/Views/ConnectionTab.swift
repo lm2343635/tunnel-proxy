@@ -1,57 +1,34 @@
 import SwiftUI
+import Charts
 
-/// The unified window's first tab: a centered, animated connection surface built
-/// around a large circular power toggle. Replaces the old main window's hero +
-/// CTA. Everything binds to existing `TunnelController` state/actions — the only
-/// new logic here is the view-layer animation.
+/// The unified window's Connection tab, redesigned as Control-Center tiles: a
+/// full-width hero (power ring + status + actions) above a 2×2 grid of Throughput,
+/// Latency, Server quick-switch, and Options tiles. Everything binds to existing
+/// `TunnelController` state/actions.
 struct ConnectionTab: View {
     @EnvironmentObject var controller: TunnelController
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 18) {
-                Spacer(minLength: 8)
+        VStack(spacing: DS.gridGap) {
+            warningBanner
 
-                PowerToggle()
+            HeroTile()
+                .frame(minHeight: 120)
 
-                // Status label + subtitle, cross-fading on state change.
-                VStack(spacing: 4) {
-                    Text(controller.state.label)
-                        .font(.system(size: 24, weight: .heavy))
-                        .multilineTextAlignment(.center)
-                    Text(controller.stateSubtitle)
-                        .font(.system(size: 13))
-                        .foregroundStyle(.secondary)
-                }
-                .animation(.easeInOut(duration: 0.35), value: controller.state)
-
-                warningBanner
-
-                // Exit-IP chip, only while connected.
-                if let ip = controller.exitIP {
-                    exitChip(ip)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
-                } else if let last = controller.lastConnected {
-                    lastConnectedChip(last)
-                        .transition(.opacity)
-                }
-
-                serverPicker
-
-                QuickOptionsCard()
-
-                Spacer(minLength: 12)
+            // 2×2 tile grid filling the remaining height.
+            HStack(spacing: DS.gridGap) {
+                ThroughputTile(monitor: controller.speedMonitor)
+                LatencyTile()
             }
-            .padding(20)
-            .frame(maxWidth: .infinity)
-            .animation(.easeInOut(duration: 0.35), value: controller.exitIP)
+            HStack(spacing: DS.gridGap) {
+                ServerTile()
+                OptionsTile()
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // Background comes from the unified window's white content surface.
-        .scrollContentBackground(.hidden)
+        .padding(DS.contentPadding)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
-
-    // MARK: - Pieces
 
     @ViewBuilder
     private var warningBanner: some View {
@@ -64,201 +41,324 @@ struct ConnectionTab: View {
             WarningBanner(text: Text("Bundled proxy missing — reinstall the app."))
         }
     }
+}
 
-    private func exitChip(_ ip: String) -> some View {
-        ChipContainer {
-            HStack(spacing: 8) {
-                Circle().fill(controller.statusColor).frame(width: 8, height: 8)
+// MARK: - Hero tile
+
+/// The full-width hero: power ring, status column (title + subtitle + chips), and
+/// a trailing primary action (Disconnect / Connect) with a "via <host>" caption.
+private struct HeroTile: View {
+    @EnvironmentObject var controller: TunnelController
+
+    var body: some View {
+        Tile(padding: EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20),
+             fill: AnyShapeStyle(controller.isConnected ? DS.heroGradient : DS.heroGradientNeutral)) {
+            HStack(spacing: 20) {
+                PowerRing(size: 84, ringWidth: 8)
+
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("EXIT IP").font(.system(size: 10)).foregroundStyle(.secondary)
-                    Text(ip).font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    Text(controller.state.label)
+                        .font(.system(size: 20, weight: .heavy))
+                        .foregroundStyle(DS.primaryText)
+                        .lineLimit(1)
+                        .animation(.easeInOut(duration: 0.35), value: controller.state)
+                    Text(controller.heroSubtitle)
+                        .font(.system(size: 12.5))
+                        .foregroundStyle(DS.secondaryText)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    chips.padding(.top, 8)
                 }
-            }
-        }
-        .fixedSize()
-    }
+                .layoutPriority(1)
 
-    private func lastConnectedChip(_ date: Date) -> some View {
-        ChipContainer {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("LAST CONNECTED").font(.system(size: 10)).foregroundStyle(.secondary)
-                Text(date.formatted(date: .abbreviated, time: .shortened))
-                    .font(.system(size: 13, weight: .semibold))
-            }
-        }
-        .fixedSize()
-    }
+                Spacer(minLength: 8)
 
-    private var serverPicker: some View {
-        HStack(spacing: 8) {
-            Text("Server").font(.system(size: 12)).foregroundStyle(.secondary)
-            if controller.config.servers.isEmpty {
-                Text("None — add one in Servers")
-                    .font(.system(size: 12)).foregroundStyle(.secondary)
-            } else {
-                Picker("", selection: Binding(
-                    get: { controller.config.selectedServerID ?? controller.config.servers.first?.id },
-                    set: { if let id = $0 { controller.selectServer(id) } }
-                )) {
-                    ForEach(controller.config.servers) { server in
-                        Text(server.displayName).tag(Optional(server.id))
+                // Trailing action column: keep its intrinsic width so the label
+                // never wraps, even in a narrower window.
+                VStack(spacing: 6) {
+                    if controller.isConnected {
+                        TintButton(title: "Disconnect", kind: .danger) {
+                            controller.toggleConnection()
+                        }
+                        .disabled(!controller.canToggleConnection)
+                    } else {
+                        TintButton(title: "Connect", kind: .accent) {
+                            controller.toggleConnection()
+                        }
+                        .disabled(!controller.canToggleConnection)
+                    }
+                    if let host = controller.selectedServer?.host, !host.isEmpty {
+                        Text("via \(host)")
+                            .font(.system(size: 11))
+                            .foregroundStyle(DS.secondaryText)
+                            .lineLimit(1)
                     }
                 }
-                .labelsHidden()
                 .fixedSize()
-                .disabled(controller.isBusy || controller.isConnected)
+                .layoutPriority(2)
             }
+        }
+    }
+
+    /// Status chips. Laid out on one line; each keeps its own intrinsic width but
+    /// the row as a whole yields to the trailing action column when space is tight.
+    @ViewBuilder
+    private var chips: some View {
+        HStack(spacing: 8) {
+            if let ip = controller.exitIP {
+                HeroChip(content: Text(ip), mono: true)
+            }
+            if let ms = controller.latencyMS {
+                HeroChip(content: Text("● \(ms) ms"), color: controller.latencyColor)
+            }
+            HeroChip(content: Text(controller.watchdogEnabled ? "Watchdog on" : "Watchdog off"),
+                     color: DS.secondaryText)
         }
     }
 }
 
-// MARK: - Power toggle
+// MARK: - Throughput tile
 
-/// The large circular connect/disconnect control. Reads connection state through
-/// color, a state-driven ring, and motion:
-/// - disconnected → thin grey ring, muted glyph
-/// - connecting/reconnecting → an accent arc sweeps around the ring (+ breathing)
-/// - connected → full ring, glow, gentle breathing
-/// - error → red ring; tapping retries
-private struct PowerToggle: View {
-    @EnvironmentObject var controller: TunnelController
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+/// Live down/up rates over a bottom-anchored sparkline of the last 60 samples.
+/// Observes the controller's `SpeedMonitor` so the sparkline animates as samples
+/// arrive (it's a separate `ObservableObject` from the controller).
+private struct ThroughputTile: View {
+    @ObservedObject var monitor: SpeedMonitor
 
-    /// Drives the indeterminate sweep + breathing. Toggled on appear / state
-    /// change; ignored when Reduce Motion is on.
-    @State private var animating = false
+    @EnvironmentObject private var controller: TunnelController
 
-    private let size: CGFloat = 132
-    private let lineWidth: CGFloat = 12
+    var body: some View {
+        Tile {
+            VStack(alignment: .leading, spacing: 0) {
+                TileCaption("Throughput")
+                HStack(spacing: 16) {
+                    Text("↓ \(ByteRate.string(monitor.downRate))")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(DS.dataBlue)
+                    Text("↑ \(ByteRate.string(monitor.upRate))")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(DS.dataGreen)
+                }
+                .padding(.top, 7)
 
-    private var accent: Color { controller.statusColor }
-    private var connecting: Bool {
-        switch controller.state {
-        case .connecting, .reconnecting: return true
-        default: return false
+                Spacer(minLength: 8)
+
+                chart
+                    .frame(height: 40)
+                    .frame(maxWidth: .infinity)
+            }
         }
     }
 
+    /// iStat-style mirrored bar chart: up = green bars above a dotted zero
+    /// baseline, down = blue bars below. Empty (dotted baseline only) while
+    /// disconnected. Bars plotted against a positional index so the series always
+    /// spans the tile.
+    @ViewBuilder
+    private var chart: some View {
+        let samples = monitor.history
+        let peak = max(1, samples.map { max($0.down, $0.up) }.max() ?? 0)
+        Chart {
+            RuleMark(y: .value("zero", 0))
+                .lineStyle(StrokeStyle(lineWidth: 0.8, dash: [1.6, 1.6]))
+                .foregroundStyle(controller.isConnected ? DS.meterOff : DS.meterOff.opacity(0.8))
+            ForEach(Array(samples.enumerated()), id: \.element.id) { i, s in
+                BarMark(x: .value("t", i), y: .value("up", s.up), width: 2.2)
+                    .foregroundStyle(DS.dataGreen)
+                BarMark(x: .value("t", i), y: .value("down", -s.down), width: 2.2)
+                    .foregroundStyle(DS.dataBlue)
+            }
+        }
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartLegend(.hidden)
+        .chartXScale(domain: 0...max(1, monitor.historyCapacityValue - 1))
+        .chartYScale(domain: -peak...peak)
+        .animation(.linear(duration: 1), value: samples)
+    }
+}
+
+// MARK: - Latency tile
+
+/// A big latency number over a bottom-anchored history bar chart (one green bar
+/// per probe), with a "avg over 60 s" footer. Empty (dotted baseline) + "—" +
+/// "not connected" while disconnected.
+private struct LatencyTile: View {
+    @EnvironmentObject var controller: TunnelController
+
     var body: some View {
-        Button(action: controller.toggleConnection) {
-            ZStack {
-                // Glow behind the button while connected.
-                if controller.isConnected {
-                    Circle()
-                        .fill(accent)
-                        .frame(width: size * 1.5, height: size * 1.5)
-                        .blur(radius: 34)
-                        .opacity(0.28)
+        Tile {
+            VStack(alignment: .leading, spacing: 0) {
+                TileCaption("Latency")
+                HStack(alignment: .bottom, spacing: 12) {
+                    if let ms = controller.latencyMS {
+                        (Text("\(ms)").font(.system(size: 24, weight: .heavy))
+                            .foregroundColor(controller.latencyColor)
+                         + Text(" ms").font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(DS.secondaryText))
+                    } else {
+                        Text("—").font(.system(size: 24, weight: .heavy))
+                            .foregroundStyle(DS.secondaryText)
+                    }
+                }
+                .padding(.top, 5)
+
+                Spacer(minLength: 8)
+
+                chart
+                    .frame(height: 36)
+                    .frame(maxWidth: .infinity)
+
+                Text(footerText)
+                    .font(.system(size: 11))
+                    .foregroundStyle(DS.secondaryText)
+                    .lineLimit(1)
+                    .padding(.top, 6)
+            }
+        }
+    }
+
+    /// Bottom-anchored green bars, one per probe, rising from a dotted baseline.
+    @ViewBuilder
+    private var chart: some View {
+        let samples = controller.latencyHistory
+        let peak = max(1, samples.max() ?? 1)
+        Chart {
+            RuleMark(y: .value("zero", 0))
+                .lineStyle(StrokeStyle(lineWidth: 0.8, dash: [1.6, 1.6]))
+                .foregroundStyle(controller.isConnected ? DS.meterOff : DS.meterOff.opacity(0.8))
+            ForEach(Array(samples.enumerated()), id: \.offset) { i, ms in
+                BarMark(x: .value("t", i), y: .value("ms", ms), width: 2.2)
+                    .foregroundStyle(DS.dataGreen)
+            }
+        }
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartLegend(.hidden)
+        .chartXScale(domain: 0...49)   // pin to the ~50-sample window
+        .chartYScale(domain: 0...Double(peak))
+        .animation(.linear(duration: 1), value: samples)
+    }
+
+    private var footerText: String {
+        let status = controller.isConnected
+            ? String(localized: "avg over 60 s")
+            : String(localized: "not connected")
+        if let host = controller.selectedServer?.host, !host.isEmpty {
+            return "\(host) · \(status)"
+        }
+        return status
+    }
+}
+
+// MARK: - Server tile (quick-switch)
+
+/// A compact radio list of profiles for in-place switching, plus "+ Add server".
+/// Disabled while connected/busy, matching the existing picker rule.
+private struct ServerTile: View {
+    @EnvironmentObject var controller: TunnelController
+
+    private var disabled: Bool { controller.isBusy || controller.isConnected }
+
+    var body: some View {
+        Tile {
+            VStack(alignment: .leading, spacing: 8) {
+                TileCaption("Server")
+
+                if controller.config.servers.isEmpty {
+                    Text("No servers yet")
+                        .font(.system(size: 12.5))
+                        .foregroundStyle(DS.secondaryText)
+                } else {
+                    ForEach(controller.config.servers) { server in
+                        row(for: server)
+                    }
                 }
 
-                // Base track ring.
-                Circle()
-                    .stroke(Color(nsColor: .separatorColor).opacity(0.6), lineWidth: lineWidth)
-                    .frame(width: size, height: size)
+                Spacer(minLength: 4)
 
-                // Progress / state ring.
-                ring
-                    .frame(width: size, height: size)
-
-                // Knob face.
-                Circle()
-                    .fill(Color(nsColor: .controlBackgroundColor))
-                    .frame(width: size - lineWidth * 2 - 8, height: size - lineWidth * 2 - 8)
-                    .overlay(
-                        Image(systemName: "power")
-                            .font(.system(size: 40, weight: .medium))
-                            .foregroundStyle(glyphColor)
-                    )
-                    .shadow(color: .black.opacity(0.12), radius: 6, y: 3)
+                Button {
+                    controller.requestedTab = .servers
+                } label: {
+                    Text("+ Add server")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(DS.accent)
+                }
+                .buttonStyle(.plain)
             }
-            .frame(width: size * 1.5, height: size * 1.5)
-            .scaleEffect(breathingScale)
-            .contentShape(Circle())
+        }
+    }
+
+    private func row(for server: ServerProfile) -> some View {
+        let isSelected = server.id == (controller.config.selectedServerID
+                                       ?? controller.config.servers.first?.id)
+        return Button {
+            if !disabled { controller.selectServer(server.id) }
+        } label: {
+            HStack(spacing: 8) {
+                RadioDot(isSelected: isSelected)
+                Text(server.displayName)
+                    .font(.system(size: 12.5, weight: isSelected ? .semibold : .regular))
+                    .foregroundStyle(isSelected ? DS.primaryText : DS.secondaryText)
+                    .lineLimit(1)
+                Spacer(minLength: 4)
+                if isSelected, let ms = controller.latencyMS {
+                    Text("\(ms) ms")
+                        .font(.system(size: 10.5, weight: .semibold))
+                        .foregroundStyle(controller.latencyColor)
+                }
+            }
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(!controller.canToggleConnection)
-        .opacity(controller.canToggleConnection ? 1 : 0.5)
-        .animation(.easeInOut(duration: 0.35), value: controller.state)
-        .onAppear { syncAnimation() }
-        .onChange(of: controller.state) { _, _ in syncAnimation() }
+        .disabled(disabled)
+        .opacity(disabled && !isSelected ? 0.6 : 1)
     }
+}
 
-    /// The colored ring: a sweeping arc while connecting, a full circle when
-    /// connected/error, and nothing extra when disconnected (track shows through).
-    @ViewBuilder
-    private var ring: some View {
-        if connecting && !reduceMotion {
-            Circle()
-                .trim(from: 0, to: 0.3)
-                .stroke(accent, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(animating ? 360 : 0))
-                .animation(animating
-                           ? .linear(duration: 1).repeatForever(autoreverses: false)
-                           : .default,
-                           value: animating)
-        } else if connecting {
-            // Reduce Motion: show a determinate-looking partial ring, no spin.
-            Circle()
-                .trim(from: 0, to: 0.3)
-                .stroke(accent, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-        } else if controller.isConnected {
-            Circle()
-                .stroke(accent, lineWidth: lineWidth)
-        } else if case .error = controller.state {
-            Circle()
-                .stroke(accent, lineWidth: lineWidth)
-        }
-    }
+// MARK: - Options tile
 
-    private var glyphColor: Color {
-        switch controller.state {
-        case .connected: return accent
-        case .connecting, .reconnecting: return .secondary
-        case .error: return accent
-        case .disconnected: return .secondary
-        }
-    }
+/// OPTIONS caption over three whole-card toggles (button-cards): route Mac
+/// traffic, auto-reconnect (watchdog), launch at login.
+private struct OptionsTile: View {
+    @EnvironmentObject var controller: TunnelController
 
-    /// Gentle breathing while connected (or connecting), unless Reduce Motion.
-    private var breathingScale: CGFloat {
-        guard animating, !reduceMotion else { return 1 }
-        return (controller.isConnected || connecting) ? 1.03 : 1
-    }
+    var body: some View {
+        Tile(padding: EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14)) {
+            VStack(alignment: .leading, spacing: 7) {
+                TileCaption("Options").padding(.leading, 2)
 
-    private func syncAnimation() {
-        guard !reduceMotion else { animating = false; return }
-        let shouldAnimate = connecting || controller.isConnected
-        withAnimation(shouldAnimate
-                      ? .easeInOut(duration: 2).repeatForever(autoreverses: true)
-                      : .default) {
-            animating = shouldAnimate
+                // Intent binding: run the toggle action only on a real change so a
+                // programmatic state sync never re-issues networksetup.
+                OptionCard(title: "Route Mac traffic",
+                           isOn: .constant(controller.systemSocksOn),
+                           onTap: { newValue in
+                               guard newValue != controller.systemSocksOn else { return }
+                               controller.systemSocksOn = newValue
+                               Task { await controller.toggleSystemSocks(on: newValue) }
+                           })
+                OptionCard(title: "Auto-reconnect",
+                           caption: controller.watchdogEnabled
+                               ? String(localized: "Watchdog · On")
+                               : String(localized: "Watchdog · Off"),
+                           isOn: $controller.watchdogEnabled)
+                OptionCard(title: "Launch at login", isOn: $controller.launchAtLogin)
+            }
+            .frame(maxHeight: .infinity)
         }
     }
 }
 
-// MARK: - Quick options
+// MARK: - Byte-rate formatting
 
-/// Connection-relevant toggles surfaced on the Connection tab for convenience:
-/// route-all-traffic (macOS SOCKS proxy) and the watchdog. Both remain editable
-/// in their settings tabs; these bind to the same controller state.
-private struct QuickOptionsCard: View {
-    @EnvironmentObject var controller: TunnelController
-
-    var body: some View {
-        SectionCard(title: "Quick Options") {
-            // Intent binding: run the toggle action only on a real change so a
-            // programmatic state sync never re-issues networksetup.
-            SwitchRow("Route Mac traffic through proxy", isOn: Binding(
-                get: { controller.systemSocksOn },
-                set: { newValue in
-                    guard newValue != controller.systemSocksOn else { return }
-                    controller.systemSocksOn = newValue
-                    Task { await controller.toggleSystemSocks(on: newValue) }
-                }
-            ))
-            Divider()
-            SwitchRow("Auto-reconnect (watchdog)", isOn: $controller.watchdogEnabled)
-        }
-        .frame(maxWidth: 360)
+/// Formats a bytes-per-second value like the design: "340 KB/s", "1.2 MB/s".
+/// (Distinct from `SpeedMonitor.format`, which is space-free for the menu bar.)
+enum ByteRate {
+    static func string(_ bytesPerSec: Double) -> String {
+        let kb = bytesPerSec / 1024
+        if kb < 1 { return "0 KB/s" }
+        if kb < 1024 { return "\(Int(kb.rounded())) KB/s" }
+        let mb = kb / 1024
+        return String(format: "%.1f MB/s", mb)
     }
 }

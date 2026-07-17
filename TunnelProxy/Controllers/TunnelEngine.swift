@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 
 /// Natively manages the tunnel pipeline that the shell scripts used to run:
 ///
@@ -234,6 +235,56 @@ actor TunnelEngine {
         let trimmed = out.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.range(of: #"^\d{1,3}(\.\d{1,3}){3}$"#, options: .regularExpression) != nil
             ? trimmed : nil
+    }
+
+    /// Round-trip latency to the active SSH server, in milliseconds, or nil if it
+    /// can't be reached. Measured as a TCP connect time to `host:port` — the same
+    /// endpoint the tunnel rides on — which needs no live control socket and works
+    /// for any auth method. Runs off the actor's executor via a detached task.
+    func latencyMS() async -> Int? {
+        let host = server.host
+        let port = server.port
+        guard !host.isEmpty else { return nil }
+        return await Task.detached(priority: .utility) {
+            Self.tcpConnectMS(host: host, port: port, timeout: 3)
+        }.value
+    }
+
+    /// Blocking TCP-connect timing to `host:port`. Returns elapsed milliseconds on
+    /// a successful connect, nil on failure/timeout. Uses a non-blocking socket +
+    /// `poll` so a dead host times out instead of hanging.
+    nonisolated private static func tcpConnectMS(host: String, port: Int, timeout: TimeInterval) -> Int? {
+        var hints = addrinfo(ai_flags: 0, ai_family: AF_UNSPEC, ai_socktype: SOCK_STREAM,
+                             ai_protocol: IPPROTO_TCP, ai_addrlen: 0,
+                             ai_canonname: nil, ai_addr: nil, ai_next: nil)
+        var res: UnsafeMutablePointer<addrinfo>?
+        guard getaddrinfo(host, String(port), &hints, &res) == 0, let info = res else { return nil }
+        defer { freeaddrinfo(res) }
+
+        let fd = socket(info.pointee.ai_family, info.pointee.ai_socktype, info.pointee.ai_protocol)
+        guard fd >= 0 else { return nil }
+        defer { close(fd) }
+
+        // Non-blocking connect so we can bound the wait with poll().
+        let flags = fcntl(fd, F_GETFL, 0)
+        _ = fcntl(fd, F_SETFL, flags | O_NONBLOCK)
+
+        let start = DispatchTime.now()
+        let rc = Darwin.connect(fd, info.pointee.ai_addr, info.pointee.ai_addrlen)
+        if rc == 0 {
+            return Int(Double(DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000)
+        }
+        guard errno == EINPROGRESS else { return nil }
+
+        var pfd = pollfd(fd: fd, events: Int16(POLLOUT), revents: 0)
+        let ready = poll(&pfd, 1, Int32(timeout * 1000))
+        guard ready > 0 else { return nil }   // 0 = timeout, <0 = error
+
+        // Connected only if SO_ERROR is clear.
+        var soError: Int32 = 0
+        var len = socklen_t(MemoryLayout<Int32>.size)
+        guard getsockopt(fd, SOL_SOCKET, SO_ERROR, &soError, &len) == 0, soError == 0 else { return nil }
+        return Int(Double(DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000)
     }
 
     private func curl(_ args: [String]) async -> String? {

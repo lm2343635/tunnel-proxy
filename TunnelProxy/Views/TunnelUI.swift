@@ -37,6 +37,39 @@ extension TunnelController {
         }
     }
 
+    /// Plain-string form of `stateSubtitle` (for interpolation into other text).
+    var stateSubtitleText: String {
+        switch state {
+        case .connected: return String(localized: "Tunnel + HTTP proxy active")
+        case .disconnected: return String(localized: "Traffic goes out directly")
+        case .connecting: return String(localized: "Establishing tunnel…")
+        case .reconnecting: return String(localized: "Watchdog reconnecting…")
+        case .error: return String(localized: "Something went wrong")
+        }
+    }
+
+    /// The active server's short host label ("via fczm.site"), or a fallback.
+    var activeServerHost: String {
+        selectedServer?.host.isEmpty == false ? selectedServer!.host
+            : (selectedServer?.displayName ?? String(localized: "no server"))
+    }
+
+    /// Hero subtitle: "Tunnel + HTTP proxy active · since 12:37" while connected,
+    /// otherwise the plain state subtitle.
+    var heroSubtitle: String {
+        if isConnected, let since = lastConnected {
+            let time = since.formatted(date: .omitted, time: .shortened)
+            return String(localized: "Tunnel + HTTP proxy active · since \(time)")
+        }
+        switch state {
+        case .disconnected: return String(localized: "Traffic goes out directly")
+        case .connecting: return String(localized: "Establishing tunnel…")
+        case .reconnecting: return String(localized: "Watchdog reconnecting…")
+        case .error: return String(localized: "Something went wrong")
+        case .connected: return String(localized: "Tunnel + HTTP proxy active")
+        }
+    }
+
     /// The primary action: connect when down, disconnect when up.
     func toggleConnection() {
         Task {

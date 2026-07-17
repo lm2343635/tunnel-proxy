@@ -135,3 +135,63 @@
 "HTTP proxy port must be 1–65535" = "HTTP proxy port must be 1–65535";
 "Ports must differ" = "Ports must differ";
 "Watchdog interval must be positive" = "Watchdog interval must be positive";
+
+/* Redesign — sidebar / tabs */
+"Connection" = "Connection";
+"Settings" = "Settings";
+"Tools" = "Tools";
+
+/* Redesign — Connection tab */
+"Changes apply immediately" = "Changes apply immediately";
+"Throughput" = "Throughput";
+"Latency" = "Latency";
+"Options" = "Options";
+"Route Mac traffic" = "Route Mac traffic";
+"Auto-reconnect" = "Auto-reconnect";
+"Watchdog · On" = "Watchdog · On";
+"Watchdog · Off" = "Watchdog · Off";
+"Watchdog on" = "Watchdog on";
+"Watchdog off" = "Watchdog off";
+"via %@" = "via %@";
+"avg over 60 s" = "avg over 60 s";
+"not connected" = "not connected";
+"+ Add server" = "+ Add server";
+"Add an SSH server in the Servers tab to connect." = "Add an SSH server in the Servers tab to connect.";
+"Check server settings." = "Check server settings.";
+"Bundled proxy missing — reinstall the app." = "Bundled proxy missing — reinstall the app.";
+
+/* Redesign — Servers tab */
+"Add an SSH server to connect through" = "Add an SSH server to connect through";
+"Secrets are stored in the macOS Keychain — never in config.json. Click a card to make it active; the pencil opens the editor sheet." = "Secrets are stored in the macOS Keychain — never in config.json. Click a card to make it active; the pencil opens the editor sheet.";
+"● active" = "● active";
+"● active · %lld ms" = "● active · %lld ms";
+
+/* Redesign — Statistics */
+"All servers" = "All servers";
+"Export CSV" = "Export CSV";
+
+/* Redesign — Menu Bar */
+"Show menu bar icon" = "Show menu bar icon";
+"Menu Bar" = "Menu Bar";
+
+/* Redesign — Tools tab */
+"Route Claude Code through this proxy" = "Route Claude Code through this proxy";
+"Claude Code will use this proxy." = "Claude Code will use this proxy.";
+"Proxy removed from Claude Code." = "Proxy removed from Claude Code.";
+"Settings file" = "Settings file";
+"Reveal" = "Reveal";
+"Remove All Proxies" = "Remove All Proxies";
+"Remove…" = "Remove…";
+"Requires admin rights — macOS prompts when toggling system proxies." = "Requires admin rights — macOS prompts when toggling system proxies.";
+
+/* Redesign — popover / mini window */
+"Speed" = "Speed";
+"Switch ▾" = "Switch ▾";
+"Open App" = "Open App";
+"Stop" = "Stop";
+"Add an SSH server in Settings to connect." = "Add an SSH server in Settings to connect.";
+
+/* Redesign — interpolated */
+"Tunnel + HTTP proxy active · since %@" = "Tunnel + HTTP proxy active · since %@";
+"%lld ms" = "%lld ms";
+"● %lld ms" = "● %lld ms";

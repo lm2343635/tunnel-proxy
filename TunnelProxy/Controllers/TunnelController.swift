@@ -1,11 +1,12 @@
 import Foundation
 import Combine
 import ServiceManagement
+import SwiftUI
 
 /// The tabs of the unified main window. Also used to route "open the window on
 /// tab X" requests from the popover and app menus (see `requestedTab`).
 enum WindowTab: String {
-    case connection, servers, tunnel, logs, stats, advanced, tools
+    case connection, servers, logs, stats, settings, tools
 }
 
 /// High-level connection state used to drive the menu bar icon and popover.
@@ -37,11 +38,23 @@ final class TunnelController: ObservableObject {
         didSet {
             updateBlink()
             syncRecorderState()
+            syncLatencyProbing()
         }
     }
     @Published private(set) var exitIP: String?
     @Published private(set) var lastConnected: Date?
     @Published private(set) var isBusy = false
+
+    /// Latency (ms) to the active server, averaged over recent probes, or nil when
+    /// disconnected / unreachable. Probed every ~10 s while connected.
+    @Published private(set) var latencyMS: Int?
+    /// A rolling history of recent latency readings (ms), oldest first, for the
+    /// Connection tab's latency history bars. Capped at `latencyHistoryCapacity`.
+    @Published private(set) var latencyHistory: [Int] = []
+    private let latencyHistoryCapacity = 50
+    /// Recent raw latency samples (ms), used to average over ~60 s.
+    private var latencySamples: [Int] = []
+    private var latencyTimer: Timer?
 
     /// A request to open the unified main window on a specific tab, set by the
     /// menu-bar popover and app menus. `UnifiedWindowView` observes it, switches
@@ -257,6 +270,66 @@ final class TunnelController: ObservableObject {
         pollTimer?.invalidate()
         pollTimer = Timer.scheduledTimer(withTimeInterval: 8, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.refreshStatus() }
+        }
+    }
+
+    // MARK: - Latency
+
+    /// Start probing server latency every ~10 s. Fires an immediate probe so the
+    /// value appears promptly on connect.
+    private func startLatencyProbing() {
+        latencyTimer?.invalidate()
+        latencyTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
+            Task { @MainActor in await self?.probeLatency() }
+        }
+        Task { await probeLatency() }
+    }
+
+    private func stopLatencyProbing() {
+        latencyTimer?.invalidate()
+        latencyTimer = nil
+        latencySamples.removeAll()
+        latencyHistory.removeAll()
+        latencyMS = nil
+    }
+
+    /// Match latency probing to connection state: probe while connected, idle
+    /// otherwise. Called from `state`'s `didSet`.
+    private func syncLatencyProbing() {
+        switch state {
+        case .connected:
+            if latencyTimer == nil { startLatencyProbing() }
+        case .reconnecting:
+            break                       // keep the last average during a blip
+        case .disconnected, .connecting, .error:
+            stopLatencyProbing()
+        }
+    }
+
+    /// Take one latency sample and fold it into the ~60 s rolling average. Only
+    /// meaningful while connected; a failed probe leaves the average untouched
+    /// (the tunnel may just be momentarily busy) unless we're already unknown.
+    private func probeLatency() async {
+        guard isConnected else { return }
+        guard let ms = await engine.latencyMS() else { return }
+        latencySamples.append(ms)
+        if latencySamples.count > 6 { latencySamples.removeFirst(latencySamples.count - 6) }
+        latencyMS = latencySamples.reduce(0, +) / latencySamples.count
+        // Feed the raw reading into the history window for the latency bars.
+        latencyHistory.append(ms)
+        if latencyHistory.count > latencyHistoryCapacity {
+            latencyHistory.removeFirst(latencyHistory.count - latencyHistoryCapacity)
+        }
+    }
+
+    /// Color for a latency reading: green < 80 ms, orange < 200, red above.
+    /// `DS.secondaryText`-equivalent gray when unknown.
+    var latencyColor: Color {
+        switch latencyMS {
+        case .some(let ms) where ms < 80: return DS.textGreen
+        case .some(let ms) where ms < 200: return DS.warning
+        case .some: return DS.dangerText
+        case .none: return DS.secondaryText
         }
     }
 

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d6bff"></stop>
+      <stop offset="0.55" stop-color="#2b53e0"></stop>
+      <stop offset="1" stop-color="#1b3aa8"></stop>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"></stop>
+      <stop offset="1" stop-color="#e9eefc"></stop>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"></stop>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"></stop>
+    </linearGradient>
+    <linearGradient id="hub" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4d78ff"></stop>
+      <stop offset="1" stop-color="#2b53e0"></stop>
+    </linearGradient>
+  </defs>
+
+  
+  <path d="M300 100 h424 c110 0 200 90 200 200 v424 c0 110 -90 200 -200 200&#xA;           h-424 c-110 0 -200 -90 -200 -200 v-424 c0 -110 90 -200 200 -200 z" fill="url(#bg)"></path>
+  
+  <path d="M300 100 h424 c110 0 200 90 200 200 v150 h-824 v-150&#xA;           c0 -110 90 -200 200 -200 z" fill="url(#sheen)"></path>
+
+  
+  <path d="M512 236 C560 268 648 316 730 316&#xA;           C730 316 744 520 698 634 C660 728 566 782 512 802&#xA;           C458 782 364 728 326 634 C280 520 294 316 294 316&#xA;           C376 316 464 268 512 236 Z" fill="url(#shield)"></path>
+
+  
+  <g stroke="#2b53e0" stroke-width="36" stroke-linecap="round" fill="none">
+    <path d="M374 424 L512 512"></path>
+    <path d="M512 512 L650 424"></path>
+    <path d="M512 512 L512 664"></path>
+  </g>
+  <g fill="#1b3aa8">
+    <circle cx="374" cy="424" r="40"></circle>
+    <circle cx="650" cy="424" r="40"></circle>
+    <circle cx="512" cy="664" r="40"></circle>
+  </g>
+  <circle cx="512" cy="512" r="56" fill="url(#hub)"></circle>
+  <circle cx="512" cy="512" r="56" fill="none" stroke="#ffffff" stroke-width="16"></circle>
+</svg>

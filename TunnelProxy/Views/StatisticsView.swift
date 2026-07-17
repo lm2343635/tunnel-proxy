@@ -2,9 +2,10 @@ import SwiftUI
 import Charts
 import UniformTypeIdentifiers
 
-/// Statistics window: recorded traffic volume over time. Mirrors the mockup in
-/// `plan/mockups/statistics.svg` — range picker + server filter, headline totals,
-/// a stacked down/up usage chart, a session list, and a status bar with export.
+/// Statistics tab: recorded traffic volume over time. Redesigned as Control-Center
+/// tiles — range + server filters, three headline stat tiles, a usage chart tile,
+/// and a sessions tile with a pinned "recording since" footer. Data loading is
+/// unchanged from the original (`reload`, `TrafficStore`, CSV export).
 struct StatisticsView: View {
     @EnvironmentObject var controller: TunnelController
 
@@ -17,184 +18,221 @@ struct StatisticsView: View {
     @State private var loading = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            toolbar
-            Divider()
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    totalsRow
-                    chartSection
-                    sessionsSection
-                }
-                .padding(16)
-            }
-            Divider()
-            statusBar
+        VStack(alignment: .leading, spacing: 12) {
+            header
+            totalsRow
+            chartTile
+            sessionsTile
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(nsColor: .textBackgroundColor))
+        .padding(DS.contentPadding)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear(perform: reload)
         .onChange(of: range) { _, _ in reload() }
         .onChange(of: serverFilter) { _, _ in reload() }
-        // Live-refresh as the recorder flushes.
         .onReceive(controller.recorder.$revision) { _ in reload() }
     }
 
-    // MARK: - Toolbar
+    // MARK: - Header
 
-    private var toolbar: some View {
-        HStack(spacing: 12) {
+    private var header: some View {
+        TabHeader(title: "Statistics") {
             Picker("", selection: $range) {
                 ForEach(StatsRange.allCases) { r in Text(r.label).tag(r) }
             }
             .pickerStyle(.segmented)
             .labelsHidden()
-            .frame(maxWidth: 320)
-
-            Spacer()
+            .frame(width: 260)
 
             if !controller.config.servers.isEmpty {
-                Picker("Server", selection: $serverFilter) {
-                    Text("All").tag(UUID?.none)
+                Picker("", selection: $serverFilter) {
+                    Text("All servers").tag(UUID?.none)
                     ForEach(controller.config.servers) { s in
                         Text(s.displayName).tag(Optional(s.id))
                     }
                 }
-                .frame(maxWidth: 200)
+                .labelsHidden()
+                .frame(maxWidth: 160)
             }
         }
-        .padding(10)
     }
 
     // MARK: - Totals
 
     private var totalsRow: some View {
         HStack(spacing: 12) {
-            totalCard("Downloaded", ByteFormat.string(totals.down), .blue)
-            totalCard("Uploaded", ByteFormat.string(totals.up), .green)
-            totalCard("Total", ByteFormat.string(totals.total), .primary)
+            statTile("Downloaded", ByteFormat.string(totals.down), DS.dataBlue)
+            statTile("Uploaded", ByteFormat.string(totals.up), DS.dataGreen)
+            statTile("Total", ByteFormat.string(totals.total), DS.primaryText)
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
-    private func totalCard(_ title: LocalizedStringKey, _ value: String, _ color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(.system(size: 11)).foregroundStyle(.secondary)
-            Text(value).font(.system(size: 22, weight: .bold)).foregroundStyle(color)
+    private func statTile(_ caption: LocalizedStringKey, _ value: String, _ color: Color) -> some View {
+        Tile(padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)) {
+            VStack(alignment: .leading, spacing: 4) {
+                TileCaption(caption)
+                Text(value)
+                    .font(.system(size: 21, weight: .heavy))
+                    .foregroundStyle(color)
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .windowBackgroundColor)))
-        .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Color(nsColor: .separatorColor)))
     }
 
     // MARK: - Chart
 
-    private var chartSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Usage over time").font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(.secondary)
-            if buckets.isEmpty {
-                emptyChart
-            } else {
-                Chart {
-                    ForEach(buckets) { b in
-                        BarMark(
-                            x: .value("Time", b.start, unit: chartUnit),
-                            y: .value("Down", Double(b.down))
-                        )
-                        .foregroundStyle(by: .value("Direction", "Down"))
-                        BarMark(
-                            x: .value("Time", b.start, unit: chartUnit),
-                            y: .value("Up", Double(b.up))
-                        )
-                        .foregroundStyle(by: .value("Direction", "Up"))
+    private var chartTile: some View {
+        Tile {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    TileCaption("Usage over time")
+                    Spacer()
+                    legend
+                }
+                if buckets.isEmpty {
+                    emptyChart
+                } else {
+                    chart.frame(height: 110)
+                }
+            }
+        }
+        .frame(height: 160)
+    }
+
+    private var legend: some View {
+        HStack(spacing: 12) {
+            legendSwatch(DS.dataBlue, "Down")
+            legendSwatch(DS.dataGreen, "Up")
+        }
+    }
+
+    private func legendSwatch(_ color: Color, _ label: LocalizedStringKey) -> some View {
+        HStack(spacing: 4) {
+            RoundedRectangle(cornerRadius: 2).fill(color).frame(width: 7, height: 7)
+            Text(label).font(.system(size: 11)).foregroundStyle(DS.secondaryText)
+        }
+    }
+
+    private var chart: some View {
+        Chart {
+            ForEach(buckets) { b in
+                BarMark(x: .value("Time", b.start, unit: chartUnit),
+                        y: .value("Down", Double(b.down)))
+                    .foregroundStyle(by: .value("Direction", "Down"))
+                    .cornerRadius(4)
+                BarMark(x: .value("Time", b.start, unit: chartUnit),
+                        y: .value("Up", Double(b.up)))
+                    .foregroundStyle(by: .value("Direction", "Up"))
+                    .cornerRadius(4)
+            }
+        }
+        .chartForegroundStyleScale(["Down": DS.dataBlue, "Up": DS.dataGreen])
+        .chartLegend(.hidden)
+        .chartYAxis {
+            AxisMarks { value in
+                AxisGridLine(stroke: StrokeStyle(lineWidth: 1, dash: [3, 3]))
+                AxisValueLabel {
+                    if let bytes = value.as(Double.self) {
+                        Text(ByteFormat.string(UInt64(max(0, bytes))))
+                            .font(.system(size: 10))
                     }
                 }
-                .chartForegroundStyleScale(["Down": Color.blue, "Up": Color.green])
-                .chartYAxis {
-                    AxisMarks { value in
-                        AxisGridLine()
-                        AxisValueLabel {
-                            if let bytes = value.as(Double.self) {
-                                Text(ByteFormat.string(UInt64(max(0, bytes))))
-                            }
-                        }
-                    }
-                }
-                .frame(height: 200)
+            }
+        }
+        .chartXAxis {
+            AxisMarks { _ in
+                AxisValueLabel().font(.system(size: 10.5))
             }
         }
     }
 
     private var emptyChart: some View {
         RoundedRectangle(cornerRadius: 8)
-            .fill(Color(nsColor: .windowBackgroundColor))
-            .frame(height: 200)
-            .overlay(
-                Text("No traffic recorded for this range")
-                    .font(.callout).foregroundStyle(.secondary)
-            )
+            .fill(DS.fieldFill)
+            .frame(height: 110)
+            .overlay(Text("No traffic recorded for this range")
+                .font(.system(size: 12)).foregroundStyle(DS.secondaryText))
     }
 
     // MARK: - Sessions
 
-    private var sessionsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Sessions").font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(.secondary)
-            if sessions.isEmpty {
-                Text("No sessions in this range")
-                    .font(.callout).foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 8)
-            } else {
-                ForEach(sessions) { s in sessionRow(s) }
+    private var sessionsTile: some View {
+        Tile(padding: EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16)) {
+            VStack(spacing: 0) {
+                HStack {
+                    TileCaption("Sessions")
+                    Spacer()
+                    Button(action: exportCSV) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "square.and.arrow.up").font(.system(size: 12))
+                            Text("Export CSV").font(.system(size: 12))
+                        }
+                        .foregroundStyle(DS.accent)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(buckets.isEmpty && sessions.isEmpty)
+                }
+                .padding(.vertical, 8)
+                .overlay(alignment: .bottom) {
+                    Rectangle().fill(DS.tileBorder).frame(height: 1)
+                }
+
+                if sessions.isEmpty {
+                    Text("No sessions in this range")
+                        .font(.system(size: 12)).foregroundStyle(DS.secondaryText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 8)
+                } else {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ForEach(Array(sessions.enumerated()), id: \.element.id) { idx, s in
+                                sessionRow(s)
+                                if idx < sessions.count - 1 {
+                                    Rectangle().fill(DS.tileBorder).frame(height: 1)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(minLength: 0)
+
+                HStack(spacing: 6) {
+                    Circle().fill(controller.recordStats ? DS.ringGreen : DS.meterOff)
+                        .frame(width: 7, height: 7)
+                    Text(recordingStatus).font(.system(size: 11)).foregroundStyle(DS.secondaryText)
+                }
+                .padding(.vertical, 7)
+                .overlay(alignment: .top) {
+                    Rectangle().fill(DS.tileBorder).frame(height: 1)
+                }
             }
         }
+        .frame(maxHeight: .infinity)
     }
 
     private func sessionRow(_ s: TrafficSession) -> some View {
         HStack(spacing: 10) {
-            Circle().fill(s.isOpen ? Color.green : Color.secondary)
-                .frame(width: 8, height: 8)
+            Circle().fill(s.isOpen ? DS.ringGreen : DS.secondaryText).frame(width: 8, height: 8)
             Text(sessionTimeLabel(s))
-                .font(.system(size: 11.5, design: .monospaced))
+                .font(.system(size: 12, design: .monospaced))
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
                 .frame(width: 150, alignment: .leading)
             Text(s.serverName.isEmpty ? String(localized: "Unknown") : s.serverName)
-                .font(.system(size: 11.5))
-                .foregroundStyle(.secondary)
+                .font(.system(size: 12)).foregroundStyle(DS.secondaryText)
             Spacer()
             Text("↓ \(ByteFormat.string(s.down))")
-                .font(.system(size: 11.5)).foregroundStyle(.blue)
+                .font(.system(size: 12)).foregroundStyle(DS.dataBlue)
                 .frame(width: 90, alignment: .trailing)
             Text("↑ \(ByteFormat.string(s.up))")
-                .font(.system(size: 11.5)).foregroundStyle(.green)
-                .frame(width: 80, alignment: .trailing)
+                .font(.system(size: 12)).foregroundStyle(DS.dataGreen)
+                .frame(width: 90, alignment: .trailing)
         }
-        .padding(.vertical, 3)
-    }
-
-    // MARK: - Status bar
-
-    private var statusBar: some View {
-        HStack(spacing: 8) {
-            Circle().fill(controller.recordStats ? .green : .gray).frame(width: 8, height: 8)
-            Text(recordingStatus).font(.caption).foregroundStyle(.secondary)
-            Spacer()
-            Button {
-                exportCSV()
-            } label: {
-                Label("Export…", systemImage: "square.and.arrow.up")
-            }
-            .disabled(buckets.isEmpty && sessions.isEmpty)
-        }
-        .padding(8)
+        .padding(.vertical, 7)
     }
 
     private var recordingStatus: String {
-        if !controller.recordStats {
-            return String(localized: "Recording is off")
-        }
+        if !controller.recordStats { return String(localized: "Recording is off") }
         if let earliest {
             return String(localized: "Recording since \(earliest.formatted(date: .abbreviated, time: .omitted))")
         }
@@ -203,9 +241,7 @@ struct StatisticsView: View {
 
     // MARK: - Data
 
-    private var chartUnit: Calendar.Component {
-        range == .today ? .hour : .day
-    }
+    private var chartUnit: Calendar.Component { range == .today ? .hour : .day }
 
     private func reload() {
         let range = self.range
@@ -229,9 +265,11 @@ struct StatisticsView: View {
         }
     }
 
+    /// "HH:MM:SS–HH:MM:SS" (or "…" while the session is still open).
     private func sessionTimeLabel(_ s: TrafficSession) -> String {
-        let start = s.startedAt.formatted(date: .omitted, time: .shortened)
-        let end = s.endedAt?.formatted(date: .omitted, time: .shortened) ?? "…"
+        let f = Date.FormatStyle(date: .omitted, time: .standard)
+        let start = s.startedAt.formatted(f)
+        let end = s.endedAt.map { $0.formatted(f) } ?? "…"
         return "\(start)–\(end)"
     }
 

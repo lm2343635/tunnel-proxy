@@ -7,9 +7,8 @@ struct MenuBarView: View {
     @EnvironmentObject var controller: TunnelController
 
     var body: some View {
+        // The redesigned controls size themselves (310 pt, own padding + canvas).
         TunnelControlsView()
-            .padding(14)
-            .frame(width: 280)
             .onAppear { controller.onAppear() }
     }
 }

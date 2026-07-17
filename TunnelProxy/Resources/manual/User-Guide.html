@@ -70,7 +70,7 @@
   <p class="sub">A friendly guide to the Tunnel Proxy menu bar app for macOS.</p>
 
   <h2 style="border-top:0; padding-top:0;">What is Tunnel Proxy?</h2>
-  <p>Tunnel Proxy is a small app that lives in your Mac's <strong>menu bar</strong> (the strip of icons at the top-right of the screen). It routes your internet traffic through your own SSH server over a secure, encrypted connection.</p>
+  <p>Tunnel Proxy is an app for macOS that routes your internet traffic through your own SSH server over a secure, encrypted connection. It has a <strong>main window</strong> for everyday use and a compact <strong>menu bar</strong> shield icon (in the strip of icons at the top-right of the screen) for quick control.</p>
   <p>You might use it to:</p>
   <ul>
     <li>Reach the internet through a server in another location.</li>
@@ -132,106 +132,62 @@
     <li>Open <strong>Applications</strong> and double-click <strong>Tunnel Proxy</strong>.
       <ul><li>The first time, macOS may ask <em>"Are you sure you want to open it?"</em> — click <strong>Open</strong>. (If macOS blocks it, go to <strong>System Settings → Privacy &amp; Security</strong>, scroll down, and click <strong>Open Anyway</strong>.)</li></ul>
     </li>
-    <li>A <strong>shield icon</strong> appears in the menu bar. There is no Dock icon and no window — the app lives entirely in the menu bar.</li>
+    <li>The <strong>main window</strong> opens, and a <strong>shield icon</strong> appears in the menu bar. You can control the app from either place.</li>
   </ol>
-  <blockquote><p><strong>Tip:</strong> Don't see the shield? Your menu bar may be full. Hold <kbd>⌘</kbd> and drag some menu bar icons to make room, or check that the app is running.</p></blockquote>
+  <blockquote><p><strong>Tip:</strong> Don't see the shield? Your menu bar may be full. Hold <kbd>⌘</kbd> and drag some menu bar icons to make room, or check that the app is running. You can reopen the main window any time from the menu bar popover's <strong>Open App</strong> button.</p></blockquote>
+
+  <h2>The main window</h2>
+  <p>The main window is where you do most of your work. A <strong>sidebar</strong> on the left holds six tabs, and a small status card at the bottom of the sidebar shows your current connection and exit IP at a glance.</p>
+  <table>
+    <tr><th>Tab</th><th>What it's for</th></tr>
+    <tr><td><strong>Connection</strong></td><td>The dashboard home — connect or disconnect, watch live throughput, and switch servers.</td></tr>
+    <tr><td><strong>Servers</strong></td><td>Add, edit, delete, and choose your active server.</td></tr>
+    <tr><td><strong>Logs</strong></td><td>The live activity log.</td></tr>
+    <tr><td><strong>Statistics</strong></td><td>How much data you've moved over time.</td></tr>
+    <tr><td><strong>Settings</strong></td><td>Ports, startup, macOS network, menu bar, and more — every change applies immediately.</td></tr>
+    <tr><td><strong>Tools</strong></td><td>Route Claude Code through the proxy, and a rescue button to remove all proxies.</td></tr>
+  </table>
+
+  <h3>The Connection tab (dashboard)</h3>
+  <p>Connection is the home page. It centers on a big power ring — click it to connect or disconnect. Around it you'll find live throughput and latency graphs, a card to quickly switch servers, and three one-tap option cards.</p>
+  <figure>
+    <iframe src="design/connection.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>The Connection tab: click the power ring to connect or disconnect, watch live throughput and latency, and switch servers.</figcaption>
+  </figure>
+  <p>The three option cards below toggle the moment you click them — no Save needed:</p>
+  <ul>
+    <li><strong>Route Mac traffic</strong> — send <em>all</em> of your Mac's traffic through the tunnel (see below).</li>
+    <li><strong>Auto-reconnect</strong> — quietly reconnect the tunnel if it ever drops.</li>
+    <li><strong>Launch at login</strong> — start Tunnel Proxy automatically when you log in.</li>
+  </ul>
 
   <h2>The menu bar popover</h2>
-  <p>Click the shield icon to open the main panel.</p>
+  <p>Click the shield icon in the menu bar to open a compact panel — handy when you don't want to open the whole window.</p>
   <figure>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" font-family="-apple-system, 'SF Pro Text', 'PingFang SC', Helvetica, Arial, sans-serif">
-  <defs>
-    <linearGradient id="desk2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3a4a63"/>
-      <stop offset="1" stop-color="#20293a"/>
-    </linearGradient>
-    <linearGradient id="panel2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#f5f6f8"/>
-    </linearGradient>
-    <filter id="pop" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.30"/>
-    </filter>
-    <clipPath id="lefthalf-mb"><rect x="-30" y="-40" width="30" height="80"/></clipPath>
-  </defs>
-  <rect width="760" height="560" fill="url(#desk2)"/>
-  <rect x="0" y="0" width="760" height="28" fill="#1f2430" opacity="0.9"/>
-  <g fill="#ffffff" font-size="13">
-    <text x="520" y="19">100%</text>
-    <text x="575" y="19">Wed 14:32</text>
-  </g>
-  <rect x="672" y="2" width="30" height="24" rx="5" fill="#0a84ff"/>
-  <g transform="translate(687,14) scale(0.42)">
-    <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linejoin="round"/>
-    <path d="M0 -25 C 9 -18, 16 -16, 22 -16 C 22 4, 15 20, 0 27 C -15 20, -22 4, -22 -16 C -16 -16, -9 -18, 0 -25 Z" fill="#ffffff" clip-path="url(#lefthalf-mb)"/>
-  </g>
-  <g font-size="12.5" fill="#c7ccd6">
-    <text x="24" y="90" font-weight="700" fill="#ffffff">The menu bar popover</text>
-    <text x="24" y="112">Click the shield icon in the menu bar</text>
-    <text x="24" y="128">to open this panel.</text>
-  </g>
-  <g filter="url(#pop)">
-    <rect x="430" y="34" width="300" height="480" rx="14" fill="url(#panel2)" stroke="#e2e4e8"/>
-    <path d="M687 34 l-9 -10 l9 0 z" fill="#ffffff"/>
-  </g>
-  <circle cx="456" cy="70" r="7" fill="#28c840"/>
-  <text x="472" y="75" font-size="15" font-weight="700" fill="#111827">Connected</text>
-  <text x="472" y="94" font-size="11.5" fill="#6b7280">Tunnel + HTTP proxy active</text>
-  <text x="410" y="75" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">①</text>
-  <line x1="446" y1="108" x2="714" y2="108" stroke="#e5e7eb"/>
-  <text x="446" y="132" font-size="11.5" fill="#6b7280">Server</text>
-  <rect x="600" y="118" width="114" height="20" rx="5" fill="#eef1f5" stroke="#d7dbe2"/>
-  <text x="610" y="132" font-size="11.5" font-weight="600" fill="#111827">My Server ⌄</text>
-  <text x="410" y="132" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">②</text>
-  <text x="446" y="158" font-size="11.5" fill="#6b7280">Exit IP</text>
-  <text x="714" y="158" font-size="11.5" font-weight="600" fill="#111827" text-anchor="end">203.0.113.47</text>
-  <text x="410" y="158" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">③</text>
-  <text x="446" y="182" font-size="11.5" fill="#6b7280">Watchdog</text>
-  <text x="714" y="182" font-size="11.5" font-weight="600" fill="#28a745" text-anchor="end">On</text>
-  <line x1="446" y1="198" x2="714" y2="198" stroke="#e5e7eb"/>
-  <rect x="446" y="212" width="268" height="38" rx="9" fill="#ff3b30"/>
-  <text x="580" y="236" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">Disconnect</text>
-  <text x="410" y="236" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">④</text>
-  <text x="446" y="282" font-size="12" fill="#111827">Auto-reconnect (watchdog)</text>
-  <rect x="676" y="272" width="38" height="22" rx="11" fill="#28c840"/>
-  <circle cx="703" cy="283" r="9" fill="#ffffff"/>
-  <text x="446" y="314" font-size="12" fill="#111827">Show network speed</text>
-  <rect x="676" y="304" width="38" height="22" rx="11" fill="#d1d5db"/>
-  <circle cx="687" cy="315" r="9" fill="#ffffff"/>
-  <text x="446" y="346" font-size="12" fill="#111827">macOS SOCKS proxy</text>
-  <rect x="676" y="336" width="38" height="22" rx="11" fill="#d1d5db"/>
-  <circle cx="687" cy="347" r="9" fill="#ffffff"/>
-  <text x="446" y="378" font-size="12" fill="#111827">Launch at login</text>
-  <rect x="676" y="368" width="38" height="22" rx="11" fill="#28c840"/>
-  <circle cx="703" cy="379" r="9" fill="#ffffff"/>
-  <text x="410" y="330" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑤</text>
-  <line x1="446" y1="400" x2="714" y2="400" stroke="#e5e7eb"/>
-  <text x="446" y="420" font-size="12" fill="#111827">View Logs…</text>
-  <text x="446" y="440" font-size="12" fill="#111827">Statistics…</text>
-  <text x="446" y="460" font-size="12" fill="#111827">User Guide…</text>
-  <text x="446" y="480" font-size="12" fill="#111827">Settings…</text>
-  <text x="446" y="500" font-size="12" fill="#6b7280">Quit</text>
-  <text x="410" y="460" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑥</text>
-  <g font-size="12" fill="#c7ccd6">
-    <text x="24" y="170"><tspan fill="#0a84ff" font-weight="800">①</tspan> Status &amp; description</text>
-    <text x="24" y="200"><tspan fill="#0a84ff" font-weight="800">②</tspan> Pick which server to use</text>
-    <text x="24" y="230"><tspan fill="#0a84ff" font-weight="800">③</tspan> The IP the internet sees</text>
-    <text x="24" y="260"><tspan fill="#0a84ff" font-weight="800">④</tspan> Connect / Disconnect</text>
-    <text x="24" y="290"><tspan fill="#0a84ff" font-weight="800">⑤</tspan> Everyday switches</text>
-    <text x="24" y="320"><tspan fill="#0a84ff" font-weight="800">⑥</tspan> Logs, Statistics, Guide, Settings, Quit</text>
-  </g>
-</svg>
+    <iframe src="design/popover.html" title="Tunnel Proxy" scrolling="no"
+            style="width:310px;max-width:100%;height:470px;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>The menu bar popover: a status card with the power ring, exit IP and latency; speed and server cards; two toggle cards; a Disconnect button; and Open App / Quit at the bottom.</figcaption>
   </figure>
+  <p>The popover packs the essentials into a small space:</p>
+  <ul>
+    <li><strong>Status card</strong> — the power ring (click to connect / disconnect), your exit IP, and current latency.</li>
+    <li><strong>Speed &amp; Server cards</strong> — live speed and the active server. Tap <strong>Switch ▾</strong> to pick a different server.</li>
+    <li><strong>Toggle cards</strong> — <strong>Route Mac traffic</strong> and <strong>Auto-reconnect</strong>, each a single tap.</li>
+    <li><strong>Disconnect</strong> — stop the tunnel.</li>
+    <li><strong>Open App</strong> / <strong>Quit</strong> — open the main window, or quit Tunnel Proxy.</li>
+  </ul>
 
-  <table>
-    <tr><th>#</th><th>What it is</th><th>What it does</th></tr>
-    <tr><td>①</td><td><strong>Status</strong></td><td>The colored dot and label tell you the current state (see below).</td></tr>
-    <tr><td>②</td><td><strong>Server</strong></td><td>Choose which server to connect through.</td></tr>
-    <tr><td>③</td><td><strong>Exit IP</strong></td><td>The IP address the internet currently sees you as. Only shown when connected.</td></tr>
-    <tr><td>④</td><td><strong>Connect / Disconnect</strong></td><td>The big button. Starts or stops the tunnel.</td></tr>
-    <tr><td>⑤</td><td><strong>Switches</strong></td><td>Everyday on/off options (explained below).</td></tr>
-    <tr><td>⑥</td><td><strong>Menu items</strong></td><td>Open the Logs, Statistics, or User Guide window, open Settings, or Quit the app.</td></tr>
-  </table>
+  <h3>The mini window</h3>
+  <p>The mini window is a small, always-on-top floating panel that keeps your status and a <strong>Stop</strong> button in view while you work in other apps. Open it from the picture-in-picture icon in the popover's status card, or from the menu bar's <strong>View → Mini Window</strong> (<kbd>⇧⌘M</kbd>).</p>
+  <figure>
+    <iframe src="design/mini.html" title="Tunnel Proxy" scrolling="no"
+            style="width:300px;max-width:100%;height:150px;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>The mini window: a compact always-on-top panel showing status, exit IP, latency, and a Stop button.</figcaption>
+  </figure>
 
   <h3>Reading the status icon</h3>
   <p>The shape and color of the menu bar icon change with the connection state.</p>
@@ -288,14 +244,14 @@
     <tr><td>Outline shield (gray dot)</td><td><strong>Disconnected</strong></td><td>Your traffic goes out directly — the tunnel is off.</td></tr>
     <tr><td>Outline shield that <strong>blinks</strong> (yellow dot)</td><td><strong>Connecting / Reconnecting</strong></td><td>The tunnel is being established.</td></tr>
     <tr><td>Left-half filled shield (green dot)</td><td><strong>Connected</strong></td><td>Tunnel and proxy are active. You're all set.</td></tr>
-    <tr><td>Shield with an <strong>!</strong> (red dot)</td><td><strong>Error</strong></td><td>Something went wrong. Open <strong>View Logs…</strong> to see why.</td></tr>
+    <tr><td>Shield with an <strong>!</strong> (red dot)</td><td><strong>Error</strong></td><td>Something went wrong. Open the <strong>Logs</strong> tab to see why.</td></tr>
   </table>
 
   <h2>First-time setup: add your server</h2>
   <p>Before you can connect, you need to tell the app about your SSH server.</p>
   <ol>
-    <li>Click the shield icon → <strong>Settings…</strong> (or press <kbd>⌘,</kbd>).</li>
-    <li>Go to the <strong>Servers</strong> tab and click <strong>＋ Add Server</strong>.</li>
+    <li>Open the main window and select the <strong>Servers</strong> tab in the sidebar.</li>
+    <li>Click <strong>＋ Add Server</strong>.</li>
   </ol>
   <figure>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470" font-family="-apple-system, 'SF Pro Text', 'PingFang SC', Helvetica, Arial, sans-serif">
@@ -370,114 +326,76 @@
   </table>
   <p>Click <strong>Save</strong>.</p>
   <blockquote><p><strong>Your secrets are safe.</strong> Passwords and key passphrases are stored in the <strong>macOS Keychain</strong>, the same secure vault macOS uses for your other passwords. They are never written to a plain file.</p></blockquote>
-  <p>You can add <strong>multiple servers</strong> and switch between them from the popover. In the Servers list, click the circle on the left to mark a server as the active one.</p>
+  <p>You can add <strong>multiple servers</strong> and switch between them from the Connection tab or the menu bar popover. In the <strong>Servers</strong> tab, click the circle on the left of a row to mark it as the active server.</p>
   <figure>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" font-family="-apple-system, 'SF Pro Text', 'PingFang SC', Helvetica, Arial, sans-serif">
-  <defs>
-    <linearGradient id="s-win" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#f4f5f7"/>
-    </linearGradient>
-    <filter id="s-sh" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.20"/>
-    </filter>
-  </defs>
-  <rect width="760" height="430" fill="#e9ebef"/>
-  <g filter="url(#s-sh)">
-    <rect x="120" y="30" width="520" height="370" rx="12" fill="url(#s-win)" stroke="#d6dae1"/>
-  </g>
-  <rect x="120" y="30" width="520" height="52" rx="12" fill="#f0f1f4"/>
-  <rect x="120" y="70" width="520" height="12" fill="#f0f1f4"/>
-  <rect x="176" y="42" width="92" height="34" rx="8" fill="#dfe3ea"/>
-  <text x="222" y="58" font-size="16" text-anchor="middle">🗄️</text>
-  <text x="222" y="72" font-size="10.5" font-weight="600" fill="#111827" text-anchor="middle">Servers</text>
-  <text x="330" y="58" font-size="16" text-anchor="middle">🌐</text>
-  <text x="330" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">Tunnel</text>
-  <text x="430" y="58" font-size="16" text-anchor="middle">⚙️</text>
-  <text x="430" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">Advanced</text>
-  <text x="536" y="58" font-size="16" text-anchor="middle">ℹ️</text>
-  <text x="536" y="72" font-size="10.5" fill="#4b5563" text-anchor="middle">About</text>
-  <line x1="120" y1="82" x2="640" y2="82" stroke="#dcdfe5"/>
-  <rect x="148" y="102" width="464" height="52" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
-  <circle cx="172" cy="128" r="7" fill="none" stroke="#0a84ff" stroke-width="4"/>
-  <text x="192" y="124" font-size="12.5" font-weight="600" fill="#111827">My Server</text>
-  <text x="192" y="140" font-size="10.5" fill="#6b7280">root@example.com:22 · Password</text>
-  <text x="560" y="132" font-size="15" fill="#8a93a6">✎  🗑</text>
-  <rect x="148" y="164" width="464" height="52" rx="9" fill="#ffffff" stroke="#e2e5ea"/>
-  <circle cx="172" cy="190" r="7" fill="none" stroke="#c3c8d0" stroke-width="2"/>
-  <text x="192" y="186" font-size="12.5" font-weight="600" fill="#111827">Backup box</text>
-  <text x="192" y="202" font-size="10.5" fill="#6b7280">me@10.0.0.9:2222 · Private key file</text>
-  <text x="560" y="194" font-size="15" fill="#8a93a6">✎  🗑</text>
-  <line x1="148" y1="300" x2="612" y2="300" stroke="#e5e7eb"/>
-  <rect x="148" y="312" width="120" height="28" rx="7" fill="#eceef2" stroke="#d6dae1"/>
-  <text x="208" y="330" font-size="12" fill="#111827" text-anchor="middle">＋ Add Server</text>
-  <g font-size="12" fill="#4b5563">
-    <text x="30" y="360" font-weight="700" fill="#111827">Five tabs</text>
-    <text x="30" y="380">Servers · Tunnel · Advanced · Tools (Claude Code proxy) · About</text>
-    <text x="30" y="398" fill="#8a93a6">The filled blue circle marks the active server. Click a row to switch.</text>
-  </g>
-</svg>
+    <iframe src="design/servers.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>The Servers tab: add, edit, and delete servers. The highlighted row is the active server; click a row's circle to switch.</figcaption>
   </figure>
 
   <h2>Connecting</h2>
   <ol>
-    <li>Click the shield icon.</li>
-    <li>Make sure the right server is chosen in the <strong>Server</strong> row.</li>
-    <li>Click <strong>Connect</strong>.</li>
+    <li>Open the <strong>Connection</strong> tab (or click the shield icon for the popover).</li>
+    <li>Make sure the right server is chosen in the <strong>Server</strong> card.</li>
+    <li>Click the <strong>power ring</strong>.</li>
   </ol>
   <p>Within a few seconds the status turns <strong>green / Connected</strong>, and the <strong>Exit IP</strong> appears. That IP is your server's address — proof your traffic is going through the tunnel.</p>
-  <p>To stop, click the shield icon and press <strong>Disconnect</strong>.</p>
+  <p>To stop, click the power ring again (or press <strong>Disconnect</strong> in the popover).</p>
 
-  <h2>The everyday switches</h2>
-  <p>These live in the popover, below the Connect button.</p>
-  <h3>Auto-reconnect (watchdog)</h3>
+  <h2>The everyday options</h2>
+  <p>These are the one-tap option cards on the <strong>Connection</strong> tab (a couple also appear as toggle cards in the popover). They apply the moment you click them.</p>
+  <h3>Auto-reconnect</h3>
   <p>Keep this <strong>on</strong> (recommended). If the tunnel ever drops — say your Wi-Fi hiccups — the app quietly reconnects it for you in the background. You may briefly see the yellow <em>"Reconnecting…"</em> state while it does.</p>
-  <h3>Show network speed</h3>
-  <p>When <strong>on</strong>, live upload/download speeds appear next to the menu bar icon so you can see traffic flowing at a glance.</p>
-  <h3>macOS SOCKS proxy</h3>
+  <h3>Route Mac traffic</h3>
   <ul>
     <li><strong>Off (default):</strong> Only apps you've pointed at the proxy use the tunnel.</li>
     <li><strong>On:</strong> The app configures your Mac's <strong>system-wide</strong> network settings so that <em>all</em> apps use the tunnel automatically.</li>
   </ul>
   <p>Turn this <strong>on</strong> if you want everything on your Mac to go through the tunnel without configuring each app. When you disconnect or quit, remember to turn it back off if you want direct traffic again.</p>
   <h3>Launch at login</h3>
-  <p>When <strong>on</strong>, Tunnel Proxy starts automatically each time you log in to your Mac, so the shield is always waiting in the menu bar.</p>
-  <blockquote><p>There is also an <strong>Auto-connect on launch</strong> option in <strong>Settings → Advanced</strong>. Turn both on and your tunnel comes up by itself whenever you start your Mac.</p></blockquote>
+  <p>When <strong>on</strong>, Tunnel Proxy starts automatically each time you log in to your Mac, so it's always ready in the menu bar.</p>
+  <blockquote><p>There is also an <strong>Auto-connect on launch</strong> option in the <strong>Settings</strong> tab. Turn both on and your tunnel comes up by itself whenever you start your Mac.</p></blockquote>
+  <blockquote><p><strong>Show network speed</strong> lives in the <strong>Settings</strong> tab, under <em>Menu Bar</em>. When on, live upload/download speeds appear next to the menu bar icon so you can see traffic flowing at a glance.</p></blockquote>
 
-  <h2>Settings reference</h2>
-  <p>Open with the shield icon → <strong>Settings…</strong> (<kbd>⌘,</kbd>). There are five tabs.</p>
-  <h3>Servers</h3>
-  <p>Add, edit, delete, and choose your active server. (See <em>First-time setup</em>.)</p>
-  <h3>Tunnel</h3>
+  <h2>The Settings tab</h2>
+  <p>The <strong>Settings</strong> tab gathers all the app's options, grouped into cards. There is <strong>no Save button — every change applies immediately</strong>. If you type an invalid value, an orange hint appears under that card.</p>
+  <figure>
+    <iframe src="design/settings.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/640;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>The Settings tab: every change applies immediately — no Save button.</figcaption>
+  </figure>
   <ul>
-    <li><strong>SOCKS Port</strong> / <strong>HTTP Proxy Port</strong> — the local port numbers the app listens on (defaults <code>1080</code> and <code>8118</code>). Only change these if they clash with another program.</li>
-    <li><strong>Network Service</strong> — which network connection (Wi-Fi, Ethernet…) the <em>macOS SOCKS proxy</em> switch applies to. Normally leave it on the default.</li>
-    <li><strong>Watchdog Interval (s)</strong> — how often the auto-reconnect check runs.</li>
-    <li><strong>Runtime</strong> — a green ✓ next to <em>privoxy</em>, <em>ssh</em>, and <em>curl</em> confirms everything the app needs is present.</li>
-  </ul>
-  <p>Click <strong>Save</strong> after changing anything here.</p>
-  <h3>Advanced</h3>
-  <ul>
-    <li><strong>Launch at login</strong> and <strong>Auto-connect on launch</strong> (see above).</li>
-    <li><strong>Record traffic statistics</strong> — when on, the app keeps a local record of how much data you send and receive over time (see <a href="#stats">Traffic statistics</a>). It records byte <em>volume</em> only — never the sites you visit — and the data stays on your Mac. <strong>Clear statistics…</strong> permanently deletes that history.</li>
+    <li><strong>Ports</strong> — <strong>SOCKS Port</strong> and <strong>HTTP Proxy Port</strong>, the local port numbers the app listens on (defaults <code>1080</code> and <code>8118</code>). Only change these if they clash with another program.</li>
+    <li><strong>Startup</strong> — <strong>Launch at login</strong> and <strong>Auto-connect on launch</strong> (see above).</li>
+    <li><strong>macOS</strong> — the <strong>Network Service</strong> (Wi-Fi, Ethernet…) that <em>Route Mac traffic</em> applies to, the <strong>Auto-reconnect (watchdog)</strong> switch, and the <strong>Watchdog Interval (s)</strong> — how often the auto-reconnect check runs.</li>
+    <li><strong>Menu Bar</strong> — <strong>Show menu bar icon</strong> and <strong>Show network speed</strong>.</li>
+    <li><strong>Runtime</strong> — confirms the components the app needs (<em>privoxy</em> is bundled; <em>ssh</em> and <em>curl</em> come with macOS) are present.</li>
+    <li><strong>Statistics</strong> — <strong>Record traffic statistics</strong> keeps a local record of how much data you send and receive over time (see <a href="#stats">Traffic statistics</a>). It records byte <em>volume</em> only — never the sites you visit — and the data stays on your Mac. <strong>Clear statistics…</strong> permanently deletes that history.</li>
     <li><strong>Files</strong> — shows where your config and log files live, with a <strong>Reveal in Finder</strong> button.</li>
   </ul>
-  <h3>Tools</h3>
-  <p>Extra one-click helpers that point other programs at this app's HTTP proxy.</p>
+
+  <h2>The Tools tab</h2>
+  <p>The <strong>Tools</strong> tab holds one-click helpers that point other programs at this app's HTTP proxy.</p>
+  <figure>
+    <iframe src="design/tools.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>The Tools tab: route Claude Code through the proxy, and a rescue button to remove all proxies.</figcaption>
+  </figure>
   <ul>
-    <li><strong>Route Claude Code through this proxy</strong> — turn this <strong>on</strong> to make <a href="https://claude.com/claude-code">Claude Code</a> send its traffic through the tunnel. It adds the standard HTTP-proxy environment keys (<code>http_proxy</code>, <code>https_proxy</code>, and their uppercase forms, plus <code>no_proxy</code> for <code>localhost</code>) to <code>~/.claude/settings.json</code>, pointing them at <code>http://127.0.0.1:8118</code> (or whatever <strong>HTTP Proxy Port</strong> you set in the Tunnel tab). Turn it <strong>off</strong> to remove just those keys — everything else in your Claude Code settings is left untouched. Restart Claude Code for the change to take effect.</li>
-    <li><strong>Settings file</strong> — shows the path to <code>~/.claude/settings.json</code>, with a <strong>Reveal in Finder</strong> button.</li>
+    <li><strong>Route Claude Code through this proxy</strong> — turn this <strong>on</strong> to make <a href="https://claude.com/claude-code">Claude Code</a> send its traffic through the tunnel. It adds the standard HTTP-proxy environment keys (<code>http_proxy</code>, <code>https_proxy</code>, and their uppercase forms, plus <code>no_proxy</code> for <code>localhost</code>) to <code>~/.claude/settings.json</code>, pointing them at <code>http://127.0.0.1:8118</code> (or whatever <strong>HTTP Proxy Port</strong> you set in the Settings tab). Turn it <strong>off</strong> to remove just those keys — everything else in your Claude Code settings is left untouched. Restart Claude Code for the change to take effect.</li>
+    <li><strong>Settings file</strong> — shows the path to <code>~/.claude/settings.json</code>, with a <strong>Reveal</strong> button.</li>
     <li><strong>Remove All Proxies</strong> — a rescue button that turns off <em>every</em> system proxy (HTTP, HTTPS, SOCKS, and automatic/PAC) for your current <strong>Network Service</strong>. Use it if proxy settings ever get left behind — for example after a crash — and your Mac can't reach the internet directly. It needs your admin password.</li>
   </ul>
   <blockquote><p>If you change the HTTP Proxy Port later, come back and toggle the Claude Code switch off and on again so the new port is written.</p></blockquote>
-  <h3>About</h3>
-  <p>App name and a short description.</p>
 
-  <h2>Viewing logs</h2>
+  <h2>The Logs tab</h2>
   <p>If a connection fails or behaves oddly, the logs show exactly what happened.</p>
   <ol>
-    <li>Click the shield icon → <strong>View Logs…</strong></li>
-    <li>The Logs window streams live:
+    <li>Open the <strong>Logs</strong> tab in the sidebar.</li>
+    <li>The log streams live:
       <ul>
         <li><strong>Filter…</strong> — type to show only matching lines.</li>
         <li><strong>Auto-scroll</strong> — keeps the newest lines in view.</li>
@@ -485,12 +403,24 @@
       </ul>
     </li>
   </ol>
+  <figure>
+    <iframe src="design/logs.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>The Logs tab: the live activity log, with a filter, auto-scroll, and a clear button.</figcaption>
+  </figure>
   <p>Lines are color-coded: green for success, orange for warnings, red for errors.</p>
 
-  <h2 id="stats">Traffic statistics</h2>
+  <h2 id="stats">The Statistics tab</h2>
   <p>Tunnel Proxy can keep a running tally of how much data flows through the tunnel, so you can see your usage over time.</p>
-  <p>Turn it on with <strong>Record traffic statistics</strong> in <strong>Settings → Advanced</strong>. It records the <em>amount</em> of data (bytes up and down) only — it does <strong>not</strong> log which websites you visit — and everything is stored locally on your Mac.</p>
-  <p>To see it, click the shield icon → <strong>Statistics…</strong> The window shows:</p>
+  <p>Turn it on with <strong>Record traffic statistics</strong> in the <strong>Settings</strong> tab. It records the <em>amount</em> of data (bytes up and down) only — it does <strong>not</strong> log which websites you visit — and everything is stored locally on your Mac.</p>
+  <figure>
+    <iframe src="design/statistics.html" title="Tunnel Proxy" scrolling="no"
+            style="width:840px;max-width:100%;aspect-ratio:840/600;border:0;display:block;margin:0 auto;"
+            loading="lazy"></iframe>
+    <figcaption>The Statistics tab: totals, a usage-over-time chart, and a session list.</figcaption>
+  </figure>
+  <p>Open the <strong>Statistics</strong> tab to see:</p>
   <ul>
     <li><strong>Range</strong> — switch between <strong>Today</strong>, <strong>Week</strong>, <strong>Month</strong>, and <strong>All</strong>.</li>
     <li><strong>Server filter</strong> — narrow the session list to a single server, or show all.</li>
@@ -499,17 +429,17 @@
     <li><strong>Sessions</strong> — each connection, with its time span, which server it used, and how much it moved. A green dot marks a session that's still open.</li>
     <li><strong>Export…</strong> — save the chart data as a <code>.csv</code> file for use in a spreadsheet.</li>
   </ul>
-  <blockquote><p>Recording is off until you turn it on, so early sessions won't appear. The status bar at the bottom of the window tells you whether recording is on and since when. Use <strong>Clear statistics…</strong> in <strong>Settings → Advanced</strong> to erase the history.</p></blockquote>
+  <blockquote><p>Recording is off until you turn it on, so early sessions won't appear. The status bar at the bottom tells you whether recording is on and since when. Use <strong>Clear statistics…</strong> in the <strong>Settings</strong> tab to erase the history.</p></blockquote>
 
   <h2>Troubleshooting</h2>
   <table>
     <tr><th>Problem</th><th>Try this</th></tr>
-    <tr><td><strong>Connect button is grayed out</strong></td><td>You haven't added a server yet, or the settings are incomplete. Open <strong>Settings → Servers</strong> and check the details.</td></tr>
-    <tr><td><strong>Stuck on "Connecting…" then Error</strong></td><td>Check the <strong>Host</strong>, <strong>Port</strong>, and <strong>Username</strong>. Make sure you can reach the server (try connecting from Terminal). Open <strong>View Logs…</strong> for the exact error.</td></tr>
-    <tr><td><strong>Wrong password / key</strong></td><td>Re-open the server in <strong>Settings → Servers</strong>, click the pencil, and re-enter your password or re-choose your key file.</td></tr>
-    <tr><td><strong>Websites still show my real IP</strong></td><td>Make sure the status is <strong>green / Connected</strong>. If an app ignores the proxy, turn on <strong>macOS SOCKS proxy</strong> so the whole system uses the tunnel.</td></tr>
-    <tr><td><strong>Tunnel keeps dropping</strong></td><td>Turn on <strong>Auto-reconnect (watchdog)</strong>. Persistent drops usually mean an unstable server or network.</td></tr>
-    <tr><td><strong>No internet after quitting / a crash</strong></td><td>A system proxy may have been left switched on. Open <strong>Settings → Tools</strong> and click <strong>Remove All Proxies</strong>, or turn off <strong>macOS SOCKS proxy</strong> in the popover.</td></tr>
+    <tr><td><strong>Power ring won't connect</strong></td><td>You haven't added a server yet, or the settings are incomplete. Open the <strong>Servers</strong> tab and check the details.</td></tr>
+    <tr><td><strong>Stuck on "Connecting…" then Error</strong></td><td>Check the <strong>Host</strong>, <strong>Port</strong>, and <strong>Username</strong>. Make sure you can reach the server (try connecting from Terminal). Open the <strong>Logs</strong> tab for the exact error.</td></tr>
+    <tr><td><strong>Wrong password / key</strong></td><td>Re-open the server in the <strong>Servers</strong> tab, click the pencil, and re-enter your password or re-choose your key file.</td></tr>
+    <tr><td><strong>Websites still show my real IP</strong></td><td>Make sure the status is <strong>green / Connected</strong>. If an app ignores the proxy, turn on <strong>Route Mac traffic</strong> so the whole system uses the tunnel.</td></tr>
+    <tr><td><strong>Tunnel keeps dropping</strong></td><td>Turn on <strong>Auto-reconnect</strong>. Persistent drops usually mean an unstable server or network.</td></tr>
+    <tr><td><strong>No internet after quitting / a crash</strong></td><td>A system proxy may have been left switched on. Open the <strong>Tools</strong> tab and click <strong>Remove All Proxies</strong>, or turn off <strong>Route Mac traffic</strong>.</td></tr>
     <tr><td><strong>"Bundled proxy missing"</strong></td><td>The app files are incomplete. Re-download and reinstall from the DMG.</td></tr>
     <tr><td><strong>No shield icon after launch</strong></td><td>Your menu bar may be full — ⌘-drag other icons aside. Confirm the app is running.</td></tr>
   </table>
@@ -519,10 +449,10 @@
   <p><strong>Is this a VPN?</strong><br>It works similarly for your traffic, but it's an <em>SSH tunnel</em> to your own server, not a commercial VPN service. You provide the server.</p>
   <p><strong>Where is my password stored?</strong><br>In the <strong>macOS Keychain</strong> — the secure system vault. Never in a plain text file.</p>
   <p><strong>Does it slow down my internet?</strong><br>Your traffic takes an extra hop through your server, so there's a small overhead. The speed mostly depends on your server's connection.</p>
-  <p><strong>How do I fully remove it?</strong><br>Disconnect, turn off <strong>Launch at login</strong> and <strong>macOS SOCKS proxy</strong>, then quit and drag <strong>Tunnel Proxy</strong> from Applications to the Trash.</p>
+  <p><strong>How do I fully remove it?</strong><br>Disconnect, turn off <strong>Launch at login</strong> and <strong>Route Mac traffic</strong>, then quit and drag <strong>Tunnel Proxy</strong> from Applications to the Trash.</p>
 
   <hr>
-  <p class="foot">Need to check what's happening under the hood? The <strong>View Logs…</strong> window is always the best first stop.</p>
+  <p class="foot">Need to check what's happening under the hood? The <strong>Logs</strong> tab is always the best first stop.</p>
 </div>
 </body>
 </html>

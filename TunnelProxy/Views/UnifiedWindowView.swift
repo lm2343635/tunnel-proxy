@@ -1,9 +1,8 @@
 import SwiftUI
 
-/// The single, unified app window: a Settings-style tabbed window that merges the
-/// old main window, Settings, Logs, and Statistics into one surface. The
-/// **Connection** tab (an animated power toggle + status + quick options) is the
-/// default; the rest are the configuration/data tabs.
+/// The single, unified app window. The redesign ("2a") replaces the old top
+/// icon-tab strip with a **left sidebar** (Mail / System-Settings style) over a
+/// light-gray canvas, with Control-Center-style white tiles for content.
 ///
 /// The app ships as an `LSUIElement` menu bar agent (no Dock icon). While this
 /// window is on screen we promote the app to `.regular` so it gets a Dock icon +
@@ -15,23 +14,17 @@ struct UnifiedWindowView: View {
     @SceneStorage("mainTab") private var tab: WindowTab = .connection
 
     var body: some View {
-        // The window uses `.hiddenTitleBar`, so content extends to the very top.
-        // The tab strip is the top band: it paints the full width (including
-        // behind the floating traffic-light buttons), with top padding to clear
-        // them. Its own gray is the single top surface — no separate titlebar to
-        // mismatch — and the content sits on white below. The vertical icon+label
-        // tabs get full height here (no titlebar clipping).
-        VStack(spacing: 0) {
-            TabToolbar(selection: $tab)
-                .padding(.top, 28)          // clear the traffic-light controls
-                .padding(.bottom, 6)
-                .frame(maxWidth: .infinity)
-                .background(WindowStyle.titlebar)
+        // `.hiddenTitleBar` lets content extend to the very top; the sidebar paints
+        // its own surface behind the floating traffic-light buttons (top ~36 pt is
+        // reserved for them). Sidebar (fixed 188 pt) + content pane (canvas).
+        HStack(spacing: 0) {
+            Sidebar(selection: $tab)
+                .frame(width: DS.sidebarWidth)
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(nsColor: .textBackgroundColor))
+                .background(DS.canvas)
         }
-        .frame(minWidth: 680, idealWidth: 720, minHeight: 560, idealHeight: 620)
+        .frame(minWidth: 780, idealWidth: 840, minHeight: 560, idealHeight: 580)
         .ignoresSafeArea(.container, edges: .top)
         // Route "open on tab X" requests from the popover / app menus.
         .onChange(of: controller.requestedTab) { _, new in
@@ -42,19 +35,14 @@ struct UnifiedWindowView: View {
         }
         .onAppear {
             controller.onAppear()
-            // Consume any tab request that arrived before this view existed.
             if let requested = controller.requestedTab {
                 tab = requested
                 controller.requestedTab = nil
             }
-            // Also register the reopen action here, so relaunch works even
-            // when the menu bar icon is hidden (its registrar never renders).
             AppDelegate.openMainWindow = { openWindow(id: "main") }
             AppActivation.becomeRegular()
         }
         .onDisappear {
-            // Back to menu-bar-only. If the app is on its way out (⌘Q / Quit),
-            // this is harmless; otherwise it removes the Dock icon.
             AppActivation.becomeAccessory()
         }
     }
@@ -64,22 +52,21 @@ struct UnifiedWindowView: View {
         switch tab {
         case .connection: ConnectionTab()
         case .servers:    ServersView()
-        case .tunnel:     TunnelTab()
         case .logs:       LogsView()
         case .stats:      StatisticsView()
-        case .advanced:   AdvancedTab()
+        case .settings:   SettingsTab()
         case .tools:      ToolsTab()
         }
     }
 }
 
-// MARK: - Tab toolbar (preference-style: icon above label)
+// MARK: - Sidebar
 
-/// A macOS-preferences-style tab strip: each item is an SF Symbol above its
-/// label, with a rounded highlight behind the selected one. Reproduces the look
-/// of the `Settings` scene's toolbar (which a plain window `TabView` does not).
-private struct TabToolbar: View {
+/// The left navigation sidebar: app header, a nav list of the six tabs, and a
+/// pinned connection-status card at the bottom.
+private struct Sidebar: View {
     @Binding var selection: WindowTab
+    @EnvironmentObject var controller: TunnelController
 
     private struct Item: Identifiable {
         let tab: WindowTab
@@ -91,53 +78,77 @@ private struct TabToolbar: View {
     private let items: [Item] = [
         .init(tab: .connection, title: "Connection", symbol: "bolt.horizontal.circle"),
         .init(tab: .servers,    title: "Servers",    symbol: "server.rack"),
-        .init(tab: .tunnel,     title: "Tunnel",     symbol: "network"),
         .init(tab: .logs,       title: "Logs",       symbol: "doc.plaintext"),
         .init(tab: .stats,      title: "Statistics", symbol: "chart.bar"),
-        .init(tab: .advanced,   title: "Advanced",   symbol: "gearshape.2"),
+        .init(tab: .settings,   title: "Settings",   symbol: "gearshape"),
         .init(tab: .tools,      title: "Tools",      symbol: "wrench.and.screwdriver"),
     ]
 
     var body: some View {
-        // Sits inside the titlebar toolbar (Calendar-app style). No background of
-        // its own — it shows the native titlebar surface, so there's no seam.
-        HStack(spacing: 2) {
-            ForEach(items) { item in
-                TabButton(item: item, isSelected: selection == item.tab) {
-                    selection = item.tab
+        VStack(alignment: .leading, spacing: 0) {
+            // Clear the traffic-light controls (top ~36 pt).
+            Spacer().frame(height: 34)
+
+            // App header row.
+            HStack(spacing: 8) {
+                Image("SidebarIcon")
+                    .resizable()
+                    .interpolation(.high)
+                    .frame(width: 22, height: 22)
+                    .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+                Text("Tunnel Proxy")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(DS.primaryText)
+            }
+            .padding(.leading, 4)
+
+            // Nav list.
+            VStack(spacing: 2) {
+                ForEach(items) { item in
+                    NavRow(item: item, isSelected: selection == item.tab) {
+                        selection = item.tab
+                    }
                 }
             }
+            .padding(.top, 16)
+
+            Spacer(minLength: 12)
+
+            StatusCard()
+        }
+        .padding(.horizontal, 10)
+        .padding(.bottom, 12)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(DS.sidebar)
+        .overlay(alignment: .trailing) {
+            Rectangle().fill(DS.sidebarSeparator).frame(width: 1)
         }
     }
 
-    private struct TabButton: View {
+    private struct NavRow: View {
         let item: Item
         let isSelected: Bool
         let action: () -> Void
-
         @State private var hovering = false
 
         var body: some View {
-            // Vertical stack: icon above label (System-Settings style). The
-            // titlebar is given extra height in WindowChrome so this doesn't clip.
             Button(action: action) {
-                VStack(spacing: 2) {
+                HStack(spacing: 8) {
                     Image(systemName: item.symbol)
-                        .font(.system(size: 16, weight: .regular))
-                        .frame(height: 18)
+                        .font(.system(size: 15))
+                        .frame(width: 18)
+                        .foregroundStyle(isSelected ? .white : DS.secondaryText)
                     Text(item.title)
-                        .font(.system(size: 11))
+                        .font(.system(size: 13, weight: isSelected ? .medium : .regular))
+                        .foregroundStyle(isSelected ? .white : DS.primaryText)
+                    Spacer(minLength: 0)
                 }
-                .foregroundStyle(isSelected ? Color.accentColor : Color.primary)
-                .frame(minWidth: 60)
+                .padding(.vertical, 5)
                 .padding(.horizontal, 8)
-                .padding(.vertical, 4)
                 .background(
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(isSelected
-                              ? Color.secondary.opacity(0.20)
-                              : (hovering ? Color.secondary.opacity(0.10) : Color.clear))
-                )
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(isSelected ? DS.accent
+                              : (hovering ? DS.primaryText.opacity(0.06) : .clear)))
                 .contentShape(RoundedRectangle(cornerRadius: 6))
             }
             .buttonStyle(.plain)
@@ -147,11 +158,76 @@ private struct TabToolbar: View {
     }
 }
 
-// MARK: - Reusable style pieces (adaptive)
+/// The pinned status card at the bottom of the sidebar: a status dot + label,
+/// right-aligned latency, and the exit IP.
+private struct StatusCard: View {
+    @EnvironmentObject var controller: TunnelController
 
-/// A titled group card: an uppercased caption above a rounded, separator-bordered
-/// container. Filled with the window gray so it reads as a distinct card against
-/// the white content surface (adapts in dark mode).
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 6) {
+                Circle().fill(controller.statusColor).frame(width: 8, height: 8)
+                Text(controller.state.label)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(DS.primaryText)
+                    .lineLimit(1)
+                Spacer(minLength: 4)
+                if let ms = controller.latencyMS {
+                    Text("\(ms) ms")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(controller.latencyColor)
+                }
+            }
+            Text(controller.exitIP ?? "—")
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(DS.secondaryText)
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(DS.tile.opacity(0.65)))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .strokeBorder(DS.tileBorder, lineWidth: 1))
+    }
+}
+
+// MARK: - Reusable content helpers (redesign)
+
+/// A tab's standard header: a bold title flush-left with optional trailing
+/// controls. Used across the tiled tabs.
+struct TabHeader<Trailing: View>: View {
+    let title: LocalizedStringKey
+    @ViewBuilder var trailing: Trailing
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Text(title)
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(DS.primaryText)
+            Spacer(minLength: 8)
+            trailing
+        }
+    }
+}
+
+extension TabHeader where Trailing == EmptyView {
+    init(_ title: LocalizedStringKey) {
+        self.title = title
+        self.trailing = EmptyView()
+    }
+    init(title: LocalizedStringKey) {
+        self.title = title
+        self.trailing = EmptyView()
+    }
+}
+
+// MARK: - Legacy reusable style pieces (still referenced by unported surfaces)
+
+/// A titled group card. Retained for any view not yet migrated to `Tile`.
 struct SectionCard<Content: View>: View {
     let title: LocalizedStringKey
     @ViewBuilder let content: Content
@@ -194,22 +270,6 @@ struct SwitchRow: View {
     }
 }
 
-/// A small chip container. Filled with the window gray so it stands out against
-/// the white content surface.
-struct ChipContainer<Content: View>: View {
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        content
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color(nsColor: .windowBackgroundColor))
-            .overlay(RoundedRectangle(cornerRadius: 8)
-                .strokeBorder(Color(nsColor: .separatorColor)))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-}
-
 /// An inline warning line (amber, with a triangle glyph).
 struct WarningBanner: View {
     let text: Text
@@ -220,21 +280,9 @@ struct WarningBanner: View {
             text
         }
         .font(.system(size: 11.5))
-        .foregroundStyle(.orange)
+        .foregroundStyle(DS.warning)
         .multilineTextAlignment(.leading)
     }
-}
-
-/// Shared window chrome colors.
-enum WindowStyle {
-    /// The tone macOS renders the titlebar (light #ECECEC / dark #2A2A2C), used
-    /// for the top tab band so it reads as a native titlebar surface.
-    static let titlebar = Color(nsColor: NSColor(name: nil) { appearance in
-        let dark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        return dark
-            ? NSColor(red: 0x2A/255.0, green: 0x2A/255.0, blue: 0x2C/255.0, alpha: 1)
-            : NSColor(red: 0xEC/255.0, green: 0xEC/255.0, blue: 0xEC/255.0, alpha: 1)
-    })
 }
 
 /// Small helper for flipping the activation policy between agent (`.accessory`)

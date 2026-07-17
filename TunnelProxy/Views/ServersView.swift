@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// Manages the list of SSH server profiles: select active, add, edit, delete.
-/// The editor is presented as a sheet.
+/// Redesigned as Control-Center tiles — one card per profile over the canvas,
+/// a dashed "add" tile, and a Keychain footnote. The editor is a sheet.
 struct ServersView: View {
     @EnvironmentObject var controller: TunnelController
 
@@ -9,78 +10,125 @@ struct ServersView: View {
     @State private var isNew = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            if controller.config.servers.isEmpty {
-                emptyState
-            } else {
-                serverList
+        VStack(alignment: .leading, spacing: 12) {
+            TabHeader(title: "Servers") {
+                Button(action: addServer) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "plus").font(.system(size: 11, weight: .bold))
+                        Text("Add Server").font(.system(size: 12.5, weight: .semibold))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 6)
+                    .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(DS.accent))
+                }
+                .buttonStyle(.plain)
             }
-            Divider()
-            toolbar
+
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(controller.config.servers) { server in
+                        serverTile(server)
+                    }
+                    addTile
+                    footer
+                }
+            }
+            .scrollContentBackground(.hidden)
         }
-        .background(Color(nsColor: .textBackgroundColor))
+        .padding(DS.contentPadding)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .sheet(item: $editing) { server in
             ServerEditor(server: server, isNew: isNew)
                 .environmentObject(controller)
         }
     }
 
-    private var emptyState: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "server.rack").font(.system(size: 36)).foregroundStyle(.secondary)
-            Text("No servers yet").font(.headline)
-            Text("Add an SSH server to connect through.")
-                .font(.caption).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private var serverList: some View {
-        List {
-            ForEach(controller.config.servers) { server in
-                row(for: server)
+    private func serverTile(_ server: ServerProfile) -> some View {
+        let isActive = server.id == (controller.config.selectedServerID
+                                     ?? controller.config.servers.first?.id)
+        return Tile(padding: EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16)) {
+            HStack(spacing: 12) {
+                RadioDot(isSelected: isActive, size: 16)
+                    .onTapGesture { controller.selectServer(server.id) }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(server.displayName)
+                        .font(.system(size: 13.5, weight: .semibold))
+                        .foregroundStyle(isActive ? DS.primaryText : DS.secondaryText)
+                        .lineLimit(1)
+                    Text("\(server.sshDestination):\(String(server.port)) · \(server.authMethod.label)")
+                        .font(.system(size: 11))
+                        .foregroundStyle(DS.secondaryText)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 8)
+                HStack(spacing: 14) {
+                    if isActive, controller.isConnected {
+                        Text(latencyLabel)
+                            .font(.system(size: 10.5, weight: .semibold))
+                            .foregroundStyle(controller.latencyColor)
+                    }
+                    Button { edit(server) } label: {
+                        Image(systemName: "pencil").font(.system(size: 15))
+                    }
+                    .buttonStyle(.plain).foregroundStyle(DS.secondaryText)
+                    Button { controller.deleteServer(server.id) } label: {
+                        Image(systemName: "trash").font(.system(size: 15))
+                    }
+                    .buttonStyle(.plain).foregroundStyle(DS.secondaryText)
+                }
             }
         }
-        .listStyle(.inset)
-        .scrollContentBackground(.hidden)
-    }
-
-    private func row(for server: ServerProfile) -> some View {
-        let isSelected = server.id == controller.config.selectedServerID
-        return HStack(spacing: 10) {
-            Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
-                .foregroundStyle(isSelected ? Color.accentColor : .secondary)
-                .onTapGesture { controller.selectServer(server.id) }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(server.displayName).fontWeight(.medium)
-                Text("\(server.sshDestination):\(server.port) · \(server.authMethod.label)")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
-            Spacer()
-            Button {
-                isNew = false
-                editing = server
-            } label: { Image(systemName: "pencil") }
-                .buttonStyle(.borderless)
-            Button(role: .destructive) {
-                controller.deleteServer(server.id)
-            } label: { Image(systemName: "trash") }
-                .buttonStyle(.borderless)
-        }
-        .padding(.vertical, 2)
+        .overlay(
+            RoundedRectangle(cornerRadius: DS.tileRadius, style: .continuous)
+                .strokeBorder(isActive ? DS.accent : .clear, lineWidth: 1.5))
         .contentShape(Rectangle())
         .onTapGesture { controller.selectServer(server.id) }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
-    private var toolbar: some View {
-        HStack {
-            Button {
-                isNew = true
-                editing = ServerProfile()
-            } label: { Label("Add Server", systemImage: "plus") }
-            Spacer()
+    private var latencyLabel: String {
+        if let ms = controller.latencyMS {
+            return String(localized: "● active · \(ms) ms")
         }
-        .padding(8)
+        return String(localized: "● active")
+    }
+
+    private var addTile: some View {
+        Button(action: addServer) {
+            HStack(spacing: 8) {
+                Image(systemName: "plus").font(.system(size: 12, weight: .semibold))
+                Text("Add an SSH server to connect through")
+                    .font(.system(size: 12.5))
+            }
+            .foregroundStyle(DS.secondaryText)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(
+                RoundedRectangle(cornerRadius: DS.tileRadius, style: .continuous)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
+                    .foregroundStyle(DS.meterOff))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var footer: some View {
+        Text("Secrets are stored in the macOS Keychain — never in config.json. Click a card to make it active; the pencil opens the editor sheet.")
+            .font(.system(size: 11))
+            .foregroundStyle(DS.secondaryText)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 4)
+            .padding(.top, 2)
+    }
+
+    private func addServer() {
+        isNew = true
+        editing = ServerProfile()
+    }
+
+    private func edit(_ server: ServerProfile) {
+        isNew = false
+        editing = server
     }
 }
 

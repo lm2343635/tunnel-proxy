@@ -22,9 +22,9 @@ struct TunnelProxyApp: App {
         // controller is injected directly rather than via the environment.
         .commands { TunnelCommands(controller: controller) }
 
-        // The single unified window — Connection · Servers · Tunnel · Logs ·
-        // Statistics · Advanced · Tools · About in one tabbed surface. Opened on
-        // launch and on reopen (see AppDelegate).
+        // The single unified window — Connection · Servers · Logs · Statistics ·
+        // Settings · Tools in one tabbed surface. Opened on launch and on reopen
+        // (see AppDelegate).
         Window("Tunnel Proxy", id: "main") {
             UnifiedWindowView()
                 .environmentObject(controller)
@@ -48,6 +48,16 @@ struct TunnelProxyApp: App {
             ManualView()
         }
         .defaultSize(width: 860, height: 640)
+
+        // Compact always-on-top mini window. Opened from the popover; promoted to
+        // a floating panel in `MiniWindowView.onAppear`.
+        Window("Tunnel Proxy Mini", id: "mini") {
+            MiniWindowView()
+                .environmentObject(controller)
+        }
+        .defaultSize(width: 300, height: 120)
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
     }
 }
 
@@ -270,6 +280,12 @@ struct TunnelCommands: Commands {
                 openWindow(id: "main")
                 TunnelUI.activateApp()
             }
+
+            Button("Mini Window") {
+                openWindow(id: "mini")
+                TunnelUI.activateApp()
+            }
+            .keyboardShortcut("m", modifiers: [.command, .shift])
 
             Divider()
 
