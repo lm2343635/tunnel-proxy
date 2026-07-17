@@ -205,18 +205,20 @@
   <rect x="676" y="368" width="38" height="22" rx="11" fill="#28c840"/>
   <circle cx="703" cy="379" r="9" fill="#ffffff"/>
   <text x="410" y="330" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑤</text>
-  <line x1="446" y1="402" x2="714" y2="402" stroke="#e5e7eb"/>
-  <text x="446" y="426" font-size="12.5" fill="#111827">View Logs…</text>
-  <text x="446" y="452" font-size="12.5" fill="#111827">Settings…</text>
-  <text x="446" y="478" font-size="12.5" fill="#6b7280">Quit</text>
-  <text x="410" y="452" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑥</text>
+  <line x1="446" y1="400" x2="714" y2="400" stroke="#e5e7eb"/>
+  <text x="446" y="420" font-size="12" fill="#111827">View Logs…</text>
+  <text x="446" y="440" font-size="12" fill="#111827">Statistics…</text>
+  <text x="446" y="460" font-size="12" fill="#111827">User Guide…</text>
+  <text x="446" y="480" font-size="12" fill="#111827">Settings…</text>
+  <text x="446" y="500" font-size="12" fill="#6b7280">Quit</text>
+  <text x="410" y="460" font-size="13" font-weight="800" fill="#0a84ff" text-anchor="end">⑥</text>
   <g font-size="12" fill="#c7ccd6">
     <text x="24" y="170"><tspan fill="#0a84ff" font-weight="800">①</tspan> Status &amp; description</text>
     <text x="24" y="200"><tspan fill="#0a84ff" font-weight="800">②</tspan> Pick which server to use</text>
     <text x="24" y="230"><tspan fill="#0a84ff" font-weight="800">③</tspan> The IP the internet sees</text>
     <text x="24" y="260"><tspan fill="#0a84ff" font-weight="800">④</tspan> Connect / Disconnect</text>
     <text x="24" y="290"><tspan fill="#0a84ff" font-weight="800">⑤</tspan> Everyday switches</text>
-    <text x="24" y="320"><tspan fill="#0a84ff" font-weight="800">⑥</tspan> Logs, Settings, Quit</text>
+    <text x="24" y="320"><tspan fill="#0a84ff" font-weight="800">⑥</tspan> Logs, Statistics, Guide, Settings, Quit</text>
   </g>
 </svg>
   </figure>
@@ -228,7 +230,7 @@
     <tr><td>③</td><td><strong>Exit IP</strong></td><td>The IP address the internet currently sees you as. Only shown when connected.</td></tr>
     <tr><td>④</td><td><strong>Connect / Disconnect</strong></td><td>The big button. Starts or stops the tunnel.</td></tr>
     <tr><td>⑤</td><td><strong>Switches</strong></td><td>Everyday on/off options (explained below).</td></tr>
-    <tr><td>⑥</td><td><strong>Menu items</strong></td><td>Open the Logs window, Settings, or Quit the app.</td></tr>
+    <tr><td>⑥</td><td><strong>Menu items</strong></td><td>Open the Logs, Statistics, or User Guide window, open Settings, or Quit the app.</td></tr>
   </table>
 
   <h3>Reading the status icon</h3>
@@ -457,6 +459,7 @@
   <h3>Advanced</h3>
   <ul>
     <li><strong>Launch at login</strong> and <strong>Auto-connect on launch</strong> (see above).</li>
+    <li><strong>Record traffic statistics</strong> — when on, the app keeps a local record of how much data you send and receive over time (see <a href="#stats">Traffic statistics</a>). It records byte <em>volume</em> only — never the sites you visit — and the data stays on your Mac. <strong>Clear statistics…</strong> permanently deletes that history.</li>
     <li><strong>Files</strong> — shows where your config and log files live, with a <strong>Reveal in Finder</strong> button.</li>
   </ul>
   <h3>Tools</h3>
@@ -464,8 +467,9 @@
   <ul>
     <li><strong>Route Claude Code through this proxy</strong> — turn this <strong>on</strong> to make <a href="https://claude.com/claude-code">Claude Code</a> send its traffic through the tunnel. It adds the standard HTTP-proxy environment keys (<code>http_proxy</code>, <code>https_proxy</code>, and their uppercase forms, plus <code>no_proxy</code> for <code>localhost</code>) to <code>~/.claude/settings.json</code>, pointing them at <code>http://127.0.0.1:8118</code> (or whatever <strong>HTTP Proxy Port</strong> you set in the Tunnel tab). Turn it <strong>off</strong> to remove just those keys — everything else in your Claude Code settings is left untouched. Restart Claude Code for the change to take effect.</li>
     <li><strong>Settings file</strong> — shows the path to <code>~/.claude/settings.json</code>, with a <strong>Reveal in Finder</strong> button.</li>
+    <li><strong>Remove All Proxies</strong> — a rescue button that turns off <em>every</em> system proxy (HTTP, HTTPS, SOCKS, and automatic/PAC) for your current <strong>Network Service</strong>. Use it if proxy settings ever get left behind — for example after a crash — and your Mac can't reach the internet directly. It needs your admin password.</li>
   </ul>
-  <blockquote><p>If you change the HTTP Proxy Port later, come back and toggle this off and on again so the new port is written.</p></blockquote>
+  <blockquote><p>If you change the HTTP Proxy Port later, come back and toggle the Claude Code switch off and on again so the new port is written.</p></blockquote>
   <h3>About</h3>
   <p>App name and a short description.</p>
 
@@ -483,6 +487,20 @@
   </ol>
   <p>Lines are color-coded: green for success, orange for warnings, red for errors.</p>
 
+  <h2 id="stats">Traffic statistics</h2>
+  <p>Tunnel Proxy can keep a running tally of how much data flows through the tunnel, so you can see your usage over time.</p>
+  <p>Turn it on with <strong>Record traffic statistics</strong> in <strong>Settings → Advanced</strong>. It records the <em>amount</em> of data (bytes up and down) only — it does <strong>not</strong> log which websites you visit — and everything is stored locally on your Mac.</p>
+  <p>To see it, click the shield icon → <strong>Statistics…</strong> The window shows:</p>
+  <ul>
+    <li><strong>Range</strong> — switch between <strong>Today</strong>, <strong>Week</strong>, <strong>Month</strong>, and <strong>All</strong>.</li>
+    <li><strong>Server filter</strong> — narrow the session list to a single server, or show all.</li>
+    <li><strong>Totals</strong> — headline <em>Downloaded</em>, <em>Uploaded</em>, and <em>Total</em> figures for the chosen range.</li>
+    <li><strong>Usage over time</strong> — a bar chart of download (blue) and upload (green) volume, by hour for Today and by day for longer ranges.</li>
+    <li><strong>Sessions</strong> — each connection, with its time span, which server it used, and how much it moved. A green dot marks a session that's still open.</li>
+    <li><strong>Export…</strong> — save the chart data as a <code>.csv</code> file for use in a spreadsheet.</li>
+  </ul>
+  <blockquote><p>Recording is off until you turn it on, so early sessions won't appear. The status bar at the bottom of the window tells you whether recording is on and since when. Use <strong>Clear statistics…</strong> in <strong>Settings → Advanced</strong> to erase the history.</p></blockquote>
+
   <h2>Troubleshooting</h2>
   <table>
     <tr><th>Problem</th><th>Try this</th></tr>
@@ -491,6 +509,7 @@
     <tr><td><strong>Wrong password / key</strong></td><td>Re-open the server in <strong>Settings → Servers</strong>, click the pencil, and re-enter your password or re-choose your key file.</td></tr>
     <tr><td><strong>Websites still show my real IP</strong></td><td>Make sure the status is <strong>green / Connected</strong>. If an app ignores the proxy, turn on <strong>macOS SOCKS proxy</strong> so the whole system uses the tunnel.</td></tr>
     <tr><td><strong>Tunnel keeps dropping</strong></td><td>Turn on <strong>Auto-reconnect (watchdog)</strong>. Persistent drops usually mean an unstable server or network.</td></tr>
+    <tr><td><strong>No internet after quitting / a crash</strong></td><td>A system proxy may have been left switched on. Open <strong>Settings → Tools</strong> and click <strong>Remove All Proxies</strong>, or turn off <strong>macOS SOCKS proxy</strong> in the popover.</td></tr>
     <tr><td><strong>"Bundled proxy missing"</strong></td><td>The app files are incomplete. Re-download and reinstall from the DMG.</td></tr>
     <tr><td><strong>No shield icon after launch</strong></td><td>Your menu bar may be full — ⌘-drag other icons aside. Confirm the app is running.</td></tr>
   </table>

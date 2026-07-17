@@ -22,6 +22,7 @@ struct LogsView: View {
             Divider()
             statusBar
         }
+        .background(Color(nsColor: .textBackgroundColor))
         .onAppear { tailer.start(path: logPath) }
         .onDisappear { tailer.stop() }
     }
@@ -58,7 +59,11 @@ struct LogsView: View {
                 }
                 .padding(10)
             }
-            .background(Color(nsColor: .textBackgroundColor))
+            .background(Color(nsColor: .windowBackgroundColor))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(Color(nsColor: .separatorColor)))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
             .onChange(of: tailer.lines.count) { _, _ in
                 if autoScroll, let last = filtered.last {
                     withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }

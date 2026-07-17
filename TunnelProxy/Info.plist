@@ -29,5 +29,11 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Tunnel Proxy</string>
+	<!-- Built against the macOS 26 SDK. Without this, a 26-SDK binary opts into
+	     the "Liquid Glass" design system, which breaks the MenuBarExtra status
+	     item on macOS 15 (process runs, but no menu bar icon appears). This key
+	     keeps the pre-26 design system so the icon shows on 15.x. -->
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 </dict>
 </plist>

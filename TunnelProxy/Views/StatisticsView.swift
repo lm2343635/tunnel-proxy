@@ -31,7 +31,8 @@ struct StatisticsView: View {
             Divider()
             statusBar
         }
-        .frame(minWidth: 640, minHeight: 520)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(nsColor: .textBackgroundColor))
         .onAppear(perform: reload)
         .onChange(of: range) { _, _ in reload() }
         .onChange(of: serverFilter) { _, _ in reload() }
@@ -82,7 +83,7 @@ struct StatisticsView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .controlBackgroundColor)))
+        .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .windowBackgroundColor)))
         .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Color(nsColor: .separatorColor)))
     }
 
@@ -127,7 +128,7 @@ struct StatisticsView: View {
 
     private var emptyChart: some View {
         RoundedRectangle(cornerRadius: 8)
-            .fill(Color(nsColor: .textBackgroundColor))
+            .fill(Color(nsColor: .windowBackgroundColor))
             .frame(height: 200)
             .overlay(
                 Text("No traffic recorded for this range")

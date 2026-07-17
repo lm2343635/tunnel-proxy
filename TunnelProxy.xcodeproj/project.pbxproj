@@ -35,6 +35,10 @@
 		A100001E0000000000001E /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001E0000000000001E /* StatisticsView.swift */; };
 		A100001F0000000000001F /* PortInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001F0000000000001F /* PortInspector.swift */; };
 		A100002000000000000020 /* ClaudeCodeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002000000000000020 /* ClaudeCodeConfig.swift */; };
+		A100002200000000000022 /* TunnelControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002200000000000022 /* TunnelControlsView.swift */; };
+		A100002300000000000023 /* TunnelUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002300000000000023 /* TunnelUI.swift */; };
+		A100002400000000000024 /* ConnectionTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002400000000000024 /* ConnectionTab.swift */; };
+		A100002500000000000025 /* UnifiedWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002500000000000025 /* UnifiedWindowView.swift */; };
 		BB8F28213007D9C1003B52E2 /* architecture.svg in Resources */ = {isa = PBXBuildFile; fileRef = BB8F28173007D9C1003B52E2 /* architecture.svg */; };
 		BB8F28223007D9C1003B52E2 /* gui-app-plan.md in Resources */ = {isa = PBXBuildFile; fileRef = BB8F281E3007D9C1003B52E2 /* gui-app-plan.md */; };
 		BB8F28233007D9C1003B52E2 /* menu-bar-connected.svg in Resources */ = {isa = PBXBuildFile; fileRef = BB8F28193007D9C1003B52E2 /* menu-bar-connected.svg */; };
@@ -76,6 +80,10 @@
 		B100001E0000000000001E /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		B100001F0000000000001F /* PortInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortInspector.swift; sourceTree = "<group>"; };
 		B100002000000000000020 /* ClaudeCodeConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeConfig.swift; sourceTree = "<group>"; };
+		B100002200000000000022 /* TunnelControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelControlsView.swift; sourceTree = "<group>"; };
+		B100002300000000000023 /* TunnelUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelUI.swift; sourceTree = "<group>"; };
+		B100002400000000000024 /* ConnectionTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionTab.swift; sourceTree = "<group>"; };
+		B100002500000000000025 /* UnifiedWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedWindowView.swift; sourceTree = "<group>"; };
 		BB8F28173007D9C1003B52E2 /* architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = architecture.svg; sourceTree = "<group>"; };
 		BB8F28183007D9C1003B52E2 /* logs.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = logs.svg; sourceTree = "<group>"; };
 		BB8F28193007D9C1003B52E2 /* menu-bar-connected.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = "menu-bar-connected.svg"; sourceTree = "<group>"; };
@@ -181,6 +189,10 @@
 			isa = PBXGroup;
 			children = (
 				B1000006000000000000006 /* MenuBarView.swift */,
+				B100002400000000000024 /* ConnectionTab.swift */,
+				B100002500000000000025 /* UnifiedWindowView.swift */,
+				B100002200000000000022 /* TunnelControlsView.swift */,
+				B100002300000000000023 /* TunnelUI.swift */,
 				B1000007000000000000007 /* SettingsView.swift */,
 				B100001300000000000013 /* ServersView.swift */,
 				B1000008000000000000008 /* LogsView.swift */,
@@ -318,6 +330,10 @@
 				A100001700000000000017 /* SpeedMonitor.swift in Sources */,
 				A100001800000000000018 /* MenuBarRenderer.swift in Sources */,
 				A1000006000000000000006 /* MenuBarView.swift in Sources */,
+				A100002400000000000024 /* ConnectionTab.swift in Sources */,
+				A100002500000000000025 /* UnifiedWindowView.swift in Sources */,
+				A100002200000000000022 /* TunnelControlsView.swift in Sources */,
+				A100002300000000000023 /* TunnelUI.swift in Sources */,
 				A1000007000000000000007 /* SettingsView.swift in Sources */,
 				A100001300000000000013 /* ServersView.swift in Sources */,
 				A1000008000000000000008 /* LogsView.swift in Sources */,
@@ -393,6 +409,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TunnelProxy/TunnelProxy.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -405,7 +422,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -419,6 +436,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TunnelProxy/TunnelProxy.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -431,7 +449,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

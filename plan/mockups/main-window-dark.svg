@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="640" viewBox="0 0 720 640" font-family="-apple-system, 'SF Pro Text', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="hero" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12325a"/>
+      <stop offset="1" stop-color="#0d233f"/>
+    </linearGradient>
+    <linearGradient id="cta" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff544a"/>
+      <stop offset="1" stop-color="#e0342a"/>
+    </linearGradient>
+    <filter id="ws" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <rect width="720" height="640" fill="#12151c"/>
+
+  <!-- window -->
+  <g filter="url(#ws)">
+    <rect x="200" y="24" width="320" height="592" rx="12" fill="#1e222b" stroke="#2a2f3a"/>
+  </g>
+
+  <!-- titlebar -->
+  <rect x="200" y="24" width="320" height="40" rx="12" fill="#2a2f3a"/>
+  <rect x="200" y="52" width="320" height="12" fill="#2a2f3a"/>
+  <circle cx="222" cy="44" r="6" fill="#ff5f57"/>
+  <circle cx="242" cy="44" r="6" fill="#febc2e"/>
+  <circle cx="262" cy="44" r="6" fill="#28c840"/>
+  <text x="360" y="48" font-size="13" font-weight="700" fill="#cfd4de" text-anchor="middle">Tunnel Proxy</text>
+
+  <!-- ===== HERO ===== -->
+  <rect x="216" y="80" width="288" height="128" rx="12" fill="url(#hero)" stroke="#1c4a86"/>
+  <circle cx="240" cy="110" r="7" fill="#28c840"/>
+  <text x="256" y="116" font-size="18" font-weight="800" fill="#eaf2ff">Connected</text>
+  <text x="234" y="140" font-size="11.5" fill="#8fb2e6">Tunnel + HTTP proxy active</text>
+  <!-- exit ip chip -->
+  <rect x="234" y="152" width="128" height="42" rx="8" fill="#0b1f39" stroke="#1c4a86"/>
+  <text x="248" y="170" font-size="10" fill="#7f9ec9">Exit IP</text>
+  <text x="248" y="186" font-size="12" font-weight="700" fill="#7fb4ff" font-family="'SF Mono', Menlo, monospace">203.0.113.47</text>
+  <!-- server chip -->
+  <rect x="370" y="152" width="118" height="42" rx="8" fill="#0b1f39" stroke="#1c4a86"/>
+  <text x="384" y="170" font-size="10" fill="#7f9ec9">Server</text>
+  <text x="384" y="186" font-size="12" font-weight="700" fill="#eaf2ff">server-a ▾</text>
+
+  <!-- big CTA button -->
+  <rect x="216" y="224" width="288" height="44" rx="10" fill="url(#cta)"/>
+  <text x="360" y="251" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">Disconnect</text>
+
+  <!-- ===== PREFERENCES CARD ===== -->
+  <text x="216" y="296" font-size="11" font-weight="700" fill="#7d8697" letter-spacing="0.4">PREFERENCES</text>
+  <rect x="216" y="304" width="288" height="176" rx="10" fill="#242a36" stroke="#333947"/>
+  <g font-size="12.5" fill="#e6e9ee">
+    <text x="232" y="332">Auto-reconnect (watchdog)</text>
+    <rect x="452" y="322" width="40" height="22" rx="11" fill="#28c840"/><circle cx="481" cy="333" r="9" fill="#fff"/>
+    <line x1="232" y1="352" x2="488" y2="352" stroke="#2f3542"/>
+
+    <text x="232" y="374">Show network speed</text>
+    <rect x="452" y="364" width="40" height="22" rx="11" fill="#4b5464"/><circle cx="463" cy="375" r="9" fill="#d7dbe2"/>
+    <line x1="232" y1="394" x2="488" y2="394" stroke="#2f3542"/>
+
+    <text x="232" y="416">macOS SOCKS proxy</text>
+    <rect x="452" y="406" width="40" height="22" rx="11" fill="#28c840"/><circle cx="481" cy="417" r="9" fill="#fff"/>
+    <line x1="232" y1="436" x2="488" y2="436" stroke="#2f3542"/>
+
+    <text x="232" y="458">Launch at login</text>
+    <rect x="452" y="448" width="40" height="22" rx="11" fill="#4b5464"/><circle cx="463" cy="459" r="9" fill="#d7dbe2"/>
+  </g>
+
+  <!-- ===== MENU BAR CARD ===== -->
+  <text x="216" y="504" font-size="11" font-weight="700" fill="#7d8697" letter-spacing="0.4">MENU BAR</text>
+  <rect x="216" y="512" width="288" height="40" rx="10" fill="#242a36" stroke="#333947"/>
+  <text x="232" y="537" font-size="12.5" fill="#e6e9ee">Show menu bar icon</text>
+  <rect x="452" y="526" width="40" height="22" rx="11" fill="#28c840"/><circle cx="481" cy="537" r="9" fill="#fff"/>
+
+  <!-- ===== QUICK ACTIONS ===== -->
+  <g font-size="12" text-anchor="middle">
+    <rect x="216" y="568" width="66" height="32" rx="8" fill="#2a3140" stroke="#3a4150"/>
+    <text x="249" y="588" fill="#cfd4de">Logs</text>
+    <rect x="290" y="568" width="66" height="32" rx="8" fill="#2a3140" stroke="#3a4150"/>
+    <text x="323" y="588" fill="#cfd4de">Stats</text>
+    <rect x="364" y="568" width="66" height="32" rx="8" fill="#2a3140" stroke="#3a4150"/>
+    <text x="397" y="588" fill="#cfd4de">Guide</text>
+    <rect x="438" y="568" width="66" height="32" rx="8" fill="#2a3140" stroke="#3a4150"/>
+    <text x="471" y="588" fill="#cfd4de">Settings</text>
+  </g>
+
+  <!-- caption -->
+  <text x="24" y="628" fill="#c7ccd6" font-size="12.5" font-weight="600">Main window (Dark) — same layout, adaptive semantic colors · matches system appearance</text>
+</svg>

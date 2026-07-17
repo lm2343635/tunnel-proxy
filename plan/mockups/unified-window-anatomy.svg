@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="440" viewBox="0 0 720 440" font-family="-apple-system, 'SF Pro Text', Helvetica, Arial, sans-serif">
+  <defs>
+    <radialGradient id="wGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#32d74b" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#32d74b" stop-opacity="0"/>
+    </radialGradient>
+    <marker id="warrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0 0 L9 4.5 L0 9 z" fill="#8a93a6"/>
+    </marker>
+  </defs>
+  <rect width="720" height="440" fill="#ffffff"/>
+
+  <!-- window frame (left column) -->
+  <rect x="40" y="20" width="420" height="400" rx="12" fill="#f6f7f9" stroke="#d7dbe1"/>
+
+  <!-- (1) titlebar -->
+  <rect x="40" y="20" width="420" height="38" rx="12" fill="#eceef1"/>
+  <rect x="40" y="46" width="420" height="12" fill="#eceef1"/>
+  <circle cx="62" cy="39" r="6" fill="#ff5f57"/>
+  <circle cx="82" cy="39" r="6" fill="#febc2e"/>
+  <circle cx="102" cy="39" r="6" fill="#28c840"/>
+  <text x="250" y="43" font-size="12" font-weight="700" fill="#3c4250" text-anchor="middle">Tunnel Proxy</text>
+
+  <!-- (2) tab strip — directly under titlebar, no header -->
+  <rect x="40" y="58" width="420" height="46" fill="#f4f5f7"/>
+  <line x1="40" y1="104" x2="460" y2="104" stroke="#e0e2e6"/>
+  <rect x="50" y="66" width="78" height="30" rx="6" fill="#e2e6ec"/>
+  <g font-size="8.5" text-anchor="middle">
+    <text x="89"  y="90" fill="#1f6bff" font-weight="700">Connection</text>
+    <text x="152" y="90" fill="#4b5563">Servers</text>
+    <text x="202" y="90" fill="#4b5563">Tunnel</text>
+    <text x="246" y="90" fill="#4b5563">Logs</text>
+    <text x="286" y="90" fill="#4b5563">Stats</text>
+    <text x="336" y="90" fill="#4b5563">Advanced</text>
+    <text x="398" y="90" fill="#4b5563">Tools</text>
+    <text x="440" y="90" fill="#4b5563">About</text>
+  </g>
+  <g stroke="#c2c8d2" stroke-width="1.4" fill="none">
+    <circle cx="72" cy="76" r="6.5" stroke="#1f6bff"/><line x1="72" y1="71" x2="72" y2="77" stroke="#1f6bff"/>
+    <rect x="146" y="70" width="14" height="11" rx="2"/>
+    <circle cx="202" cy="76" r="6"/><line x1="196" y1="76" x2="208" y2="76"/><line x1="202" y1="70" x2="202" y2="82"/>
+    <rect x="241" y="69" width="11" height="13" rx="2"/>
+    <g stroke="none" fill="#4b5563"><rect x="280" y="77" width="3" height="6"/><rect x="285" y="73" width="3" height="10"/><rect x="290" y="70" width="3" height="13"/></g>
+    <circle cx="333" cy="75" r="4"/><circle cx="340" cy="80" r="3.4"/>
+    <path d="M396 70 l5 5 -3.5 3.5 -5 -5 z"/>
+    <circle cx="440" cy="76" r="6.5"/>
+  </g>
+  <text x="440" y="79" font-size="8.5" font-weight="800" fill="#c2c8d2" text-anchor="middle">i</text>
+
+  <!-- (3) tab content = Connection tab -->
+  <rect x="40" y="104" width="420" height="316" fill="#f6f7f9"/>
+  <circle cx="250" cy="186" r="70" fill="url(#wGlow)"/>
+  <circle cx="250" cy="186" r="40" fill="none" stroke="#eaf3ec" stroke-width="8"/>
+  <circle cx="250" cy="186" r="40" fill="none" stroke="#32d74b" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="250" cy="186" r="30" fill="#ffffff" stroke="#e3ede5"/>
+  <path d="M239 176 a15 15 0 1 0 22 0" fill="none" stroke="#1f9d3a" stroke-width="3.2" stroke-linecap="round"/>
+  <line x1="250" y1="170" x2="250" y2="187" stroke="#1f9d3a" stroke-width="3.2" stroke-linecap="round"/>
+  <text x="250" y="266" font-size="15" font-weight="800" fill="#0d223d" text-anchor="middle">Connected</text>
+  <text x="250" y="283" font-size="9.5" fill="#5b6b82" text-anchor="middle">Tunnel + HTTP proxy active</text>
+  <rect x="178" y="296" width="144" height="26" rx="7" fill="#fff" stroke="#d7ecdb"/>
+  <text x="192" y="313" font-size="10" font-weight="700" fill="#0a3d91" font-family="'SF Mono', Menlo, monospace">203.0.113.47</text>
+  <rect x="150" y="332" width="200" height="50" rx="8" fill="#fff" stroke="#e6e8ec"/>
+  <text x="164" y="352" font-size="8.5" fill="#1f2937">Route Mac traffic through proxy</text>
+  <rect x="316" y="345" width="24" height="13" rx="6.5" fill="#28c840"/><circle cx="333" cy="351.5" r="5" fill="#fff"/>
+  <text x="164" y="374" font-size="8.5" fill="#1f2937">Auto-reconnect (watchdog)</text>
+  <rect x="316" y="367" width="24" height="13" rx="6.5" fill="#28c840"/><circle cx="333" cy="373.5" r="5" fill="#fff"/>
+
+  <!-- ===== annotations ===== -->
+  <g font-size="12.5" fill="#3c4250">
+    <line x1="460" y1="39" x2="512" y2="39" stroke="#8a93a6" marker-start="url(#warrow)"/>
+    <text x="520" y="36" font-weight="700">macOS titlebar</text>
+    <text x="520" y="51" font-size="11" fill="#7d8697">standard chrome — no status header</text>
+
+    <line x1="460" y1="81" x2="512" y2="81" stroke="#8a93a6" marker-start="url(#warrow)"/>
+    <text x="520" y="78" font-weight="700">Tab strip</text>
+    <text x="520" y="93" font-size="11" fill="#7d8697">directly under titlebar</text>
+    <text x="520" y="107" font-size="11" fill="#7d8697">Settings-style segmented icons</text>
+
+    <line x1="460" y1="186" x2="512" y2="186" stroke="#8a93a6" marker-start="url(#warrow)"/>
+    <text x="520" y="176" font-weight="700" fill="#1f9d3a">Connection tab (default)</text>
+    <text x="520" y="191" font-size="11" fill="#7d8697">animated power toggle · status ·</text>
+    <text x="520" y="205" font-size="11" fill="#7d8697">exit-IP chip · server · SOCKS +</text>
+    <text x="520" y="219" font-size="11" fill="#7d8697">watchdog quick options</text>
+
+    <line x1="460" y1="350" x2="512" y2="350" stroke="#8a93a6" marker-start="url(#warrow)"/>
+    <text x="520" y="340" font-weight="700">Other tabs</text>
+    <text x="520" y="355" font-size="11" fill="#7d8697">Servers · Tunnel · Logs · Stats ·</text>
+    <text x="520" y="369" font-size="11" fill="#7d8697">Advanced · Tools · About</text>
+    <text x="520" y="383" font-size="11" fill="#7d8697">(grouped forms / data views)</text>
+  </g>
+</svg>

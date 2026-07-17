@@ -2,6 +2,12 @@ import Foundation
 import Combine
 import ServiceManagement
 
+/// The tabs of the unified main window. Also used to route "open the window on
+/// tab X" requests from the popover and app menus (see `requestedTab`).
+enum WindowTab: String {
+    case connection, servers, tunnel, logs, stats, advanced, tools
+}
+
 /// High-level connection state used to drive the menu bar icon and popover.
 enum ConnectionState: Equatable {
     case disconnected
@@ -36,6 +42,11 @@ final class TunnelController: ObservableObject {
     @Published private(set) var exitIP: String?
     @Published private(set) var lastConnected: Date?
     @Published private(set) var isBusy = false
+
+    /// A request to open the unified main window on a specific tab, set by the
+    /// menu-bar popover and app menus. `UnifiedWindowView` observes it, switches
+    /// its `TabView` selection, and clears it back to `nil`.
+    @Published var requestedTab: WindowTab?
     /// User intent to route all system traffic through the tunnel's SOCKS proxy.
     /// Persisted so it survives relaunches; the *actual* OS proxy is applied on
     /// connect and cleared on disconnect (see `applySystemSocks`).
@@ -75,6 +86,26 @@ final class TunnelController: ObservableObject {
             syncSampling()
         }
     }
+    /// Whether the menu bar status item is visible. Toggled from the main
+    /// window; bound to the `MenuBarExtra` scene's `isInserted:`.
+    ///
+    /// NOT a plain `@Published`: `MenuBarExtra(isInserted:)` installs a KVO
+    /// observer on the status item that writes the *current* value back through
+    /// this binding while SwiftUI is updating scenes. A `@Published` publishes on
+    /// every assignment — even a same-value one — so that write-back re-triggers
+    /// `objectWillChange` mid-update ("Publishing changes from within view
+    /// updates"), which re-runs the update, which writes back again: a tight loop
+    /// that freezes the UI. Gating the publish on an actual change breaks it.
+    var showMenuBarIcon: Bool {
+        get { showMenuBarIconStore }
+        set {
+            guard newValue != showMenuBarIconStore else { return }
+            objectWillChange.send()
+            showMenuBarIconStore = newValue
+            defaults.set(newValue, forKey: Keys.showMenuBarIcon)
+        }
+    }
+    private var showMenuBarIconStore: Bool
 
     /// Publishes live up/down rates for the menu bar label.
     let speedMonitor = SpeedMonitor()
@@ -92,6 +123,7 @@ final class TunnelController: ObservableObject {
         static let showSpeed = "showSpeed"
         static let recordStats = "recordStats"
         static let systemSocks = "systemSocksOn"
+        static let showMenuBarIcon = "showMenuBarIcon"
     }
 
     init() {
@@ -102,6 +134,7 @@ final class TunnelController: ObservableObject {
         showSpeed = defaults.object(forKey: Keys.showSpeed) as? Bool ?? false
         recordStats = defaults.object(forKey: Keys.recordStats) as? Bool ?? true
         systemSocksOn = defaults.bool(forKey: Keys.systemSocks)
+        showMenuBarIconStore = defaults.object(forKey: Keys.showMenuBarIcon) as? Bool ?? true
         AppPaths.ensureSupportDirectory()
         recorder.isEnabled = recordStats
         recorder.attach(to: speedMonitor)
@@ -110,6 +143,8 @@ final class TunnelController: ObservableObject {
         AppDelegate.onTerminate = { [weak self] in
             MainActor.assumeIsolated { self?.recorder.shutdown() }
         }
+        // Let the launch fallback reach us if the menu bar icon was hidden.
+        AppDelegate.controller = self
     }
 
     /// Sampling (the 1 Hz TCP-table read) must run whenever we either show the

@@ -1,49 +1,44 @@
 import SwiftUI
 
-/// Settings window. Servers are managed in the Servers tab; tunnel-wide settings
-/// (ports, watchdog, network service) in the Tunnel tab. The app owns all SSH
-/// data — nothing is shared with the CLI.
+/// Thin `Settings` scene (⌘,). The full configuration surface now lives in the
+/// unified main window's tabs (`TunnelTab`, `AdvancedTab`, `ToolsTab`).
+/// Rather than host a second copy of those forms, ⌘, just opens/raises the main
+/// window on the Servers tab, so there's a single source of truth.
 struct SettingsView: View {
+    @EnvironmentObject var controller: TunnelController
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        // A minimal placeholder; it never really shows because the onAppear
+        // immediately routes to the main window. Kept non-empty so the Settings
+        // scene has content if it ever renders a frame.
+        VStack(spacing: 8) {
+            ProgressView()
+            Text("Opening Tunnel Proxy…")
+                .font(.callout).foregroundStyle(.secondary)
+        }
+        .frame(width: 260, height: 120)
+        .onAppear {
+            controller.requestedTab = .servers
+            openWindow(id: "main")
+            TunnelUI.activateApp()
+        }
+    }
+}
+
+// MARK: - Tunnel tab
+
+/// Tunnel-wide settings: ports, macOS network service, watchdog. Extracted from
+/// the old Settings `TabView` so both the unified window and the (thin) Settings
+/// scene can host it.
+struct TunnelTab: View {
     @EnvironmentObject var controller: TunnelController
 
     @State private var deps: [Dependency] = []
     @State private var saveMessage: String?
     @State private var networkServiceOptions: [String] = []
-    @State private var confirmClearStats = false
-
-    // Tools tab — Claude Code proxy toggle.
-    @State private var claudeProxyOn = false
-    @State private var claudeProxyMessage: String?
-    @State private var claudeProxyIsError = false
-
-    // Tools tab — "Remove all proxies" result alert.
-    @State private var removeProxiesAlert: RemoveProxiesResult?
 
     var body: some View {
-        TabView {
-            ServersView()
-                .environmentObject(controller)
-                .tabItem { Label("Servers", systemImage: "server.rack") }
-            tunnelTab
-                .tabItem { Label("Tunnel", systemImage: "network") }
-            advancedTab
-                .tabItem { Label("Advanced", systemImage: "gearshape.2") }
-            toolsTab
-                .tabItem { Label("Tools", systemImage: "wrench.and.screwdriver") }
-            aboutTab
-                .tabItem { Label("About", systemImage: "info.circle") }
-        }
-        .frame(width: 560, height: 480)
-        .onAppear {
-            refreshDependencies()
-            loadNetworkServices()
-            refreshClaudeProxyState()
-        }
-    }
-
-    // MARK: - Tunnel
-
-    private var tunnelTab: some View {
         Form {
             Section("Ports") {
                 LabeledContent("SOCKS Port") { portField($controller.config.socksPort) }
@@ -62,6 +57,7 @@ struct SettingsView: View {
                             .tag(controller.config.networkService)
                     }
                 }
+                Toggle("Auto-reconnect (watchdog)", isOn: $controller.watchdogEnabled)
                 LabeledContent("Watchdog Interval (s)") {
                     intField($controller.config.watchdogInterval)
                 }
@@ -90,136 +86,21 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-    }
-
-    // MARK: - Advanced
-
-    private var advancedTab: some View {
-        Form {
-            Section("Startup") {
-                Toggle("Launch at login", isOn: $controller.launchAtLogin)
-                Toggle("Auto-connect on launch", isOn: $controller.autoConnectOnLaunch)
-            }
-            Section("Statistics") {
-                Toggle("Record traffic statistics", isOn: $controller.recordStats)
-                Text("Records byte volume over time — not the sites you visit. Stored locally only.")
-                    .font(.caption).foregroundStyle(.secondary)
-                Button("Clear statistics…", role: .destructive) {
-                    confirmClearStats = true
-                }
-            }
-            Section("Files") {
-                LabeledContent("Config") { pathText(AppPaths.configURL.path) }
-                LabeledContent("Logs") { pathText(AppPaths.logURL.path) }
-                Button("Reveal in Finder") {
-                    NSWorkspace.shared.activateFileViewerSelecting([AppPaths.configURL])
-                }
-            }
-            Section {
-                Button("Save", action: save).buttonStyle(.borderedProminent)
-            }
-        }
-        .formStyle(.grouped)
-        .confirmationDialog("Clear all recorded statistics?",
-                            isPresented: $confirmClearStats, titleVisibility: .visible) {
-            Button("Clear statistics", role: .destructive) {
-                controller.clearStatistics()
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This permanently deletes all recorded traffic history.")
+        .scrollContentBackground(.hidden)
+        .background(Color(nsColor: .textBackgroundColor))
+        .onAppear {
+            refreshDependencies()
+            loadNetworkServices()
         }
     }
-
-    // MARK: - Tools
-
-    private var toolsTab: some View {
-        Form {
-            Section("Claude Code") {
-                Toggle("Route Claude Code through this proxy", isOn: Binding(
-                    get: { claudeProxyOn },
-                    set: { setClaudeProxy($0) }
-                ))
-                Text("Adds the HTTP proxy env keys to ~/.claude/settings.json, pointing Claude Code at \(ClaudeCodeConfig.proxyURL(port: controller.config.httpProxyPort)). Other settings are left untouched.")
-                    .font(.caption).foregroundStyle(.secondary)
-                if let msg = claudeProxyMessage {
-                    Text(msg).font(.caption)
-                        .foregroundStyle(claudeProxyIsError ? .orange : .green)
-                }
-            }
-            Section("File") {
-                LabeledContent("Settings") { pathText(ClaudeCodeConfig.settingsURL.path) }
-                Button("Reveal in Finder") {
-                    NSWorkspace.shared.activateFileViewerSelecting([ClaudeCodeConfig.settingsURL])
-                }
-            }
-            Section("System Proxies") {
-                Button("Remove All Proxies", role: .destructive) {
-                    Task {
-                        let service = controller.config.networkService
-                        let ok = await controller.removeAllProxies()
-                        removeProxiesAlert = RemoveProxiesResult(service: service, succeeded: ok)
-                    }
-                }
-                .disabled(controller.config.networkService.isEmpty || controller.isBusy)
-                Text("Turns off HTTP, HTTPS, SOCKS, and auto (PAC) proxies for the \(controller.config.networkService.isEmpty ? "selected network service" : controller.config.networkService) network service.")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
-        }
-        .formStyle(.grouped)
-        .alert("Remove All Proxies",
-               isPresented: Binding(
-                get: { removeProxiesAlert != nil },
-                set: { if !$0 { removeProxiesAlert = nil } }
-               ),
-               presenting: removeProxiesAlert) { _ in
-            Button("OK", role: .cancel) {}
-        } message: { result in
-            if result.succeeded {
-                Text("All proxies were removed for “\(result.service)”.")
-            } else {
-                Text("Some proxies could not be removed for “\(result.service)”. Check the logs for details.")
-            }
-        }
-    }
-
-    private var aboutTab: some View {
-        VStack(spacing: 10) {
-            if let icon = NSApp.applicationIconImage {
-                Image(nsImage: icon).resizable().frame(width: 72, height: 72)
-            }
-            Text("Tunnel Proxy").font(.title2).bold()
-            Text("A self-contained menu bar SSH SOCKS5 → HTTP proxy.")
-                .font(.callout).foregroundStyle(.secondary).multilineTextAlignment(.center)
-            Text("Privoxy is bundled; ssh and curl ship with macOS. All SSH data is managed here.")
-                .font(.caption).foregroundStyle(.tertiary).multilineTextAlignment(.center)
-        }
-        .padding(40)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    // MARK: - Fields
 
     private func portField(_ binding: Binding<Int>) -> some View {
-        // Empty title + labelsHidden so only LabeledContent's label shows
-        // (a non-empty title would render a second value next to the field).
-        TextField("", value: binding, format: .number.grouping(.never))
-            .labelsHidden()
-            .frame(width: 80).multilineTextAlignment(.trailing)
+        SettingsFields.portField(binding)
     }
 
     private func intField(_ binding: Binding<Int>) -> some View {
-        TextField("", value: binding, format: .number.grouping(.never))
-            .labelsHidden()
-            .frame(width: 80).multilineTextAlignment(.trailing)
+        SettingsFields.intField(binding)
     }
-
-    private func pathText(_ path: String) -> some View {
-        Text(path).font(.caption).foregroundStyle(.secondary)
-            .truncationMode(.middle).lineLimit(1)
-    }
-
-    // MARK: - Logic
 
     private func loadNetworkServices() {
         Task.detached {
@@ -260,8 +141,124 @@ struct SettingsView: View {
         saveMessage = "Saved."
         controller.refreshStatus()
     }
+}
 
-    // MARK: - Claude Code proxy
+// MARK: - Advanced tab
+
+/// Startup, statistics recording, files, and the menu-bar toggles the old main
+/// window carried (Show menu bar icon / Show network speed).
+struct AdvancedTab: View {
+    @EnvironmentObject var controller: TunnelController
+
+    @State private var confirmClearStats = false
+
+    var body: some View {
+        Form {
+            Section("Startup") {
+                Toggle("Launch at login", isOn: $controller.launchAtLogin)
+                Toggle("Auto-connect on launch", isOn: $controller.autoConnectOnLaunch)
+            }
+            Section("Menu Bar") {
+                Toggle("Show menu bar icon", isOn: Binding(
+                    get: { controller.showMenuBarIcon },
+                    set: { controller.showMenuBarIcon = $0 }
+                ))
+                Toggle("Show network speed", isOn: $controller.showSpeed)
+            }
+            Section("Statistics") {
+                Toggle("Record traffic statistics", isOn: $controller.recordStats)
+                Text("Records byte volume over time — not the sites you visit. Stored locally only.")
+                    .font(.caption).foregroundStyle(.secondary)
+                Button("Clear statistics…", role: .destructive) {
+                    confirmClearStats = true
+                }
+            }
+            Section("Files") {
+                LabeledContent("Config") { SettingsFields.pathText(AppPaths.configURL.path) }
+                LabeledContent("Logs") { SettingsFields.pathText(AppPaths.logURL.path) }
+                Button("Reveal in Finder") {
+                    NSWorkspace.shared.activateFileViewerSelecting([AppPaths.configURL])
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .scrollContentBackground(.hidden)
+        .background(Color(nsColor: .textBackgroundColor))
+        .confirmationDialog("Clear all recorded statistics?",
+                            isPresented: $confirmClearStats, titleVisibility: .visible) {
+            Button("Clear statistics", role: .destructive) {
+                controller.clearStatistics()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently deletes all recorded traffic history.")
+        }
+    }
+}
+
+// MARK: - Tools tab
+
+/// Claude Code proxy integration + "remove all proxies".
+struct ToolsTab: View {
+    @EnvironmentObject var controller: TunnelController
+
+    @State private var claudeProxyOn = false
+    @State private var claudeProxyMessage: String?
+    @State private var claudeProxyIsError = false
+    @State private var removeProxiesAlert: RemoveProxiesResult?
+
+    var body: some View {
+        Form {
+            Section("Claude Code") {
+                Toggle("Route Claude Code through this proxy", isOn: Binding(
+                    get: { claudeProxyOn },
+                    set: { setClaudeProxy($0) }
+                ))
+                Text("Adds the HTTP proxy env keys to ~/.claude/settings.json, pointing Claude Code at \(ClaudeCodeConfig.proxyURL(port: controller.config.httpProxyPort)). Other settings are left untouched.")
+                    .font(.caption).foregroundStyle(.secondary)
+                if let msg = claudeProxyMessage {
+                    Text(msg).font(.caption)
+                        .foregroundStyle(claudeProxyIsError ? .orange : .green)
+                }
+            }
+            Section("File") {
+                LabeledContent("Settings") { SettingsFields.pathText(ClaudeCodeConfig.settingsURL.path) }
+                Button("Reveal in Finder") {
+                    NSWorkspace.shared.activateFileViewerSelecting([ClaudeCodeConfig.settingsURL])
+                }
+            }
+            Section("System Proxies") {
+                Button("Remove All Proxies", role: .destructive) {
+                    Task {
+                        let service = controller.config.networkService
+                        let ok = await controller.removeAllProxies()
+                        removeProxiesAlert = RemoveProxiesResult(service: service, succeeded: ok)
+                    }
+                }
+                .disabled(controller.config.networkService.isEmpty || controller.isBusy)
+                Text("Turns off HTTP, HTTPS, SOCKS, and auto (PAC) proxies for the \(controller.config.networkService.isEmpty ? "selected network service" : controller.config.networkService) network service.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+        .scrollContentBackground(.hidden)
+        .background(Color(nsColor: .textBackgroundColor))
+        .onAppear(perform: refreshClaudeProxyState)
+        .alert("Remove All Proxies",
+               isPresented: Binding(
+                get: { removeProxiesAlert != nil },
+                set: { if !$0 { removeProxiesAlert = nil } }
+               ),
+               presenting: removeProxiesAlert) { _ in
+            Button("OK", role: .cancel) {}
+        } message: { result in
+            if result.succeeded {
+                Text("All proxies were removed for “\(result.service)”.")
+            } else {
+                Text("Some proxies could not be removed for “\(result.service)”. Check the logs for details.")
+            }
+        }
+    }
 
     private func refreshClaudeProxyState() {
         let port = controller.config.httpProxyPort
@@ -291,6 +288,30 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Shared field helpers
+
+/// Small field builders shared across the config tabs.
+enum SettingsFields {
+    static func portField(_ binding: Binding<Int>) -> some View {
+        // Empty title + labelsHidden so only LabeledContent's label shows
+        // (a non-empty title would render a second value next to the field).
+        TextField("", value: binding, format: .number.grouping(.never))
+            .labelsHidden()
+            .frame(width: 80).multilineTextAlignment(.trailing)
+    }
+
+    static func intField(_ binding: Binding<Int>) -> some View {
+        TextField("", value: binding, format: .number.grouping(.never))
+            .labelsHidden()
+            .frame(width: 80).multilineTextAlignment(.trailing)
+    }
+
+    static func pathText(_ path: String) -> some View {
+        Text(path).font(.caption).foregroundStyle(.secondary)
+            .truncationMode(.middle).lineLimit(1)
     }
 }
 

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="560" viewBox="0 0 720 560" font-family="-apple-system, 'SF Pro Text', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="win" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbfbfd"/>
+      <stop offset="1" stop-color="#f2f3f5"/>
+    </linearGradient>
+    <filter id="ws" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+    <filter id="cardsh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="720" height="560" fill="#2c3446"/>
+
+  <!-- window -->
+  <g filter="url(#ws)">
+    <rect x="40" y="24" width="640" height="512" rx="12" fill="url(#win)" stroke="#dcdfe4"/>
+  </g>
+
+  <!-- titlebar -->
+  <rect x="40" y="24" width="640" height="40" rx="12" fill="#eceef1"/>
+  <rect x="40" y="52" width="640" height="12" fill="#eceef1"/>
+  <circle cx="62" cy="44" r="6" fill="#ff5f57"/>
+  <circle cx="82" cy="44" r="6" fill="#febc2e"/>
+  <circle cx="102" cy="44" r="6" fill="#28c840"/>
+  <text x="360" y="48" font-size="13" font-weight="700" fill="#3c4250" text-anchor="middle">Tunnel Proxy</text>
+
+  <!-- ===== TAB STRIP (Servers selected) — no header above ===== -->
+  <rect x="40" y="64" width="640" height="56" fill="#f4f5f7"/>
+  <line x1="40" y1="120" x2="680" y2="120" stroke="#e0e2e6"/>
+  <rect x="146" y="74" width="80" height="38" rx="7" fill="#e2e6ec"/>
+  <g text-anchor="middle" font-size="10.5">
+    <!-- Connection -->
+    <circle cx="97" cy="87" r="8" fill="none" stroke="#6b7280" stroke-width="1.6"/>
+    <line x1="97" y1="82" x2="97" y2="88" stroke="#6b7280" stroke-width="1.6"/>
+    <text x="97" y="107" fill="#4b5563">Connection</text>
+    <!-- Servers (selected) -->
+    <rect x="177" y="80" width="18" height="14" rx="3" fill="none" stroke="#1f6bff" stroke-width="1.6"/>
+    <line x1="177" y1="86" x2="195" y2="86" stroke="#1f6bff" stroke-width="1.4"/>
+    <text x="186" y="107" fill="#1f6bff" font-weight="700">Servers</text>
+    <!-- Tunnel -->
+    <circle cx="262" cy="87" r="7" fill="none" stroke="#6b7280" stroke-width="1.6"/>
+    <line x1="255" y1="87" x2="269" y2="87" stroke="#6b7280" stroke-width="1.2"/>
+    <line x1="262" y1="80" x2="262" y2="94" stroke="#6b7280" stroke-width="1.2"/>
+    <text x="262" y="107" fill="#4b5563">Tunnel</text>
+    <!-- Logs -->
+    <rect x="333" y="79" width="13" height="16" rx="2" fill="none" stroke="#6b7280" stroke-width="1.6"/>
+    <text x="339" y="107" fill="#4b5563">Logs</text>
+    <!-- Stats -->
+    <g fill="#6b7280"><rect x="401" y="87" width="4" height="8"/><rect x="408" y="83" width="4" height="12"/><rect x="415" y="80" width="4" height="15"/></g>
+    <text x="410" y="107" fill="#4b5563">Stats</text>
+    <!-- Advanced -->
+    <circle cx="486" cy="86" r="5" fill="none" stroke="#6b7280" stroke-width="1.6"/>
+    <circle cx="495" cy="91" r="4" fill="none" stroke="#6b7280" stroke-width="1.4"/>
+    <text x="490" y="107" fill="#4b5563">Advanced</text>
+    <!-- Tools -->
+    <path d="M566 80 l6 6 -4 4 -6 -6 z" fill="none" stroke="#6b7280" stroke-width="1.6"/>
+    <text x="570" y="107" fill="#4b5563">Tools</text>
+    <!-- About -->
+    <circle cx="636" cy="87" r="8" fill="none" stroke="#6b7280" stroke-width="1.6"/>
+    <text x="636" y="91" font-size="11" font-weight="800" fill="#6b7280">i</text>
+    <text x="636" y="107" fill="#4b5563">About</text>
+  </g>
+
+  <!-- ===== TAB CONTENT: Servers (grouped form) ===== -->
+  <text x="72" y="150" font-size="11" font-weight="700" fill="#8a93a6" letter-spacing="0.4">SSH SERVERS</text>
+  <g filter="url(#cardsh)">
+    <rect x="72" y="160" width="576" height="200" rx="10" fill="#ffffff" stroke="#e6e8ec"/>
+  </g>
+  <!-- row 1 (selected) -->
+  <circle cx="96" cy="194" r="7" fill="#1f6bff"/><circle cx="96" cy="194" r="3" fill="#fff"/>
+  <text x="116" y="190" font-size="13" font-weight="600" fill="#1f2937">server-a</text>
+  <text x="116" y="206" font-size="11" fill="#7d8697" font-family="'SF Mono', Menlo, monospace">root@a.example.com:22 · Key file</text>
+  <text x="600" y="198" font-size="13" fill="#9aa3b2">✎   🗑</text>
+  <line x1="88" y1="226" x2="632" y2="226" stroke="#eef0f3"/>
+  <!-- row 2 -->
+  <circle cx="96" cy="258" r="7" fill="none" stroke="#c2c8d2" stroke-width="1.6"/>
+  <text x="116" y="254" font-size="13" font-weight="600" fill="#1f2937">server-b</text>
+  <text x="116" y="270" font-size="11" fill="#7d8697" font-family="'SF Mono', Menlo, monospace">deploy@b.example.com:2222 · Password</text>
+  <text x="600" y="262" font-size="13" fill="#9aa3b2">✎   🗑</text>
+  <line x1="88" y1="290" x2="632" y2="290" stroke="#eef0f3"/>
+  <!-- row 3 -->
+  <circle cx="96" cy="322" r="7" fill="none" stroke="#c2c8d2" stroke-width="1.6"/>
+  <text x="116" y="318" font-size="13" font-weight="600" fill="#1f2937">jump-host</text>
+  <text x="116" y="334" font-size="11" fill="#7d8697" font-family="'SF Mono', Menlo, monospace">me@jump.corp.net:22 · SSH agent</text>
+  <text x="600" y="326" font-size="13" fill="#9aa3b2">✎   🗑</text>
+  <!-- add server button -->
+  <rect x="72" y="374" width="120" height="30" rx="7" fill="#eef1f5" stroke="#dfe3e9"/>
+  <text x="132" y="394" font-size="12" fill="#374151" text-anchor="middle">＋ Add Server</text>
+
+  <!-- caption -->
+  <text x="24" y="552" fill="#c7ccd6" font-size="12.5" font-weight="600">Unified window (Light) — Connection · Servers · Tunnel · Logs · Stats · Advanced · Tools · About · tabs sit right under the titlebar</text>
+</svg>

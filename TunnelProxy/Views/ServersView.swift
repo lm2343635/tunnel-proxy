@@ -18,6 +18,7 @@ struct ServersView: View {
             Divider()
             toolbar
         }
+        .background(Color(nsColor: .textBackgroundColor))
         .sheet(item: $editing) { server in
             ServerEditor(server: server, isNew: isNew)
                 .environmentObject(controller)
@@ -41,6 +42,7 @@ struct ServersView: View {
             }
         }
         .listStyle(.inset)
+        .scrollContentBackground(.hidden)
     }
 
     private func row(for server: ServerProfile) -> some View {
@@ -105,7 +107,7 @@ struct ServerEditor: View {
                     TextField("Host", text: $server.host, prompt: Text("example.com"))
                     TextField("Username", text: $server.username, prompt: Text("root"))
                     LabeledContent("Port") {
-                        TextField("22", value: $server.port, format: .number.grouping(.never))
+                        TextField("", value: $server.port, format: .number.grouping(.never))
                             .frame(width: 70).multilineTextAlignment(.trailing)
                     }
                 }
