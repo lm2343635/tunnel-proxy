@@ -42,6 +42,7 @@
 		A100002600000000000026 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002600000000000026 /* DesignSystem.swift */; };
 		A100002700000000000027 /* MiniWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002700000000000027 /* MiniWindowView.swift */; };
 		A100002800000000000028 /* DockIconRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002800000000000028 /* DockIconRenderer.swift */; };
+		A100002900000000000029 /* CodexConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100002900000000000029 /* CodexConfig.swift */; };
 		BB8F28213007D9C1003B52E2 /* architecture.svg in Resources */ = {isa = PBXBuildFile; fileRef = BB8F28173007D9C1003B52E2 /* architecture.svg */; };
 		BB8F28223007D9C1003B52E2 /* gui-app-plan.md in Resources */ = {isa = PBXBuildFile; fileRef = BB8F281E3007D9C1003B52E2 /* gui-app-plan.md */; };
 		BB8F28233007D9C1003B52E2 /* menu-bar-connected.svg in Resources */ = {isa = PBXBuildFile; fileRef = BB8F28193007D9C1003B52E2 /* menu-bar-connected.svg */; };
@@ -90,6 +91,7 @@
 		B100002600000000000026 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		B100002700000000000027 /* MiniWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniWindowView.swift; sourceTree = "<group>"; };
 		B100002800000000000028 /* DockIconRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DockIconRenderer.swift; sourceTree = "<group>"; };
+		B100002900000000000029 /* CodexConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexConfig.swift; sourceTree = "<group>"; };
 		BB8F28173007D9C1003B52E2 /* architecture.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = architecture.svg; sourceTree = "<group>"; };
 		BB8F28183007D9C1003B52E2 /* logs.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = logs.svg; sourceTree = "<group>"; };
 		BB8F28193007D9C1003B52E2 /* menu-bar-connected.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = "menu-bar-connected.svg"; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				B1000005000000000000005 /* TunnelController.swift */,
 				B100001F0000000000001F /* PortInspector.swift */,
 				B100002000000000000020 /* ClaudeCodeConfig.swift */,
+				B100002900000000000029 /* CodexConfig.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -356,6 +359,7 @@
 				A100001E0000000000001E /* StatisticsView.swift in Sources */,
 				A100001F0000000000001F /* PortInspector.swift in Sources */,
 				A100002000000000000020 /* ClaudeCodeConfig.swift in Sources */,
+				A100002900000000000029 /* CodexConfig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -434,7 +438,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.2;
+				MARKETING_VERSION = 1.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -461,7 +465,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.2;
+				MARKETING_VERSION = 1.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

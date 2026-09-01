@@ -145,7 +145,7 @@
     <tr><td><strong>Logs</strong></td><td>The live activity log.</td></tr>
     <tr><td><strong>Statistics</strong></td><td>How much data you've moved over time.</td></tr>
     <tr><td><strong>Settings</strong></td><td>Ports, startup, macOS network, menu bar, and more — every change applies immediately.</td></tr>
-    <tr><td><strong>Tools</strong></td><td>Route Claude Code through the proxy, and a rescue button to remove all proxies.</td></tr>
+    <tr><td><strong>Tools</strong></td><td>Route Claude Code and Codex through the proxy, and a rescue button to remove all proxies.</td></tr>
   </table>
 
   <h3>The Connection tab (dashboard)</h3>
@@ -382,14 +382,22 @@
     <iframe src="design/tools.html" title="Tunnel Proxy" scrolling="no"
             style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
             loading="lazy"></iframe>
-    <figcaption>The Tools tab: route Claude Code through the proxy, and a rescue button to remove all proxies.</figcaption>
+    <figcaption>The Tools tab: route Claude Code and Codex through the proxy, and a rescue button to remove all proxies.</figcaption>
   </figure>
   <ul>
     <li><strong>Route Claude Code through this proxy</strong> — turn this <strong>on</strong> to make <a href="https://claude.com/claude-code">Claude Code</a> send its traffic through the tunnel. It adds the standard HTTP-proxy environment keys (<code>http_proxy</code>, <code>https_proxy</code>, and their uppercase forms, plus <code>no_proxy</code> for <code>localhost</code>) to <code>~/.claude/settings.json</code>, pointing them at <code>http://127.0.0.1:8118</code> (or whatever <strong>HTTP Proxy Port</strong> you set in the Settings tab). Turn it <strong>off</strong> to remove just those keys — everything else in your Claude Code settings is left untouched. Restart Claude Code for the change to take effect.</li>
     <li><strong>Settings file</strong> — shows the path to <code>~/.claude/settings.json</code>, with a <strong>Reveal</strong> button.</li>
+    <li><strong>Route Codex through this proxy</strong> — the same idea for <a href="https://developers.openai.com/codex/cli">Codex</a>, but it takes two edits, because Codex has no proxy setting of its own and reads only the proxy <em>environment variables</em>:
+      <ul>
+        <li><code>~/.codex/config.toml</code> gets the same six keys under <code>[shell_environment_policy.set]</code> — that's the environment Codex hands to the commands it runs (<code>curl</code>, <code>git</code>, <code>npm</code>, …).</li>
+        <li>Your shell startup file (<code>~/.zshrc</code>, or <code>~/.bash_profile</code> under bash) gets a matching <code>export</code> block between <code># &gt;&gt;&gt; TunnelProxy proxy &gt;&gt;&gt;</code> markers — that's what Codex itself picks up when you launch it from a terminal.</li>
+      </ul>
+      Turn it <strong>off</strong> to remove exactly those keys and that marked block; everything else in both files is preserved. Open a <strong>new terminal</strong> afterwards, since a shell only reads its startup file at launch.</li>
+    <li><strong>Config file</strong> / <strong>Shell profile</strong> — the two paths the switch writes, each with a <strong>Reveal</strong> button.</li>
     <li><strong>Remove All Proxies</strong> — a rescue button that turns off <em>every</em> system proxy (HTTP, HTTPS, SOCKS, and automatic/PAC) for your current <strong>Network Service</strong>. Use it if proxy settings ever get left behind — for example after a crash — and your Mac can't reach the internet directly. It needs your admin password.</li>
   </ul>
-  <blockquote><p>If you change the HTTP Proxy Port later, come back and toggle the Claude Code switch off and on again so the new port is written.</p></blockquote>
+  <blockquote><p>If you change the HTTP Proxy Port later, come back and toggle these switches off and on again so the new port is written.</p></blockquote>
+  <blockquote><p>The Codex switch covers the <code>codex</code> command line. The Codex <em>desktop app</em> is launched by Finder, which never reads your shell profile, so it keeps going out directly.</p></blockquote>
 
   <h2>The Logs tab</h2>
   <p>If a connection fails or behaves oddly, the logs show exactly what happened.</p>

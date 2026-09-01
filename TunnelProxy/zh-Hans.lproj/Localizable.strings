@@ -183,7 +183,13 @@
 "Route Claude Code through this proxy" = "让 Claude Code 通过此代理";
 "Claude Code will use this proxy." = "Claude Code 将使用此代理。";
 "Proxy removed from Claude Code." = "已从 Claude Code 移除代理。";
+"Route Codex through this proxy" = "让 Codex 通过此代理";
+"Codex will use this proxy — open a new terminal for it to take effect." = "Codex 将使用此代理——请打开新的终端窗口以生效。";
+"Proxy removed from Codex." = "已从 Codex 移除代理。";
+"~/.codex/config.toml has an unterminated multi-line string. Fix it, then try again." = "~/.codex/config.toml 中有未闭合的多行字符串。请修复后重试。";
 "Settings file" = "设置文件";
+"Config file" = "配置文件";
+"Shell profile" = "Shell 配置文件";
 "Reveal" = "显示";
 "Remove All Proxies" = "移除所有代理";
 "Remove…" = "移除…";
@@ -197,6 +203,8 @@
 "Add an SSH server in Settings to connect." = "请在设置中添加 SSH 服务器以便连接。";
 
 /* Redesign — interpolated */
+"Codex has no proxy setting of its own, so this adds the proxy env keys to ~/.codex/config.toml and a marked export block to your shell profile, pointing Codex at %@. Nothing else in either file is touched." = "Codex 自身没有代理设置，因此这会把代理环境变量写入 ~/.codex/config.toml，并在 shell 配置文件中加入带标记的 export 块，将 Codex 指向 %@。两个文件的其他内容均不受影响。";
+"The TunnelProxy block in %@ is damaged — its start and end markers don't match. Fix or remove it, then try again." = "%@ 中的 TunnelProxy 代码块已损坏——起止标记不匹配。请修复或删除后重试。";
 "Tunnel + HTTP proxy active · since %@" = "隧道与 HTTP 代理已启用 · 自 %@";
 "%lld ms" = "%lld ms";
 "● %lld ms" = "● %lld ms";

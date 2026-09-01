@@ -183,7 +183,13 @@
 "Route Claude Code through this proxy" = "Route Claude Code through this proxy";
 "Claude Code will use this proxy." = "Claude Code will use this proxy.";
 "Proxy removed from Claude Code." = "Proxy removed from Claude Code.";
+"Route Codex through this proxy" = "Route Codex through this proxy";
+"Codex will use this proxy — open a new terminal for it to take effect." = "Codex will use this proxy — open a new terminal for it to take effect.";
+"Proxy removed from Codex." = "Proxy removed from Codex.";
+"~/.codex/config.toml has an unterminated multi-line string. Fix it, then try again." = "~/.codex/config.toml has an unterminated multi-line string. Fix it, then try again.";
 "Settings file" = "Settings file";
+"Config file" = "Config file";
+"Shell profile" = "Shell profile";
 "Reveal" = "Reveal";
 "Remove All Proxies" = "Remove All Proxies";
 "Remove…" = "Remove…";
@@ -197,6 +203,8 @@
 "Add an SSH server in Settings to connect." = "Add an SSH server in Settings to connect.";
 
 /* Redesign — interpolated */
+"Codex has no proxy setting of its own, so this adds the proxy env keys to ~/.codex/config.toml and a marked export block to your shell profile, pointing Codex at %@. Nothing else in either file is touched." = "Codex has no proxy setting of its own, so this adds the proxy env keys to ~/.codex/config.toml and a marked export block to your shell profile, pointing Codex at %@. Nothing else in either file is touched.";
+"The TunnelProxy block in %@ is damaged — its start and end markers don't match. Fix or remove it, then try again." = "The TunnelProxy block in %@ is damaged — its start and end markers don't match. Fix or remove it, then try again.";
 "Tunnel + HTTP proxy active · since %@" = "Tunnel + HTTP proxy active · since %@";
 "%lld ms" = "%lld ms";
 "● %lld ms" = "● %lld ms";

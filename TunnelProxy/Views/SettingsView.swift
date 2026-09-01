@@ -314,23 +314,30 @@ enum SettingsRow {
 
 // MARK: - Tools tab
 
-/// Claude Code proxy integration + "remove all proxies", as tiles.
+/// Claude Code + Codex proxy integration and "remove all proxies", as tiles.
 struct ToolsTab: View {
     @EnvironmentObject var controller: TunnelController
 
     @State private var claudeProxyOn = false
     @State private var claudeProxyMessage: String?
     @State private var claudeProxyIsError = false
+    @State private var codexProxyOn = false
+    @State private var codexProxyMessage: String?
+    @State private var codexProxyIsError = false
     @State private var removeProxiesAlert: RemoveProxiesResult?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             TabHeader(title: "Tools")
 
-            claudeTile
-            systemProxiesTile
-
-            Spacer(minLength: 0)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    claudeTile
+                    codexTile
+                    systemProxiesTile
+                }
+            }
+            .scrollContentBackground(.hidden)
 
             Text("Requires admin rights — macOS prompts when toggling system proxies.")
                 .font(.system(size: 11)).foregroundStyle(DS.secondaryText)
@@ -338,7 +345,10 @@ struct ToolsTab: View {
         }
         .padding(DS.contentPadding)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .onAppear(perform: refreshClaudeProxyState)
+        .onAppear {
+            refreshClaudeProxyState()
+            refreshCodexProxyState()
+        }
         .alert("Remove All Proxies",
                isPresented: Binding(
                 get: { removeProxiesAlert != nil },
@@ -376,21 +386,59 @@ struct ToolsTab: View {
                         .padding(.top, 8)
                 }
                 Divider().overlay(DS.tileBorder).padding(.top, 10)
-                HStack(spacing: 12) {
-                    Text("Settings file").font(.system(size: 12.5)).foregroundStyle(DS.primaryText)
-                    Spacer()
-                    Text(ClaudeCodeConfig.settingsURL.path)
-                        .font(.system(size: 10.5, design: .monospaced))
-                        .foregroundStyle(DS.secondaryText).lineLimit(1).truncationMode(.middle)
-                    Button("Reveal") {
-                        NSWorkspace.shared.activateFileViewerSelecting([ClaudeCodeConfig.settingsURL])
-                    }
-                    .buttonStyle(.plain).font(.system(size: 12)).foregroundStyle(DS.accent)
-                }
-                .padding(.top, 10)
+                fileRow("Settings file", ClaudeCodeConfig.settingsURL).padding(.top, 10)
             }
         }
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// Codex has no proxy setting of its own, so this writes two files — see
+    /// `CodexConfig` for why each one is needed.
+    private var codexTile: some View {
+        Tile(padding: EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16)) {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(alignment: .top, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Route Codex through this proxy")
+                            .font(.system(size: 13.5, weight: .semibold))
+                            .foregroundStyle(DS.primaryText)
+                        Text("Codex has no proxy setting of its own, so this adds the proxy env keys to ~/.codex/config.toml and a marked export block to your shell profile, pointing Codex at \(CodexConfig.proxyURL(port: controller.config.httpProxyPort)). Nothing else in either file is touched.")
+                            .font(.system(size: 11)).foregroundStyle(DS.secondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 0)
+                    Toggle("", isOn: Binding(get: { codexProxyOn }, set: { setCodexProxy($0) }))
+                        .labelsHidden().toggleStyle(.switch).controlSize(.small)
+                }
+                if let msg = codexProxyMessage {
+                    Text(msg).font(.system(size: 11))
+                        .foregroundStyle(codexProxyIsError ? DS.warning : DS.textGreen)
+                        .padding(.top, 8)
+                }
+                Divider().overlay(DS.tileBorder).padding(.top, 10)
+                fileRow("Config file", CodexConfig.configURL).padding(.top, 10)
+                fileRow("Shell profile", CodexConfig.shellProfileURL).padding(.top, 8)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// A path + "Reveal" row. Falls back to the containing folder for files that
+    /// don't exist yet, so the button is never a no-op.
+    private func fileRow(_ label: LocalizedStringKey, _ url: URL) -> some View {
+        HStack(spacing: 12) {
+            Text(label).font(.system(size: 12.5)).foregroundStyle(DS.primaryText)
+            Spacer()
+            Text(url.path)
+                .font(.system(size: 10.5, design: .monospaced))
+                .foregroundStyle(DS.secondaryText).lineLimit(1).truncationMode(.middle)
+            Button("Reveal") {
+                let target = FileManager.default.fileExists(atPath: url.path)
+                    ? url : url.deletingLastPathComponent()
+                NSWorkspace.shared.activateFileViewerSelecting([target])
+            }
+            .buttonStyle(.plain).font(.system(size: 12)).foregroundStyle(DS.accent)
+        }
     }
 
     private var systemProxiesTile: some View {
@@ -443,6 +491,38 @@ struct ToolsTab: View {
                     self.claudeProxyOn = ClaudeCodeConfig.isProxyEnabled(port: port)
                     self.claudeProxyIsError = true
                     self.claudeProxyMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+
+    private func refreshCodexProxyState() {
+        let port = controller.config.httpProxyPort
+        Task.detached {
+            let enabled = CodexConfig.isProxyEnabled(port: port)
+            await MainActor.run { self.codexProxyOn = enabled }
+        }
+    }
+
+    /// Same contract as `setClaudeProxy`: on failure the toggle snaps back to what the
+    /// files actually say, so a half-applied edit is never reported as success.
+    private func setCodexProxy(_ enabled: Bool) {
+        let port = controller.config.httpProxyPort
+        Task.detached {
+            do {
+                try CodexConfig.setProxyEnabled(enabled, port: port)
+                await MainActor.run {
+                    self.codexProxyOn = enabled
+                    self.codexProxyIsError = false
+                    self.codexProxyMessage = enabled
+                        ? "Codex will use this proxy — open a new terminal for it to take effect."
+                        : "Proxy removed from Codex."
+                }
+            } catch {
+                await MainActor.run {
+                    self.codexProxyOn = CodexConfig.isProxyEnabled(port: port)
+                    self.codexProxyIsError = true
+                    self.codexProxyMessage = error.localizedDescription
                 }
             }
         }

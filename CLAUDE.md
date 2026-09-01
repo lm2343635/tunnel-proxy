@@ -24,7 +24,8 @@ Pipeline: **`ssh -N -D` (SOCKS5 on :1080)** → **Privoxy (HTTP on :8118)** → 
   - `Controllers/` — `TunnelEngine` (native ssh -D + bundled privoxy + watchdog + askpass),
     `TunnelController` (observable state, server CRUD, status polling), `AppPaths`,
     `ServerProfile`, `TunnelConfig`, `KeychainStore`, `NetworkServices`, `SpeedMonitor`,
-    `MenuBarRenderer`, `ProcessRunner`, `LogTailer`
+    `MenuBarRenderer`, `ProcessRunner`, `LogTailer`, `ClaudeCodeConfig` / `CodexConfig`
+    (Tools-tab integrations, see below)
   - `Views/` — `MenuBarView`, `SettingsView`, `ServersView`, `LogsView`, `ManualView`
   - `Resources/` — bundled `privoxy/` (binary + relocated dylibs), `helpers/askpass.sh`,
     `manual/` (bundled user-guide HTML)
@@ -49,6 +50,15 @@ Pipeline: **`ssh -N -D` (SOCKS5 on :1080)** → **Privoxy (HTTP on :8118)** → 
   through the `TP_ASKPASS_SECRET` env var, never on argv.
 - **App data** lives in `~/Library/Application Support/TunnelProxy/`: `config.json`,
   `tunnel.log`, and a freshly-generated `privoxy.conf` on each connect.
+- **Tools-tab integrations** edit *other programs'* config in place, so both parse
+  surgically and refuse to write files they can't read confidently:
+  - `ClaudeCodeConfig` → six proxy keys under `env` in `~/.claude/settings.json`.
+  - `CodexConfig` → the same six keys under `[shell_environment_policy.set]` in
+    `~/.codex/config.toml` (the env Codex gives the commands it runs) **and** a
+    marker-delimited `export` block in `~/.zshrc` / `~/.bash_profile` (what Codex
+    itself inherits). Codex has no proxy config key of its own — it reads only the
+    proxy env vars — so both edits are needed, and neither reaches the Codex
+    desktop app, which Finder launches without a shell.
 
 ### Build & run
 

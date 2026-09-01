@@ -143,7 +143,7 @@
     <tr><td><strong>日志</strong></td><td>实时活动日志。</td></tr>
     <tr><td><strong>流量统计</strong></td><td>你随时间传输了多少数据。</td></tr>
     <tr><td><strong>设置</strong></td><td>端口、启动、macOS 网络、菜单栏等——所有更改即时生效。</td></tr>
-    <tr><td><strong>工具</strong></td><td>让 Claude Code 走此代理，以及一个用于移除所有代理的应急按钮。</td></tr>
+    <tr><td><strong>工具</strong></td><td>让 Claude Code 与 Codex 走此代理，以及一个用于移除所有代理的应急按钮。</td></tr>
   </table>
 
   <h3>连接标签页（仪表盘）</h3>
@@ -380,14 +380,22 @@
     <iframe src="design/tools.zh.html" title="Tunnel Proxy" scrolling="no"
             style="width:840px;max-width:100%;aspect-ratio:840/580;border:0;display:block;margin:0 auto;"
             loading="lazy"></iframe>
-    <figcaption>工具标签页：让 Claude Code 走此代理，以及一个用于移除所有代理的应急按钮。</figcaption>
+    <figcaption>工具标签页：让 Claude Code 与 Codex 走此代理，以及一个用于移除所有代理的应急按钮。</figcaption>
   </figure>
   <ul>
     <li><strong>让 Claude Code 走此代理</strong>——开启后，<a href="https://claude.com/claude-code">Claude Code</a> 的流量将通过隧道转发。它会把标准的 HTTP 代理环境变量（<code>http_proxy</code>、<code>https_proxy</code> 及其大写形式，以及针对 <code>localhost</code> 的 <code>no_proxy</code>）写入 <code>~/.claude/settings.json</code>，指向 <code>http://127.0.0.1:8118</code>（或你在「设置」标签页设置的 <strong>HTTP 代理端口</strong>）。<strong>关闭</strong> 时仅移除这些键，Claude Code 的其他设置保持不变。修改后请重启 Claude Code 使其生效。</li>
     <li><strong>设置文件</strong>——显示 <code>~/.claude/settings.json</code> 的路径，并提供 <strong>Reveal</strong> 按钮。</li>
+    <li><strong>让 Codex 走此代理</strong>——对 <a href="https://developers.openai.com/codex/cli">Codex</a> 是同样的思路，但需要改动两个文件：Codex 自身没有代理设置，只读取代理<em>环境变量</em>。
+      <ul>
+        <li><code>~/.codex/config.toml</code> 的 <code>[shell_environment_policy.set]</code> 下会写入同样的六个键——这是 Codex 传给它所运行命令（<code>curl</code>、<code>git</code>、<code>npm</code> 等）的环境。</li>
+        <li>你的 shell 启动文件（<code>~/.zshrc</code>，bash 下为 <code>~/.bash_profile</code>）会加入一段以 <code># &gt;&gt;&gt; TunnelProxy proxy &gt;&gt;&gt;</code> 标记包裹的 <code>export</code> 块——这是 Codex 自身从终端启动时读取的环境。</li>
+      </ul>
+      <strong>关闭</strong> 时仅移除这些键与该标记块，两个文件的其他内容都会保留。之后请<strong>打开新的终端窗口</strong>，因为 shell 只在启动时读取启动文件。</li>
+    <li><strong>配置文件</strong> / <strong>Shell 配置文件</strong>——该开关写入的两个路径，各自附带 <strong>Reveal</strong> 按钮。</li>
     <li><strong>移除所有代理</strong>——一个应急按钮，会为当前的<strong>网络服务</strong>关闭<em>所有</em>系统代理（HTTP、HTTPS、SOCKS 以及自动/PAC 代理）。当代理设置意外残留——例如应用崩溃之后——导致 Mac 无法正常直连上网时，可用它来清理。此操作需要管理员密码。</li>
   </ul>
-  <blockquote><p>如果之后修改了 HTTP 代理端口，请回到此处将 Claude Code 开关关闭再开启，以写入新的端口。</p></blockquote>
+  <blockquote><p>如果之后修改了 HTTP 代理端口，请回到此处将这些开关关闭再开启，以写入新的端口。</p></blockquote>
+  <blockquote><p>Codex 开关作用于 <code>codex</code> 命令行。Codex <em>桌面应用</em>由访达启动，不会读取 shell 启动文件，因此仍会直连。</p></blockquote>
 
   <h2>日志标签页</h2>
   <p>如果连接失败或行为异常，日志会准确显示发生了什么。</p>
