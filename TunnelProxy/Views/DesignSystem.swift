@@ -282,6 +282,10 @@ struct PowerRing: View {
     var glow: Bool = true
 
     @State private var animating = false
+    /// Whether the hosting window is on screen. SwiftUI keeps closed windows'
+    /// (and the popover's) view trees alive and keeps running their
+    /// animations, so the spinner must gate itself on this.
+    @State private var windowVisible = false
 
     private var connecting: Bool {
         switch controller.state {
@@ -347,8 +351,10 @@ struct PowerRing: View {
         .disabled(!controller.canToggleConnection)
         .opacity(controller.canToggleConnection ? 1 : 0.55)
         .animation(.easeInOut(duration: 0.35), value: controller.state)
+        .background(WindowVisibilityReader(isVisible: $windowVisible))
         .onAppear { syncAnimation() }
         .onChange(of: controller.state) { _, _ in syncAnimation() }
+        .onChange(of: windowVisible) { _, _ in syncAnimation() }
     }
 
     @ViewBuilder
@@ -382,16 +388,64 @@ struct PowerRing: View {
 
     private var breathing: CGFloat {
         guard animating, !reduceMotion else { return 1 }
-        return (controller.isConnected || connecting) ? 1.03 : 1
+        return connecting ? 1.03 : 1
     }
 
+    /// Animate only while connecting/reconnecting *and* on screen. A
+    /// `repeatForever` animation re-renders the window every display frame, so
+    /// it must never run in the steady connected state or in a hidden window.
     private func syncAnimation() {
         guard !reduceMotion else { animating = false; return }
-        let shouldAnimate = connecting || controller.isConnected
+        let shouldAnimate = connecting && windowVisible
+        guard shouldAnimate != animating else { return }
         withAnimation(shouldAnimate
                       ? .easeInOut(duration: 2).repeatForever(autoreverses: true)
                       : .default) {
             animating = shouldAnimate
+        }
+    }
+}
+
+/// Reports whether the hosting window is actually on screen — false while it is
+/// closed, minimized, on another Space, or fully covered (`NSWindow.occlusionState`).
+/// SwiftUI keeps a closed `Window` / `MenuBarExtra` view tree alive and keeps
+/// driving its animations, so continuous effects must gate on this.
+struct WindowVisibilityReader: NSViewRepresentable {
+    @Binding var isVisible: Bool
+
+    func makeNSView(context: Context) -> TrackingView {
+        let view = TrackingView()
+        view.onChange = { visible in
+            if isVisible != visible { isVisible = visible }
+        }
+        return view
+    }
+
+    func updateNSView(_ nsView: TrackingView, context: Context) {}
+
+    final class TrackingView: NSView {
+        var onChange: ((Bool) -> Void)?
+        private var observer: NSObjectProtocol?
+
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            if let observer { NotificationCenter.default.removeObserver(observer) }
+            observer = nil
+            if let window {
+                observer = NotificationCenter.default.addObserver(
+                    forName: NSWindow.didChangeOcclusionStateNotification,
+                    object: window, queue: .main
+                ) { [weak self] _ in
+                    MainActor.assumeIsolated { self?.report() }
+                }
+            }
+            report()
+        }
+
+        private func report() {
+            let visible = window?.occlusionState.contains(.visible) ?? false
+            // Deferred: this can fire mid SwiftUI update (view insertion).
+            DispatchQueue.main.async { [weak self] in self?.onChange?(visible) }
         }
     }
 }

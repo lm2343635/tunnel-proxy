@@ -125,8 +125,10 @@ private struct HeroTile: View {
 // MARK: - Throughput tile
 
 /// Live down/up rates over a bottom-anchored sparkline of the last 60 samples.
-/// Observes the controller's `SpeedMonitor` so the sparkline animates as samples
-/// arrive (it's a separate `ObservableObject` from the controller).
+/// Observes the controller's `SpeedMonitor` so the sparkline updates as samples
+/// arrive (it's a separate `ObservableObject` from the controller). Deliberately
+/// not animated: a 1 s transition per 1 Hz sample never finishes, which redraws
+/// the whole chart every display frame.
 private struct ThroughputTile: View {
     @ObservedObject var monitor: SpeedMonitor
 
@@ -179,7 +181,6 @@ private struct ThroughputTile: View {
         .chartLegend(.hidden)
         .chartXScale(domain: 0...max(1, monitor.historyCapacityValue - 1))
         .chartYScale(domain: -peak...peak)
-        .animation(.linear(duration: 1), value: samples)
     }
 }
 
@@ -242,7 +243,6 @@ private struct LatencyTile: View {
         .chartLegend(.hidden)
         .chartXScale(domain: 0...49)   // pin to the ~50-sample window
         .chartYScale(domain: 0...Double(peak))
-        .animation(.linear(duration: 1), value: samples)
     }
 
     private var footerText: String {

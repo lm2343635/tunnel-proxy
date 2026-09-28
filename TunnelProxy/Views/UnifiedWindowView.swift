@@ -12,6 +12,10 @@ struct UnifiedWindowView: View {
     @EnvironmentObject var controller: TunnelController
     @Environment(\.openWindow) private var openWindow
     @SceneStorage("mainTab") private var tab: WindowTab = .connection
+    /// False once the window is closed. SwiftUI keeps a closed `Window`'s view
+    /// tree alive and re-rendering (live charts, 1 Hz speed samples), so the tab
+    /// content is dropped until the window reopens.
+    @State private var isOpen = true
 
     var body: some View {
         // `.hiddenTitleBar` lets content extend to the very top; the sidebar paints
@@ -34,6 +38,7 @@ struct UnifiedWindowView: View {
             }
         }
         .onAppear {
+            isOpen = true
             controller.onAppear()
             if let requested = controller.requestedTab {
                 tab = requested
@@ -46,12 +51,22 @@ struct UnifiedWindowView: View {
             controller.updateDockIcon()
         }
         .onDisappear {
+            isOpen = false
             AppActivation.becomeAccessory()
         }
     }
 
     @ViewBuilder
     private var content: some View {
+        if !isOpen {
+            Color.clear
+        } else {
+            tabContent
+        }
+    }
+
+    @ViewBuilder
+    private var tabContent: some View {
         switch tab {
         case .connection: ConnectionTab()
         case .servers:    ServersView()
