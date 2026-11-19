@@ -3,6 +3,9 @@
 "Local Proxy Only" = "Local Proxy Only";
 "Per-App Routing" = "Per-App Routing";
 "Global Proxy" = "Global Proxy";
+"Connect through the local proxy by setting it in each app." = "Connect through the local proxy by setting it in each app.";
+"Apply your routing rules to apps you’ve enabled below." = "Apply your routing rules to apps you’ve enabled below.";
+"Use the macOS SOCKS proxy for apps that follow system settings." = "Use the macOS SOCKS proxy for apps that follow system settings.";
 "Unlisted apps use the system network." = "Unlisted apps use the system network.";
 "Rules take effect in Per-App Routing mode." = "Rules take effect in Per-App Routing mode.";
 "Manage App Routing" = "Manage App Routing";
@@ -33,7 +36,7 @@
 "Retry" = "Retry";
 "Applications" = "Applications";
 "Paused" = "Paused";
-"Enable routing for this app" = "Enable routing for this app";
+"Enable routing for %@" = "Enable routing for %@";
 "In Per-App Routing mode, new connections from this app use the system network." = "In Per-App Routing mode, new connections from this app use the system network.";
 "Add App" = "Add App";
 "Local and LAN destinations use the system network." = "Local and LAN destinations use the system network.";

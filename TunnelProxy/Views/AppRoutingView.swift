@@ -10,10 +10,11 @@ struct AppRoutingView: View {
     @State private var notice: String?
     @State private var picking = false
     @State private var pendingRemoval: RoutingAppIdentity?
+    @FocusState private var focusedMode: ProxyMode?
 
     var body: some View {
         VStack(alignment: .leading, spacing: DS.gridGap) {
-            heading
+            Text(routingText("App Routing")).font(.system(size: 24, weight: .bold))
             modeHeader
             HStack(alignment: .top, spacing: DS.gridGap) {
                 applicationList.frame(minWidth: 180, idealWidth: 200, maxWidth: 224)
@@ -40,41 +41,74 @@ struct AppRoutingView: View {
         }
     }
 
-    private var heading: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(routingText("App Routing")).font(.system(size: 24, weight: .bold))
-            Text(routingText(controller.proxyMode == .appRouting
-                             ? "Unlisted apps use the system network."
-                             : "Rules take effect in Per-App Routing mode."))
-                .font(.callout).foregroundStyle(DS.secondaryText)
-        }
-    }
-
     private var modeHeader: some View {
-        Tile {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(routingText("Proxy Mode")).font(.headline)
-                Picker(routingText("Proxy Mode"), selection: Binding(
-                    get: { controller.proxyMode },
-                    set: { mode in Task { await controller.chooseProxyMode(mode) } })) {
-                    ForEach(ProxyMode.allCases) { mode in Text(mode.label).tag(mode) }
-                }
-                .labelsHidden().pickerStyle(.segmented)
-                .disabled(controller.isBusy || routing.busy)
-                if let status = controller.proxyModeDetail {
-                    HStack {
-                        Text(status).font(.caption).foregroundStyle(DS.secondaryText)
-                        Spacer()
-                        if routing.busy {
-                            Button(routingText("Cancel")) { routing.cancelApproval() }
-                        }
-                        if controller.proxyMode == .appRouting && !routing.confirmed && !routing.busy {
-                            Button(routingText("Retry")) { Task { await controller.chooseProxyMode(.appRouting) } }
-                        }
+        let busy = controller.isBusy || routing.busy
+        let canRetry = controller.proxyMode == .appRouting && !routing.confirmed && !busy
+        let status = controller.proxyModeDetail ?? (canRetry ? routingText("Routing state unknown") : nil)
+        return VStack(alignment: .leading, spacing: 8) {
+            Text(routingText("Proxy Mode")).font(.headline)
+                .accessibilityAddTraits(.isHeader)
+            HStack(alignment: .top, spacing: DS.gridGap) {
+                modeCard(.local, icon: "terminal", description: routingText(
+                    "Connect through the local proxy by setting it in each app."))
+                modeCard(.appRouting, icon: "point.3.connected.trianglepath.dotted", description: routingText(
+                    "Apply your routing rules to apps you’ve enabled below."))
+                modeCard(.global, icon: "globe", description: routingText(
+                    "Use the macOS SOCKS proxy for apps that follow system settings."))
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .disabled(busy)
+            if let status {
+                HStack {
+                    Text(status).font(.caption).foregroundStyle(.secondary)
+                    Spacer()
+                    if routing.canCancelApproval {
+                        Button(routingText("Cancel")) { routing.cancelApproval() }
+                    }
+                    if canRetry {
+                        Button(routingText("Retry")) { Task { await controller.chooseProxyMode(.appRouting) } }
                     }
                 }
             }
         }
+    }
+
+    private func modeCard(_ mode: ProxyMode, icon: String, description: String) -> some View {
+        let selected = controller.proxyMode == mode
+        let focused = focusedMode == mode
+        let shape = RoundedRectangle(cornerRadius: 10)
+        return Button {
+            Task { await controller.chooseProxyMode(mode) }
+        } label: {
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    Image(systemName: icon)
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(selected ? DS.dataBlue : .secondary)
+                    Spacer()
+                    RadioDot(isSelected: selected, size: 12)
+                }
+                .padding(.bottom, 3)
+                Text(mode.label).font(.callout.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(description).font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(12)
+            .frame(minWidth: 0, maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background {
+                shape.fill(DS.tile)
+                    .overlay { shape.fill(selected ? DS.accent.opacity(0.13) : .clear) }
+            }
+            .overlay { shape.strokeBorder(selected || focused ? DS.accent : DS.tileBorder,
+                                          lineWidth: focused ? 2 : 1).allowsHitTesting(false) }
+            .contentShape(shape)
+        }
+        .buttonStyle(.plain)
+        .focused($focusedMode, equals: mode)
+        .accessibilityLabel(Text(mode.label))
+        .accessibilityValue(Text(description))
+        .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
     private var applicationList: some View {
@@ -90,23 +124,7 @@ struct AppRoutingView: View {
                 ScrollView {
                     VStack(spacing: 4) {
                         ForEach(routing.rules.apps) { app in
-                            Button { edit(app) } label: {
-                                HStack(spacing: 8) {
-                                    Image(nsImage: NSWorkspace.shared.icon(forFile: app.directory.path))
-                                        .resizable().frame(width: 26, height: 26)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(app.name).font(.callout.weight(.medium)).lineLimit(1)
-                                        Text(app.isEnabled ? app.policy.label : routingText("Paused"))
-                                            .font(.caption).foregroundStyle(DS.secondaryText).lineLimit(1)
-                                    }
-                                    Spacer(minLength: 0)
-                                }
-                                .padding(6)
-                                .background(selected == app.id ? DS.accent.opacity(0.13) : Color.clear,
-                                            in: RoundedRectangle(cornerRadius: 6))
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityAddTraits(selected == app.id ? .isSelected : [])
+                            applicationRow(app)
                         }
                     }
                 }
@@ -116,6 +134,41 @@ struct AppRoutingView: View {
             }
             .frame(maxHeight: .infinity, alignment: .top)
         }
+    }
+
+    private func applicationRow(_ app: RoutingApp) -> some View {
+        HStack(spacing: 6) {
+            Button { edit(app) } label: {
+                HStack(spacing: 8) {
+                    Image(nsImage: NSWorkspace.shared.icon(forFile: app.directory.path))
+                        .resizable().frame(width: 26, height: 26)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(app.name).font(.callout.weight(.medium)).lineLimit(1)
+                        Text(app.isEnabled ? app.policy.label : routingText("Paused"))
+                            .font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(6)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityAddTraits(selected == app.id ? .isSelected : [])
+
+            Toggle(String.localizedStringWithFormat(routingText("Enable routing for %@"), app.name), isOn: Binding(
+                get: { app.isEnabled },
+                set: { enabled in
+                    Task { await controller.setRoutingAppEnabled(enabled, for: app.id) }
+                }))
+                .toggleStyle(.switch)
+                .tint(DS.accent)
+                .controlSize(.small)
+                .labelsHidden()
+                .disabled(controller.isBusy || routing.busy)
+                .padding(.trailing, 6)
+        }
+        .background(selected == app.id ? DS.accent.opacity(0.13) : Color.clear,
+                    in: RoundedRectangle(cornerRadius: 6))
     }
 
     private var editor: some View {
@@ -132,16 +185,6 @@ struct AppRoutingView: View {
                                     Button(routingText("Remove")) { pendingRemoval = draft.id }
                                         .disabled(routing.busy)
                                 }
-                            }
-                            if let app {
-                                Toggle(routingText("Enable routing for this app"), isOn: Binding(
-                                    get: { app.isEnabled },
-                                    set: { enabled in
-                                        notice = nil
-                                        Task { await controller.setRoutingAppEnabled(enabled, for: app.id) }
-                                    }))
-                                    .toggleStyle(.switch)
-                                    .disabled(controller.isBusy || routing.busy)
                             }
                             Text(routingText(app?.isEnabled == false
                                              ? "In Per-App Routing mode, new connections from this app use the system network."

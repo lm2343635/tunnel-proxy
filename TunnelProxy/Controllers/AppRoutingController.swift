@@ -31,6 +31,8 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
             && manager?.connection.status == .connected
     }
 
+    var canCancelApproval: Bool { activationResult != nil }
+
     func adopt() async {
         do {
             guard let existing = try await savedManager(),

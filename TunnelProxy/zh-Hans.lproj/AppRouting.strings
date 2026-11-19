@@ -3,6 +3,9 @@
 "Local Proxy Only" = "仅本地代理";
 "Per-App Routing" = "按应用分流";
 "Global Proxy" = "全局代理";
+"Connect through the local proxy by setting it in each app." = "在应用里手动配置本地代理后，该应用才会使用它。";
+"Apply your routing rules to apps you’ve enabled below." = "按下方已启用应用的分流规则处理连接。";
+"Use the macOS SOCKS proxy for apps that follow system settings." = "启用 macOS SOCKS 代理，采用系统代理设置的应用会使用它。";
 "Unlisted apps use the system network." = "未添加的应用使用本机网络。";
 "Rules take effect in Per-App Routing mode." = "切换到按应用分流后，规则生效。";
 "Manage App Routing" = "管理应用分流";
@@ -57,5 +60,5 @@
 "Application data exceeded the relay buffer" = "应用数据超出中继缓冲范围";
 "This switch cannot be verified. Choose Local Proxy Only first." = "无法验证这次代理交接。请先选择仅本地代理。";
 "Paused" = "已暂停";
-"Enable routing for this app" = "启用此应用的路由";
+"Enable routing for %@" = "启用 %@ 的路由";
 "In Per-App Routing mode, new connections from this app use the system network." = "在按应用路由模式下，此应用的新连接将使用系统网络。";
