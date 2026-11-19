@@ -21,6 +21,44 @@ open ~/Library/Developer/Xcode/DerivedData/TunnelProxy-*/Build/Products/Debug/Tu
 
 Or open `TunnelProxy.xcodeproj` in Xcode and press ⌘R. Requires Xcode 15+ and macOS 14+.
 
+## Automatic SSH routing
+
+Server profiles default to **Automatic**, including profiles saved by older builds.
+The connection page shows the actual SSH path; its **Settings** button opens the
+server's **Connection path** controls (Automatic / Direct / Via proxy).
+
+- Automatic discovers enabled system HTTP CONNECT and SOCKS proxies, plus common
+  loopback endpoints (7890, 7891, 1080, 10808, 10809). The app's own proxy ports are
+  excluded to prevent loops. A no-credentials SSH key exchange validates each path.
+- A usable proxy is preferred. Otherwise SSH binds its transport to the physical
+  primary interface, bypassing a broken TUN route. No system routes or VPN settings
+  are changed. No usable physical interface means no direct fallback.
+- After a connection drops, automatic recovery rediscovers the proxy and interface
+  and retries with backoff. It also retries an initially unavailable network.
+  Healthy sessions stay on their current path when VPN state changes. Explicit
+  Disconnect stops recovery. Authentication/host-verification errors stop retries.
+- **Via proxy** never falls back to direct. Turn off proxy autodetection to specify
+  a host, port and HTTP CONNECT or SOCKS5 protocol. Changes apply on the next
+  connection. Proxy authentication and PAC script evaluation are not supported.
+- Automatic mode includes path recovery regardless of the legacy watchdog toggle;
+  that toggle is shown as managed while Automatic is selected. Proxy latency is
+  labelled SSH handshake latency; direct mode measures TCP connection latency.
+
+Run deterministic routing checks with `tests/run-routing-checks.sh`. Live checks
+also exercise the SSH/Privoxy pipeline on temporary ports and simulate proxy loss
+with a disposable local CONNECT relay, without changing the user's VPN settings:
+
+```bash
+ROUTING_TEST_HOST=your-server ROUTING_TEST_PORT=2222 \
+ROUTING_TEST_USER=your-user ROUTING_TEST_KEY=/absolute/path/to/key \
+ROUTING_TEST_PRIVOXY=/absolute/path/to/TunnelProxy.app/Contents/Resources/privoxy/privoxy \
+tests/run-routing-checks.sh --live
+```
+
+Live checks require a working local VPN proxy, a physical direct route and a key
+that works without an interactive passphrase. They use an isolated temporary app
+data directory and clean up their own child processes. They never install the app.
+
 ## Release (signed DMG)
 
 `release.sh` archives, exports a Developer ID-signed `.app` (team `X92HAV9XYP`),

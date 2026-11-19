@@ -114,11 +114,12 @@ struct TunnelControlsView: View {
                        },
                        titleSize: 11.5, captionSize: 10)
             OptionCard(title: "Auto-reconnect",
-                       caption: controller.watchdogEnabled
-                           ? String(localized: "Watchdog · On")
+                       caption: controller.reconnectEnabled
+                           ? controller.automaticRouting ? String(localized: "Automatic path recovery") : String(localized: "Watchdog · On")
                            : String(localized: "Watchdog · Off"),
-                       isOn: $controller.watchdogEnabled,
+                       isOn: Binding(get: { controller.reconnectEnabled }, set: { if !controller.automaticRouting { controller.watchdogEnabled = $0 } }),
                        titleSize: 11.5, captionSize: 10)
+                .disabled(controller.automaticRouting)
         }
         .fixedSize(horizontal: false, vertical: true)
     }

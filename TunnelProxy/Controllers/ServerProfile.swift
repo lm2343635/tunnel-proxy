@@ -32,6 +32,10 @@ struct ServerProfile: Codable, Identifiable, Equatable {
     /// Persisted so the UI can show "•••• set" without touching the Keychain.
     var hasStoredSecret: Bool = false
 
+    /// Optional for backward-compatible decoding of profiles saved by older builds.
+    var routing: SSHRoutingSettings?
+    var effectiveRouting: SSHRoutingSettings { routing ?? SSHRoutingSettings() }
+
     /// `user@host` for display / ssh destination when a username is set.
     var sshDestination: String {
         username.isEmpty ? host : "\(username)@\(host)"
@@ -47,6 +51,8 @@ struct ServerProfile: Codable, Identifiable, Equatable {
         if host.trimmingCharacters(in: .whitespaces).isEmpty {
             return String(localized: "Host is required")
         }
+        if !SSHRoutePlanner.validHost(host) { return String(localized: "Invalid SSH hostname") }
+        if let error = effectiveRouting.validationError { return error }
         guard (1...65535).contains(port) else { return String(localized: "Port must be 1–65535") }
         if authMethod == .keyFile && keyPath.trimmingCharacters(in: .whitespaces).isEmpty {
             return String(localized: "Key file path is required")

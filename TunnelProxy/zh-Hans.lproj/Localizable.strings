@@ -208,3 +208,35 @@
 "Tunnel + HTTP proxy active · since %@" = "隧道与 HTTP 代理已启用 · 自 %@";
 "%lld ms" = "%lld ms";
 "● %lld ms" = "● %lld ms";
+
+/* Automatic SSH routing */
+"Automatic" = "自动";
+"Direct" = "直连";
+"Via proxy" = "通过代理";
+"Via local proxy" = "通过代理";
+"Physical network direct" = "物理网络直连";
+"Not connected" = "未连接";
+"Invalid SSH hostname" = "SSH 主机名无效";
+"Enter a valid proxy host and port" = "请输入有效的代理主机和端口";
+"No usable proxy or physical network found" = "未找到可用的代理或物理网络";
+"Trying physical network direct…" = "正在尝试物理网络直连…";
+"Checking proxy path…" = "正在验证代理路径…";
+"SSH authentication or host verification failed; check credentials and logs" = "SSH 认证或主机校验失败，请检查凭据与日志";
+"No SSH route available; check network and proxy settings" = "当前没有可用的 SSH 路径，请检查网络和代理设置";
+"Connection path" = "连接路径";
+"Connection mode" = "连接方式";
+"VPN changes are handled automatically" = "自动处理 VPN 开关";
+"Prefer a working proxy; fall back to physical network direct. Keep healthy sessions connected." = "优先使用可用代理；代理不可用时回退物理网络直连。连接正常时保持当前会话。";
+"Wait for the proxy when unavailable; never fall back to direct." = "代理不可用时等待，不回退直连。";
+"Detect system proxy automatically" = "自动识别系统代理";
+"Proxy host" = "代理主机";
+"Proxy port" = "代理端口";
+"Protocol" = "协议";
+"Turn off automatic detection to specify a proxy manually." = "关闭自动识别后，可手动指定代理地址。";
+"Changes apply on the next connection." = "修改将在下次连接时生效。";
+"No system proxy found; automatic mode will try direct." = "未发现系统代理，自动模式将尝试直连。";
+"Detected" = "已发现";
+"SSH handshake latency" = "SSH 握手延迟";
+"SOCKS port is occupied by another process" = "SOCKS 端口被其他进程占用";
+"Automatic path recovery" = "自动恢复连接路径";
+"Automatic mode includes path recovery." = "自动模式会持续恢复可用的连接路径。";

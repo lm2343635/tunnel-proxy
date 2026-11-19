@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA0000010000000000000001 /* SSHRoutePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0000020000000000000002; };
 		A1000001000000000000001 /* TunnelProxyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000001000000000000001 /* TunnelProxyApp.swift */; };
 		A1000002000000000000002 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002000000000000002 /* ProcessRunner.swift */; };
 		A1000003000000000000003 /* LogTailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000004000000000000004 /* LogTailer.swift */; };
@@ -54,6 +55,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CA0000020000000000000002 /* SSHRoutePlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHRoutePlanner.swift; sourceTree = "<group>"; };
 		B1000001000000000000001 /* TunnelProxyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelProxyApp.swift; sourceTree = "<group>"; };
 		B1000002000000000000002 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessRunner.swift; sourceTree = "<group>"; };
 		B1000004000000000000004 /* LogTailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogTailer.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 				B100001C0000000000001C /* TrafficStore.swift */,
 				B100001D0000000000001D /* TrafficRecorder.swift */,
 				B100001000000000000010 /* TunnelEngine.swift */,
+                CA0000020000000000000002 /* SSHRoutePlanner.swift */,
 				B1000002000000000000002 /* ProcessRunner.swift */,
 				B1000004000000000000004 /* LogTailer.swift */,
 				B1000005000000000000005 /* TunnelController.swift */,
@@ -333,6 +336,7 @@
 				A100000E00000000000000E /* AppPaths.swift in Sources */,
 				A100000F00000000000000F /* TunnelConfig.swift in Sources */,
 				A100001000000000000010 /* TunnelEngine.swift in Sources */,
+                CA0000010000000000000001 /* SSHRoutePlanner.swift in Sources */,
 				A1000002000000000000002 /* ProcessRunner.swift in Sources */,
 				A1000003000000000000003 /* LogTailer.swift in Sources */,
 				A1000005000000000000005 /* TunnelController.swift in Sources */,
@@ -428,7 +432,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = X92HAV9XYP;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -438,7 +442,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -455,7 +459,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = X92HAV9XYP;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -465,7 +469,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

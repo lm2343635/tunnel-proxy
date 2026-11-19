@@ -21,6 +21,7 @@ struct ConnectionTab: View {
                 ThroughputTile(monitor: controller.speedMonitor)
                 LatencyTile()
             }
+            ConnectionRouteTile()
             HStack(spacing: DS.gridGap) {
                 ServerTile()
                 OptionsTile()
@@ -116,7 +117,10 @@ private struct HeroTile: View {
             if let ms = controller.latencyMS {
                 HeroChip(content: Text("● \(ms) ms"), color: controller.latencyColor)
             }
-            HeroChip(content: Text(controller.watchdogEnabled ? "Watchdog on" : "Watchdog off"),
+            if controller.isConnected {
+                HeroChip(content: Text(controller.selectedServer?.effectiveRouting.mode.label ?? String(localized: "Automatic")), color: DS.accent)
+            }
+            HeroChip(content: Text(controller.reconnectEnabled ? "Watchdog on" : "Watchdog off"),
                      color: DS.secondaryText)
         }
     }
@@ -195,7 +199,7 @@ private struct LatencyTile: View {
     var body: some View {
         Tile {
             VStack(alignment: .leading, spacing: 0) {
-                TileCaption("Latency")
+                TileCaption(controller.routeViaProxy ? "SSH handshake latency" : "Latency")
                 HStack(alignment: .bottom, spacing: 12) {
                     if let ms = controller.latencyMS {
                         (Text("\(ms)").font(.system(size: 24, weight: .heavy))
@@ -343,10 +347,11 @@ private struct OptionsTile: View {
                                Task { await controller.toggleSystemSocks(on: newValue) }
                            })
                 OptionCard(title: "Auto-reconnect",
-                           caption: controller.watchdogEnabled
-                               ? String(localized: "Watchdog · On")
+                           caption: controller.reconnectEnabled
+                               ? controller.automaticRouting ? String(localized: "Automatic path recovery") : String(localized: "Watchdog · On")
                                : String(localized: "Watchdog · Off"),
-                           isOn: $controller.watchdogEnabled)
+                           isOn: Binding(get: { controller.reconnectEnabled }, set: { if !controller.automaticRouting { controller.watchdogEnabled = $0 } }))
+                    .disabled(controller.automaticRouting)
                 OptionCard(title: "Launch at login", isOn: $controller.launchAtLogin)
             }
             .frame(maxHeight: .infinity)
@@ -365,5 +370,33 @@ enum ByteRate {
         if kb < 1024 { return "\(Int(kb.rounded())) KB/s" }
         let mb = kb / 1024
         return String(format: "%.1f MB/s", mb)
+    }
+}
+
+// Scheme A: a compact status row, with per-server controls in the existing editor.
+private struct ConnectionRouteTile: View {
+    @EnvironmentObject var controller: TunnelController
+    @State private var editing: ServerProfile?
+    var body: some View {
+        Tile(padding: EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16)) {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Connection path").font(.system(size: 11)).foregroundStyle(DS.secondaryText)
+                    Text(controller.routeStatus)
+                        .font(.system(size: 12.5, weight: .medium))
+                        .foregroundStyle(DS.primaryText)
+                        .lineLimit(2)
+                        .help(controller.routeStatus)
+                }
+                Spacer(minLength: 4)
+                Button("Settings") { editing = controller.selectedServer }
+                    .disabled(controller.selectedServer == nil)
+                    .buttonStyle(.bordered)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .sheet(item: $editing) { server in
+            ServerEditor(server: server, isNew: false).environmentObject(controller)
+        }
     }
 }

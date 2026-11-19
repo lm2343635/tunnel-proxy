@@ -208,3 +208,35 @@
 "Tunnel + HTTP proxy active · since %@" = "Tunnel + HTTP proxy active · since %@";
 "%lld ms" = "%lld ms";
 "● %lld ms" = "● %lld ms";
+
+/* Automatic SSH routing */
+"Automatic" = "Automatic";
+"Direct" = "Direct";
+"Via proxy" = "Via proxy";
+"Via local proxy" = "Via local proxy";
+"Physical network direct" = "Physical network direct";
+"Not connected" = "Not connected";
+"Invalid SSH hostname" = "Invalid SSH hostname";
+"Enter a valid proxy host and port" = "Enter a valid proxy host and port";
+"No usable proxy or physical network found" = "No usable proxy or physical network found";
+"Trying physical network direct…" = "Trying physical network direct…";
+"Checking proxy path…" = "Checking proxy path…";
+"SSH authentication or host verification failed; check credentials and logs" = "SSH authentication or host verification failed; check credentials and logs";
+"No SSH route available; check network and proxy settings" = "No SSH route available; check network and proxy settings";
+"Connection path" = "Connection path";
+"Connection mode" = "Connection mode";
+"VPN changes are handled automatically" = "VPN changes are handled automatically";
+"Prefer a working proxy; fall back to physical network direct. Keep healthy sessions connected." = "Prefer a working proxy; fall back to physical network direct. Keep healthy sessions connected.";
+"Wait for the proxy when unavailable; never fall back to direct." = "Wait for the proxy when unavailable; never fall back to direct.";
+"Detect system proxy automatically" = "Detect system proxy automatically";
+"Proxy host" = "Proxy host";
+"Proxy port" = "Proxy port";
+"Protocol" = "Protocol";
+"Turn off automatic detection to specify a proxy manually." = "Turn off automatic detection to specify a proxy manually.";
+"Changes apply on the next connection." = "Changes apply on the next connection.";
+"No system proxy found; automatic mode will try direct." = "No system proxy found; automatic mode will try direct.";
+"Detected" = "Detected";
+"SSH handshake latency" = "SSH handshake latency";
+"SOCKS port is occupied by another process" = "SOCKS port is occupied by another process";
+"Automatic path recovery" = "Automatic path recovery";
+"Automatic mode includes path recovery." = "Automatic mode includes path recovery.";

@@ -139,6 +139,19 @@ struct ServerEditor: View {
 
     @State var server: ServerProfile
     let isNew: Bool
+    @State private var routing: SSHRoutingSettings
+    @State private var proxyDiscovery = ""
+    private var editedServer: ServerProfile {
+        var edited = server
+        edited.routing = routing
+        return edited
+    }
+
+    init(server: ServerProfile, isNew: Bool) {
+        _server = State(initialValue: server)
+        _routing = State(initialValue: server.effectiveRouting)
+        self.isNew = isNew
+    }
 
     /// Secret entered this session. nil means "unchanged"; the placeholder shows
     /// whether a secret already exists.
@@ -157,6 +170,45 @@ struct ServerEditor: View {
                     LabeledContent("Port") {
                         TextField("", value: $server.port, format: .number.grouping(.never))
                             .frame(width: 70).multilineTextAlignment(.trailing)
+                    }
+                }
+                Section("Connection path") {
+                    Picker("Connection mode", selection: $routing.mode) {
+                        ForEach(SSHRouteMode.allCases) { mode in
+                            Text(mode.label).tag(mode)
+                        }
+                    }.pickerStyle(.segmented)
+                    if routing.mode == .automatic {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("VPN changes are handled automatically").font(.callout.weight(.semibold))
+                            Text("Prefer a working proxy; fall back to physical network direct. Keep healthy sessions connected.")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }.padding(.vertical, 5)
+                    } else if routing.mode == .proxy {
+                        Text("Wait for the proxy when unavailable; never fall back to direct.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    if routing.mode != .direct {
+                        Toggle("Detect system proxy automatically", isOn: $routing.detectSystemProxy)
+                        if routing.detectSystemProxy {
+                            Text(proxyDiscovery).font(.caption).foregroundStyle(.secondary)
+                        } else {
+                            TextField("Proxy host", text: $routing.proxyHost)
+                            TextField("Proxy port", value: $routing.proxyPort, format: .number.grouping(.never))
+                            Picker("Protocol", selection: $routing.proxyKind) {
+                                ForEach(SSHProxyKind.allCases) { kind in Text(kind.label).tag(kind) }
+                            }
+                        }
+                        if routing.detectSystemProxy {
+                            Text("Turn off automatic detection to specify a proxy manually.")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                    if let error = routing.validationError {
+                        Text(error).font(.caption).foregroundStyle(.orange)
+                    }
+                    if !isNew {
+                        Text("Changes apply on the next connection.").font(.caption).foregroundStyle(.secondary)
                     }
                 }
                 Section("Authentication") {
@@ -180,7 +232,7 @@ struct ServerEditor: View {
                         secretField(label: "Password", prompt: "SSH password")
                     }
                 }
-                if let err = server.validationError {
+                if let err = editedServer.validationError {
                     Section { Text(err).font(.caption).foregroundStyle(.orange) }
                 }
             }
@@ -191,11 +243,24 @@ struct ServerEditor: View {
                 Button("Cancel") { dismiss() }
                 Button("Save", action: save)
                     .buttonStyle(.borderedProminent)
-                    .disabled(!server.isValid)
+                    .disabled(!editedServer.isValid)
             }
             .padding(12)
         }
-        .frame(width: 440, height: 460)
+        .frame(width: 480, height: 690)
+        .task {
+            while !Task.isCancelled {
+                let config = controller.config
+                let routes = await Task.detached(priority: .utility) {
+                    SSHRoutePlanner.candidates(settings: SSHRoutingSettings(mode: .proxy), config: config)
+                }.value
+                proxyDiscovery = routes.isEmpty ? String(localized: "No system proxy found; automatic mode will try direct.") :
+                    String(localized: "Detected") + " · " + routes.compactMap { route in
+                        route.proxyHost.map { "\($0):\(route.proxyPort) · \(route.kind.label)" }
+                    }.joined(separator: ", ")
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
+            }
+        }
     }
 
     @ViewBuilder
@@ -222,6 +287,7 @@ struct ServerEditor: View {
         // Only write a secret if the user typed one this session. Otherwise pass
         // nil to keep the existing Keychain entry (or none) untouched.
         let secretToSave: String? = secretTouched ? secret : nil
+        server.routing = routing
         controller.saveServer(server, secret: secretToSave)
         dismiss()
     }

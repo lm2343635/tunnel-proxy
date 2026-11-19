@@ -24,12 +24,29 @@ actor TunnelEngine {
     }
 
     private var sshProcess: Process?
+
     private var privoxyProcess: Process?
     private var watchdogTask: Task<Void, Never>?
     private var config = TunnelConfig()
     private var server = ServerProfile()
     /// Secret (password or key passphrase) for the active server, if any.
     private var secret: String?
+
+    private var generation = UUID()
+    private var activeRoute: SSHConnectionRoute?
+    private var routeMessage = String(localized: "Not connected")
+    private var startupError: String?
+    private var authenticationFailed = false
+    private var establishing = false
+    private var retryEnabled = false
+    private var sshOutput = SSHStartupOutput()
+
+    func routingStatus() -> (String, String?, Bool, Bool) { (routeMessage, startupError, retryEnabled, activeRoute?.proxyHost != nil) }
+
+    private func reportRoute(_ message: String) {
+        routeMessage = message
+        log(message)
+    }
 
     private let sshPath = "/usr/bin/ssh"
     private let curlPath = "/usr/bin/curl"
@@ -51,12 +68,16 @@ actor TunnelEngine {
         log("Starting SSH tunnel to \(server.sshDestination)…")
 
         stopWatchdog()
-        startSSH()
-        // Give ssh a moment to establish the dynamic forward.
-        try? await Task.sleep(nanoseconds: 2_000_000_000)
-
-        startPrivoxy()
-        try? await Task.sleep(nanoseconds: 1_500_000_000)
+        generation = UUID()
+        let token = generation
+        startupError = nil
+        authenticationFailed = false
+        let ready = await establishSSH(token: token)
+        guard generation == token else { return .down }
+        if ready {
+            startPrivoxy()
+            try? await Task.sleep(nanoseconds: 500_000_000)
+        }
 
         let health = await checkHealth()
         switch health {
@@ -74,17 +95,22 @@ actor TunnelEngine {
         // `.down` connect leaves a background task relaunching ssh into the same
         // (often occupied) port forever — the endless-loop bug. On `.down` we tear
         // down whatever partially started so we don't leak a half-open ssh/privoxy.
-        if watchdog, health != .down {
-            startWatchdog()
-        } else if health == .down {
+        retryEnabled = !authenticationFailed && (watchdog || server.effectiveRouting.mode == .automatic)
+        if health == .down {
             terminate(&privoxyProcess, name: "privoxy")
             terminate(&sshProcess, name: "ssh")
         }
+        if retryEnabled { startWatchdog() }
         return health
     }
 
     /// Tear down watchdog, privoxy, and ssh.
     func stop() {
+        generation = UUID()
+        retryEnabled = false
+        activeRoute = nil
+        startupError = nil
+        routeMessage = String(localized: "Not connected")
         stopWatchdog()
         terminate(&privoxyProcess, name: "privoxy")
         terminate(&sshProcess, name: "ssh")
@@ -93,7 +119,7 @@ actor TunnelEngine {
 
     // MARK: - SSH
 
-    private func startSSH() {
+    private func startSSH(route: SSHConnectionRoute) {
         terminate(&sshProcess, name: "ssh")
         let p = Process()
         p.executableURL = URL(fileURLWithPath: sshPath)
@@ -117,6 +143,9 @@ actor TunnelEngine {
             "-D", "\(config.socksPort)",
         ]
 
+        args += ["-o", "ProxyCommand=\(route.proxyCommand)",
+                 "-o", "ProxyJump=none", "-o", "ConnectionAttempts=1"]
+        sshOutput = SSHStartupOutput()
         var env = ProcessInfo.processInfo.environment
         env["HOME"] = NSHomeDirectory()
 
@@ -148,13 +177,79 @@ actor TunnelEngine {
         args.append(server.sshDestination)
         p.arguments = args
         p.environment = env
-        redirectOutput(of: p, tag: "ssh")
+        redirectOutput(of: p, tag: "ssh", capture: sshOutput)
         do {
             try p.run()
             sshProcess = p
         } catch {
             log("Failed to launch ssh: \(error.localizedDescription)")
         }
+    }
+
+    /// All startup and watchdog paths use the same route selection and bounded
+    /// readiness check. A stop/network reconnect cannot revive a stale attempt.
+    private func establishSSH(token: UUID) async -> Bool {
+        while establishing {
+            guard generation == token, !Task.isCancelled else { return false }
+            try? await Task.sleep(nanoseconds: 50_000_000)
+        }
+        guard generation == token, !Task.isCancelled else { return false }
+        establishing = true
+        defer { establishing = false }
+        terminate(&sshProcess, name: "ssh")
+        activeRoute = nil
+        startupError = nil
+        let settings = server.effectiveRouting
+        let routes = SSHRoutePlanner.candidates(settings: settings, config: config)
+        if routes.isEmpty {
+            startupError = String(localized: "No usable proxy or physical network found")
+            reportRoute(startupError!)
+            return false
+        }
+        let target = server
+        for route in routes {
+            guard generation == token, !Task.isCancelled else { return false }
+            reportRoute(route.proxyHost == nil
+                        ? String(localized: "Trying physical network direct…")
+                        : String(localized: "Checking proxy path…") + " \(route.proxyHost!):\(route.proxyPort)")
+            let reachable = await Task.detached(priority: .utility) {
+                SSHRoutePlanner.probe(route, host: target.host, port: target.port)
+            }.value
+            guard generation == token, !Task.isCancelled else { return false }
+            guard reachable else {
+                log("SSH handshake unavailable via \(route.label)")
+                continue
+            }
+            startSSH(route: route)
+            let deadline = Date().addingTimeInterval(25)
+            while Date() < deadline, sshProcess?.isRunning == true {
+                if await processOwnsListener(sshProcess, port: config.socksPort) {
+                    guard generation == token, !Task.isCancelled else { return false }
+                    activeRoute = route
+                    reportRoute((settings.mode == .automatic ? String(localized: "Automatic") + " · " : "") + route.label)
+                    return true
+                }
+                guard generation == token, !Task.isCancelled else { return false }
+                try? await Task.sleep(nanoseconds: 250_000_000)
+            }
+            guard generation == token, !Task.isCancelled else { return false }
+            // Let the readability handler consume a child's final diagnostics.
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            guard generation == token, !Task.isCancelled else { return false }
+            let output = sshOutput.text.lowercased()
+            if output.contains("permission denied") || output.contains("authentication failed") ||
+                output.contains("incorrect passphrase") || output.contains("host key verification failed") ||
+                output.contains("remote host identification has changed") {
+                authenticationFailed = true
+                startupError = String(localized: "SSH authentication or host verification failed; check credentials and logs")
+                break
+            }
+            terminate(&sshProcess, name: "ssh")
+        }
+        terminate(&sshProcess, name: "ssh")
+        if startupError == nil { startupError = String(localized: "No SSH route available; check network and proxy settings") }
+        reportRoute(startupError!)
+        return false
     }
 
     /// Wire ssh to read the secret from our bundled askpass helper. ssh calls the
@@ -219,6 +314,7 @@ actor TunnelEngine {
     /// part of this health decision: a DNS/API outage must not make us tear down
     /// an otherwise healthy SSH session.
     func checkHealth() async -> Health {
+        guard !establishing else { return .down }
         guard await processOwnsListener(sshProcess, port: config.socksPort) else {
             return .down
         }
@@ -260,18 +356,29 @@ actor TunnelEngine {
     /// endpoint the tunnel rides on — which needs no live control socket and works
     /// for any auth method. Runs off the actor's executor via a detached task.
     func latencyMS() async -> Int? {
+        guard let route = activeRoute else { return nil }
+        if route.proxyHost != nil {
+            // Report handshake RTT for the selected route instead of a failed
+            // TCP probe through the broken default TUN route.
+            let target = server
+            return await Task.detached(priority: .utility) {
+                let start = DispatchTime.now().uptimeNanoseconds
+                guard SSHRoutePlanner.probe(route, host: target.host, port: target.port) else { return nil as Int? }
+                return Int((DispatchTime.now().uptimeNanoseconds - start) / 1_000_000)
+            }.value
+        }
         let host = server.host
         let port = server.port
         guard !host.isEmpty else { return nil }
         return await Task.detached(priority: .utility) {
-            Self.tcpConnectMS(host: host, port: port, timeout: 3)
+            Self.tcpConnectMS(host: host, port: port, timeout: 3, interface: route.interface)
         }.value
     }
 
     /// Blocking TCP-connect timing to `host:port`. Returns elapsed milliseconds on
     /// a successful connect, nil on failure/timeout. Uses a non-blocking socket +
     /// `poll` so a dead host times out instead of hanging.
-    nonisolated private static func tcpConnectMS(host: String, port: Int, timeout: TimeInterval) -> Int? {
+    nonisolated private static func tcpConnectMS(host: String, port: Int, timeout: TimeInterval, interface: String?) -> Int? {
         var hints = addrinfo(ai_flags: 0, ai_family: AF_UNSPEC, ai_socktype: SOCK_STREAM,
                              ai_protocol: IPPROTO_TCP, ai_addrlen: 0,
                              ai_canonname: nil, ai_addr: nil, ai_next: nil)
@@ -282,6 +389,12 @@ actor TunnelEngine {
         let fd = socket(info.pointee.ai_family, info.pointee.ai_socktype, info.pointee.ai_protocol)
         guard fd >= 0 else { return nil }
         defer { close(fd) }
+        if let interface {
+            var index = if_nametoindex(interface)
+            let level = info.pointee.ai_family == AF_INET6 ? IPPROTO_IPV6 : IPPROTO_IP
+            let option = info.pointee.ai_family == AF_INET6 ? IPV6_BOUND_IF : IP_BOUND_IF
+            guard index > 0, setsockopt(fd, level, option, &index, socklen_t(MemoryLayout.size(ofValue: index))) == 0 else { return nil }
+        }
 
         // Non-blocking connect so we can bound the wait with poll().
         let flags = fcntl(fd, F_GETFL, 0)
@@ -360,6 +473,9 @@ actor TunnelEngine {
         guard let holder, holder.pid == ourPID else {
             if let holder {
                 log("SOCKS port \(port) is held by \(holder.command) (PID \(holder.pid)), not our SSH child — watchdog paused")
+                retryEnabled = false
+                startupError = String(localized: "SOCKS port is occupied by another process")
+                reportRoute(startupError!)
                 stopWatchdog()
             } else {
                 await reconnectSSH(reason: "SSH child is not listening on port \(port)")
@@ -395,10 +511,16 @@ actor TunnelEngine {
 
         reconnectAttempt += 1
         log("\(reason); reconnecting SSH (attempt \(reconnectAttempt))…")
-        startSSH()
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-
-        if await processOwnsListener(sshProcess, port: config.socksPort) {
+        let token = generation
+        let ready = await establishSSH(token: token)
+        guard token == generation, !Task.isCancelled else { return }
+        if authenticationFailed {
+            retryEnabled = false
+            stopWatchdog()
+            return
+        }
+        if ready {
+            if !(await processOwnsListener(privoxyProcess, port: config.httpProxyPort)) { startPrivoxy() }
             reconnectAttempt = 0
             nextReconnectAt = .distantPast
             consecutiveProbeFailures = 0
@@ -447,13 +569,14 @@ actor TunnelEngine {
     }
 
     /// Append a child's stdout/stderr into the shared log file.
-    private func redirectOutput(of process: Process, tag: String) {
+    private func redirectOutput(of process: Process, tag: String, capture: SSHStartupOutput? = nil) {
         let pipe = Pipe()
         let streamID = UUID()
         process.standardOutput = pipe
         process.standardError = pipe
         pipe.fileHandleForReading.readabilityHandler = { handle in
             let data = handle.availableData
+            capture?.append(data)
             if data.isEmpty {
                 handle.readabilityHandler = nil
                 TunnelLog.flush(streamID: streamID, tag: tag)
@@ -529,5 +652,19 @@ private enum TunnelLog {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return formatter.string(from: Date())
+    }
+}
+
+private final class SSHStartupOutput: @unchecked Sendable {
+    private let lock = NSLock()
+    private var data = Data()
+    func append(_ bytes: Data) {
+        lock.lock(); defer { lock.unlock() }
+        data.append(bytes)
+        if data.count > 16384 { data = Data(data.suffix(16384)) }
+    }
+    var text: String {
+        lock.lock(); defer { lock.unlock() }
+        return String(decoding: data, as: UTF8.self)
     }
 }

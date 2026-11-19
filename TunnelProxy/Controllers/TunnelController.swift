@@ -42,6 +42,11 @@ final class TunnelController: ObservableObject {
             updateDockIcon()
         }
     }
+    @Published private(set) var routeStatus = String(localized: "Not connected")
+    @Published private(set) var routeError: String?
+    @Published private(set) var routeViaProxy = false
+    private var routeTimer: Timer?
+
     @Published private(set) var exitIP: String?
     @Published private(set) var lastConnected: Date?
     @Published private(set) var isBusy = false
@@ -76,6 +81,9 @@ final class TunnelController: ObservableObject {
     @Published var config: TunnelConfig
 
     // Preferences.
+    var automaticRouting: Bool { selectedServer?.effectiveRouting.mode == .automatic }
+    var reconnectEnabled: Bool { watchdogEnabled || automaticRouting }
+
     @Published var watchdogEnabled: Bool {
         didSet { defaults.set(watchdogEnabled, forKey: Keys.watchdog) }
     }
@@ -281,6 +289,16 @@ final class TunnelController: ObservableObject {
     }
 
     private func startPolling() {
+        routeTimer?.invalidate()
+        routeTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                let status = await self.engine.routingStatus()
+                self.routeViaProxy = status.3
+                self.routeStatus = status.0
+                self.routeError = status.1
+            }
+        }
         pollTimer?.invalidate()
         pollTimer = Timer.scheduledTimer(withTimeInterval: 8, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.refreshStatus() }
@@ -426,6 +444,10 @@ final class TunnelController: ObservableObject {
         let secret: String? = (server.authMethod == .agent) ? nil : KeychainStore.secret(for: server.id)
         let health = await engine.connect(config: config, server: server,
                                           secret: secret, watchdog: watchdogEnabled)
+        let routing = await engine.routingStatus()
+        routeViaProxy = routing.3
+        routeStatus = routing.0
+        routeError = routing.1
         switch health {
         case .proxyOK:
             state = .connected
@@ -435,7 +457,7 @@ final class TunnelController: ObservableObject {
         case .tunnelOnly:
             state = .error(String(localized: "Tunnel OK but proxy failed"))
         case .down:
-            state = .error(String(localized: "Tunnel failed to start"))
+            state = routing.2 ? .reconnecting : .error(routing.1 ?? String(localized: "Tunnel failed to start"))
         }
         await updateExitIP()
     }
@@ -485,6 +507,10 @@ final class TunnelController: ObservableObject {
         guard !isBusy else { return }
         Task {
             let health = await engine.checkHealth()
+            let routing = await engine.routingStatus()
+            self.routeViaProxy = routing.3
+            self.routeStatus = routing.0
+            self.routeError = routing.1
             let ip: String?
             if health == .down {
                 ip = nil
@@ -503,10 +529,9 @@ final class TunnelController: ObservableObject {
                 self.state = .error(String(localized: "Tunnel OK but proxy failed"))
             case .down:
                 self.exitIP = nil
-                switch self.state {
-                case .connecting, .reconnecting: break
-                default: self.state = .disconnected
-                }
+                if routing.2 { self.state = .reconnecting }
+                else if let error = routing.1 { self.state = .error(error) }
+                else { self.state = .disconnected }
             }
         }
     }

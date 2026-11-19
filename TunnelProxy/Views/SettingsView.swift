@@ -125,7 +125,11 @@ struct SettingsTab: View {
                         .tag(controller.config.networkService)
                 }
             }
-            SettingsRow.toggle("Auto-reconnect (watchdog)", $controller.watchdogEnabled)
+            SettingsRow.toggle("Auto-reconnect (watchdog)", Binding(get: { controller.reconnectEnabled }, set: { if !controller.automaticRouting { controller.watchdogEnabled = $0 } }))
+                .disabled(controller.automaticRouting)
+            if controller.automaticRouting {
+                Text("Automatic mode includes path recovery.").font(.caption).foregroundStyle(.secondary)
+            }
             SettingsRow.field("Watchdog Interval (s)", $controller.config.watchdogInterval)
         }
     }
