@@ -240,3 +240,5 @@
 "SOCKS port is occupied by another process" = "SOCKS port is occupied by another process";
 "Automatic path recovery" = "Automatic path recovery";
 "Automatic mode includes path recovery." = "Automatic mode includes path recovery.";
+
+"App Routing" = "App Routing";

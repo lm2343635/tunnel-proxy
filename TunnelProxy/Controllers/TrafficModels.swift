@@ -1,7 +1,7 @@
 import Foundation
 
-/// Value types for traffic recording & statistics. Bytes are the tunnel's own
-/// on-wire bytes (compressed, since `ssh -C`), matching `SpeedMonitor` — see
+/// Value types for traffic recording & statistics. Bytes include the SSH
+/// framing used on the tunnel transport, matching `SpeedMonitor` — see
 /// `TrafficRecorder` for how these are produced.
 
 /// The granularity of a rollup bucket.

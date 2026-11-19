@@ -1,0 +1,250 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 900 620" width="900" height="620" lang="zh-CN">
+<defs><linearGradient id="hero"><stop stop-color="#E1F7E8"/><stop offset=".74" stop-color="#FFFFFF"/></linearGradient><clipPath id="frame"><rect width="900" height="620" rx="15"/></clipPath></defs><g clip-path="url(#frame)">
+<g id="window-sidebar">
+<rect x="0" y="0" width="900" height="620" rx="0" fill="#F2F2F5" stroke="none"/>
+<rect x="0" y="0" width="188" height="620" rx="0" fill="#E9E9EB" stroke="none"/>
+<path d="M187 0 L187 620" stroke="#D9D9DC" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="19" cy="18" r="6" fill="#FF6059"/>
+<circle cx="38" cy="18" r="6" fill="#FFBD2E"/>
+<circle cx="57" cy="18" r="6" fill="#28C840"/>
+<image x="15" y="45" width="24" height="24" xlink:href="data:image/png;base64,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"/>
+<text x="48" y="62" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="15" font-weight="650" fill="#1D1D1F" text-anchor="start">Tunnel Proxy</text>
+<rect x="10" y="89" width="168" height="30" rx="7" fill="#0A7CFF" stroke="none"/>
+<g transform="translate(21 96)">
+<path d="M2 8h4l2-5 2 10 2-5h3" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="48" y="109" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="550" fill="white" text-anchor="start">连接</text>
+<g transform="translate(21 131)">
+<path d="M3 2v9q0 2 2 2h7 M3 7h9 M10 5l2 2-2 2 M10 11l2 2-2 2" stroke="#606772" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="48" y="144" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F" text-anchor="start">应用分流</text>
+<g transform="translate(21 166)">
+<path d="M2 2h12v5H2z M2 10h12v5H2z M4 4.5h1 M4 12.5h1" stroke="#606772" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="48" y="179" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F" text-anchor="start">服务器</text>
+<g transform="translate(21 201)">
+<path d="M4 1h7l3 3v11H4z M6 7h6 M6 10h6" stroke="#606772" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="48" y="214" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F" text-anchor="start">日志</text>
+<g transform="translate(21 236)">
+<path d="M2 14V9h2v5z M7 14V5h2v9z M12 14V2h2v12z" stroke="#606772" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="48" y="249" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F" text-anchor="start">统计</text>
+<g transform="translate(21 271)">
+<path d="M2 4h12 M2 12h12 M6 2v4 M10 10v4" stroke="#606772" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="48" y="284" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F" text-anchor="start">设置</text>
+<g transform="translate(21 306)">
+<path d="M3 13l7-7 M9 2a4 4 0 0 0 5 5 M2 12l2 2" stroke="#606772" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="48" y="319" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="400" fill="#1D1D1F" text-anchor="start">工具</text>
+<rect x="10" y="553" width="168" height="54" rx="9" fill="#FAFAFB" stroke="#DEE1E7"/>
+<circle cx="24" cy="571" r="4" fill="#29B957"/>
+<text x="35" y="575" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="12" font-weight="600" fill="#1D1D1F" text-anchor="start">已连接</text>
+<text x="165" y="575" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="11" font-weight="550" fill="#218648" text-anchor="end">42 ms</text>
+<text x="22" y="595" font-family="Menlo, monospace" font-size="11" font-weight="400" fill="#606772" text-anchor="start">203.0.113.8</text>
+</g>
+<g id="connection-summary">
+<rect x="204" y="16" width="680" height="116" rx="15" fill="url(#hero)" stroke="#E2E3E8"/>
+<circle cx="264" cy="74" r="37" fill="#2DC546"/>
+<circle cx="264" cy="74" r="30" fill="#EEFAF0"/>
+<path d="M264 53v22 M253 60a17 17 0 1 0 22 0" stroke="#218648" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="323" y="57" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start">已连接</text>
+<text x="323" y="79" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="12" font-weight="400" fill="#606772" text-anchor="start">东京节点  ·  SSH 隧道</text>
+<rect x="323" y="89" width="99" height="24" rx="6" fill="white" stroke="#DEE1E7"/>
+<text x="372.5" y="105" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="11" font-weight="550" fill="#606772" text-anchor="middle">203.0.113.8</text>
+<rect x="429" y="89" width="62" height="24" rx="6" fill="white" stroke="#DEE1E7"/>
+<text x="460.0" y="105" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="11" font-weight="550" fill="#218648" text-anchor="middle">42 ms</text>
+<rect x="498" y="89" width="82" height="24" rx="6" fill="white" stroke="#DEE1E7"/>
+<text x="539.0" y="105" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="11" font-weight="550" fill="#606772" text-anchor="middle">自动重连</text>
+<rect x="776" y="58" width="89" height="31" rx="7" fill="#FCE7E6" stroke="none"/>
+<text x="820.5" y="77.9" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="12" font-weight="550" fill="#C43D35" text-anchor="middle">断开连接</text>
+</g>
+<g id="telemetry">
+<rect x="204" y="145" width="334" height="141" rx="15" fill="white" stroke="#E2E3E8"/>
+<text x="220" y="170" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="550" fill="#606772" text-anchor="start">实时流量</text>
+<text x="220" y="202" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="17" font-weight="650" fill="#086BCC" text-anchor="start">↓ 128 KB/s</text>
+<text x="356" y="202" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="17" font-weight="650" fill="#218648" text-anchor="start">↑ 24 KB/s</text>
+<rect x="220.0" y="240.0" width="3.4" height="2.0" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="220.0" y="244" width="3.4" height="3.0" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="226.35" y="237.40765577284105" width="3.4" height="4.5923442271589465" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="226.35" y="244" width="3.4" height="11.16493179024311" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="232.7" y="235.09506518421253" width="3.4" height="6.90493481578747" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="232.7" y="244" width="3.4" height="16.557248249939242" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="239.05" y="233.31179217119583" width="3.4" height="8.688207828804163" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="239.05" y="244" width="3.4" height="17.568915353596587" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="245.4" y="232.25027919905386" width="3.4" height="9.749720800946122" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="245.4" y="244" width="3.4" height="14.399470186118227" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="251.75" y="232.02507977236866" width="3.4" height="9.974920227631351" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="251.75" y="244" width="3.4" height="8.893249883836663" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="258.1" y="232.66049635774553" width="3.4" height="9.339503642254478" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="258.1" y="244" width="3.4" height="3.6530426897187285" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="264.45" y="234.08795777552425" width="3.4" height="7.912042224475767" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="264.45" y="244" width="3.4" height="5.15973537364495" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="270.8" y="236.15341908009083" width="3.4" height="5.8465809199091865" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="270.8" y="244" width="3.4" height="4.788435331172067" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="277.15" y="238.63398536839082" width="3.4" height="3.3660146316091626" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="277.15" y="244" width="3.4" height="3.829870601323999" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="283.5" y="238.73803444685402" width="3.4" height="3.2619655531459895" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="283.5" y="244" width="3.4" height="6.575899597082086" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="289.85" y="236.24623966969017" width="3.4" height="5.75376033030982" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="289.85" y="244" width="3.4" height="7.217178768211048" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="296.2" y="234.1595331132856" width="3.4" height="7.840466886714396" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="296.2" y="244" width="3.4" height="4.534760053604659" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="302.55" y="232.70310236869537" width="3.4" height="9.296897631304642" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="302.55" y="244" width="3.4" height="7.019219476073031" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="308.9" y="232.03411861550205" width="3.4" height="9.965881384497962" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="308.9" y="244" width="3.4" height="13.44474975793871" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="315.25" y="232.22477544478542" width="3.4" height="9.775224555214567" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="315.25" y="244" width="3.4" height="18.050588272323978" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="321.6" y="233.25449806514865" width="3.4" height="8.745501934851333" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="321.6" y="244" width="3.4" height="18.65870919858066" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="327.95" y="235.01216363777053" width="3.4" height="6.987836362229483" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="327.95" y="244" width="3.4" height="14.608409932648163" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="334.3" y="237.30809313233198" width="3.4" height="4.691906867668034" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="334.3" y="244" width="3.4" height="7.099863505728926" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="340.65" y="239.89452059893182" width="3.4" height="2.10547940106817" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="340.65" y="244" width="3.4" height="7.28451534691207" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="347.0" y="237.50766909189298" width="3.4" height="4.4923309081070295" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="347.0" y="244" width="3.4" height="13.669514780138597" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="353.35" y="235.17881945262423" width="3.4" height="6.821180547375784" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="353.35" y="244" width="3.4" height="16.098883036329234" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="359.7" y="233.37024902088132" width="3.4" height="8.629750979118686" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="359.7" y="244" width="3.4" height="14.32619780531952" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="366.04999999999995" y="232.27713024078565" width="3.4" height="9.722869759214337" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="366.04999999999995" y="244" width="3.4" height="9.834256085245627" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="372.4" y="232.0174273675754" width="3.4" height="9.982572632424596" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="372.4" y="244" width="3.4" height="5.084187456337633" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="378.75" y="232.61916631808526" width="3.4" height="9.380833681914723" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="378.75" y="244" width="3.4" height="3.654349219518954" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="385.1" y="234.01741024516087" width="3.4" height="7.982589754839119" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="385.1" y="244" width="3.4" height="3.3519628254438096" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="391.45" y="236.06126721784088" width="3.4" height="5.938732782159113" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="391.45" y="244" width="3.4" height="5.333635655458931" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="397.79999999999995" y="238.53017377130735" width="3.4" height="3.469826228692664" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="397.79999999999995" y="244" width="3.4" height="8.414588787347363" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="404.15" y="238.84230291778468" width="3.4" height="3.157697082215316" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="404.15" y="244" width="3.4" height="9.564279879973608" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="410.5" y="236.33971284979742" width="3.4" height="5.660287150202571" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="410.5" y="244" width="3.4" height="7.280743061177751" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="416.85" y="234.23212381508637" width="3.4" height="7.767876184913646" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="416.85" y="244" width="3.4" height="4.320852930508366" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="423.2" y="232.74697694388803" width="3.4" height="9.253023056111983" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="423.2" y="244" width="3.4" height="11.460580787941474" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="429.54999999999995" y="232.04454232557444" width="3.4" height="9.955457674425563" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="429.54999999999995" y="244" width="3.4" height="17.42360433105587" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="435.9" y="232.2006234118031" width="3.4" height="9.799376588196917" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="435.9" y="244" width="3.4" height="19.74270662221283" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="442.25" y="233.19837666330906" width="3.4" height="8.80162333669093" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="442.25" y="244" width="3.4" height="17.298904778194245" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="448.6" y="234.930129225716" width="3.4" height="7.0698707742839915" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="448.6" y="244" width="3.4" height="10.839649958823781" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="454.95" y="237.20899847931153" width="3.4" height="4.79100152068848" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="454.95" y="244" width="3.4" height="3.3231432541342674" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="461.29999999999995" y="239.78905953543716" width="3.4" height="2.210940464562852" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="461.29999999999995" y="244" width="3.4" height="10.301400113046409" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="467.65" y="237.60811570219153" width="3.4" height="4.391884297808467" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="467.65" y="244" width="3.4" height="13.86085603820713" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="474.0" y="235.2634118823422" width="3.4" height="6.736588117657796" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="474.0" y="244" width="3.4" height="13.339830526050747" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="480.34999999999997" y="233.4298584514931" width="3.4" height="8.570141548506918" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="480.34999999999997" y="244" width="3.4" height="9.847618841771386" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="486.7" y="232.30532390193238" width="3.4" height="9.694676098067623" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="486.7" y="244" width="3.4" height="5.662994780615714" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="493.05" y="232.0111627314914" width="3.4" height="9.988837268508599" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="493.05" y="244" width="3.4" height="3.1181567870012374" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="499.4" y="232.57911943493403" width="3.4" height="9.420880565065962" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="499.4" y="244" width="3.4" height="3.486652397132891" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="505.75" y="233.94790278687006" width="3.4" height="8.052097213129928" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="505.75" y="244" width="3.4" height="6.38892884609448" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="512.0999999999999" y="235.96980010352385" width="3.4" height="6.03019989647615" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="512.0999999999999" y="244" width="3.4" height="9.988747630320534" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="518.45" y="238.4266177032296" width="3.4" height="3.5733822967703914" rx="1" fill="#52C76A" stroke="none"/>
+<rect x="518.45" y="244" width="3.4" height="11.88814498176214" rx="1" fill="#6BABF7" stroke="none"/>
+<rect x="550" y="145" width="334" height="141" rx="15" fill="white" stroke="#E2E3E8"/>
+<text x="566" y="170" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="550" fill="#606772" text-anchor="start">延迟</text>
+<text x="566" y="202" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="22" font-weight="650" fill="#218648" text-anchor="start">42 ms</text>
+<rect x="566" y="235.0" width="4" height="10.0" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="573" y="228.88514237051447" width="4" height="16.11485762948554" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="580" y="224.57558559252925" width="4" height="20.424414407470756" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="587" y="223.20997984440672" width="4" height="21.79002015559329" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="594" y="224.85380884977457" width="4" height="20.146191150225423" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="601" y="228.51047089407385" width="4" height="16.48952910592616" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="608" y="232.54268877899082" width="4" height="12.457311221009167" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="615" y="234.66464776294097" width="4" height="10.33535223705904" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="622" y="234.06371815290606" width="4" height="10.93628184709393" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="629" y="234.42117863514974" width="4" height="10.578821364850256" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="636" y="231.8392385149552" width="4" height="13.160761485044786" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="643" y="229.76286007703715" width="4" height="15.23713992296286" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="650" y="229.62240222421073" width="4" height="15.377597775789269" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="657" y="232.09263961731233" width="4" height="12.90736038268766" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="664" y="233.22254626746846" width="4" height="11.777453732531542" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="671" y="227.67868212454403" width="4" height="17.32131787545598" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="678" y="223.09302202497562" width="4" height="21.906977975024375" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="685" y="221.0546312732127" width="4" height="23.945368726787315" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="692" y="222.31302209569463" width="4" height="22.68697790430536" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="699" y="226.4859533992749" width="4" height="18.514046600725095" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="706" y="232.20170231060453" width="4" height="12.798297689395469" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="713" y="232.3798020134791" width="4" height="12.620197986520893" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="720" y="228.8715530580869" width="4" height="16.12844694191309" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="727" y="228.06244355139404" width="4" height="16.937556448605946" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="734" y="229.65172529065788" width="4" height="15.348274709342125" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="741" y="232.41641702562393" width="4" height="12.583582974376066" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="748" y="234.74163150468843" width="4" height="10.258368495311572" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="755" y="234.69968946516042" width="4" height="10.300310534839571" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="762" y="233.61016482675316" width="4" height="11.389835173246839" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="769" y="230.2449096632501" width="4" height="14.755090336749905" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="776" y="226.61460314164276" width="4" height="18.385396858357232" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="783" y="224.40145306970527" width="4" height="20.598546930294745" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="790" y="224.87487850981765" width="4" height="20.125121490182355" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="797" y="228.35841859884016" width="4" height="16.641581401159836" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="804" y="234.06187751686326" width="4" height="10.938122483136727" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="811" y="229.65175631338644" width="4" height="15.348243686613552" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="818" y="224.66669469677086" width="4" height="20.33330530322913" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="825" y="222.41560652973044" width="4" height="22.584393470269564" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="832" y="223.35465131280748" width="4" height="21.64534868719253" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="839" y="226.81679667953463" width="4" height="18.183203320465363" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="846" y="231.2988400558685" width="4" height="13.701159944131492" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="853" y="234.93326296510557" width="4" height="10.066737034894421" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="860" y="233.16116363960123" width="4" height="11.838836360398787" rx="1.5" fill="#69C985" stroke="none"/>
+<rect x="867" y="233.7231660978708" width="4" height="11.276833902129207" rx="1.5" fill="#69C985" stroke="none"/>
+<text x="566" y="270" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="12" font-weight="400" fill="#606772" text-anchor="start">东京节点 · 最近 60 秒</text>
+</g>
+<g id="ssh-path">
+<rect x="204" y="299" width="680" height="63" rx="15" fill="white" stroke="#E2E3E8"/>
+<text x="222" y="323" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="12" font-weight="550" fill="#606772" text-anchor="start">SSH 连接路径</text>
+<text x="222" y="346" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="14" font-weight="600" fill="#1D1D1F" text-anchor="start">本机直连 SSH 服务器</text>
+<rect x="801" y="317" width="64" height="28" rx="7" fill="white" stroke="#DEE1E7"/>
+<text x="833.0" y="335.4" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="12" font-weight="550" fill="#1D1D1F" text-anchor="middle">设置</text>
+</g>
+<g id="server-selection">
+<rect x="204" y="375" width="334" height="228" rx="15" fill="white" stroke="#E2E3E8"/>
+<text x="222" y="405" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="15" font-weight="650" fill="#1D1D1F" text-anchor="start">服务器</text>
+<circle cx="231" cy="438" r="6.5" fill="#0A7CFF"/>
+<circle cx="231" cy="438" r="5" fill="white"/>
+<circle cx="231" cy="438" r="3" fill="#0A7CFF"/>
+<text x="249" y="443" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="550" fill="#1D1D1F" text-anchor="start">东京节点</text>
+<text x="516" y="443" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="11" font-weight="550" fill="#218648" text-anchor="end">42 ms</text>
+<circle cx="231" cy="477" r="6.5" fill="#ACB4BE"/>
+<circle cx="231" cy="477" r="5" fill="white"/>
+<text x="249" y="482" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="400" fill="#606772" text-anchor="start">大阪节点</text>
+<path d="M221 548 L520 548" stroke="#DEE1E7" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="222" y="579" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="12" font-weight="550" fill="#086BCC" text-anchor="start">＋ 添加服务器</text>
+</g>
+<g id="connection-options">
+<rect x="550" y="375" width="334" height="228" rx="15" fill="white" stroke="#E2E3E8"/>
+<text x="568" y="405" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="15" font-weight="650" fill="#1D1D1F" text-anchor="start">选项</text>
+<rect x="565" y="419" width="304" height="66" rx="9" fill="#E7F1FF" stroke="#BCDAFC"/>
+<text x="579" y="441" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="12" font-weight="550" fill="#606772" text-anchor="start">代理方式</text>
+<text x="579" y="469" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="16" font-weight="650" fill="#086BCC" text-anchor="start">按应用分流</text>
+<text x="850" y="465" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="12" font-weight="550" fill="#086BCC" text-anchor="end">3 个应用   ›</text>
+<text x="578" y="517" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="500" fill="#1D1D1F" text-anchor="start">自动重连</text>
+<rect x="825" y="501" width="32" height="19" rx="9.5" fill="#2CB95D" stroke="none"/>
+<circle cx="848" cy="510.5" r="7.3" fill="white"/>
+<path d="M577 532 L859 532" stroke="#ECEEF0" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="578" y="561" font-family="Helvetica Neue, PingFang SC, sans-serif" font-size="13" font-weight="500" fill="#1D1D1F" text-anchor="start">登录时启动</text>
+<rect x="825" y="545" width="32" height="19" rx="9.5" fill="#C8CBD0" stroke="none"/>
+<circle cx="835" cy="554.5" r="7.3" fill="white"/>
+</g>
+</g>
+<rect x=".5" y=".5" width="899" height="619" rx="15" fill="none" stroke="#CCCED3"/></svg>

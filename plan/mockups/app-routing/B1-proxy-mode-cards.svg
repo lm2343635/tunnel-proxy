@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" font-family="Helvetica Neue, Arial, sans-serif" width="900" height="449" viewBox="0 0 900 449"><title>B1 · Mode cards</title>
+<rect x="1" y="1" width="898" height="447" rx="14" fill="#161618" stroke="#34343a"/>
+<path fill="#222225" d="M15 2H171V447H15Q2 447 2 434V15Q2 2 15 2Z"/>
+<circle cx="20" cy="17" r="5.5" fill="#4b4c52"/>
+<circle cx="38" cy="17" r="5.5" fill="#4b4c52"/>
+<circle cx="56" cy="17" r="5.5" fill="#4b4c52"/>
+<image x="16" y="39" width="24" height="24" xlink:href="data:image/png;base64,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"/>
+<text x="48" y="56" font-size="15" font-weight="700" fill="#eeeeef" text-anchor="start">Tunnel Proxy</text>
+<text x="19" y="89" font-size="14" font-weight="600" fill="#aeafb8" text-anchor="start">◉</text>
+<text x="41" y="89" font-size="13" font-weight="450" fill="#eeeeef" text-anchor="start">Connection</text>
+<rect x="10" y="101" width="151" height="28" rx="6" fill="#087ef5" stroke="none"/>
+<text x="19" y="120" font-size="14" font-weight="600" fill="#eeeeef" text-anchor="start">⌘</text>
+<text x="41" y="120" font-size="13" font-weight="600" fill="#eeeeef" text-anchor="start">App Routing</text>
+<text x="19" y="151" font-size="14" font-weight="600" fill="#aeafb8" text-anchor="start">▤</text>
+<text x="41" y="151" font-size="13" font-weight="450" fill="#eeeeef" text-anchor="start">Servers</text>
+<text x="19" y="182" font-size="14" font-weight="600" fill="#aeafb8" text-anchor="start">≡</text>
+<text x="41" y="182" font-size="13" font-weight="450" fill="#eeeeef" text-anchor="start">Logs</text>
+<text x="19" y="213" font-size="14" font-weight="600" fill="#aeafb8" text-anchor="start">▥</text>
+<text x="41" y="213" font-size="13" font-weight="450" fill="#eeeeef" text-anchor="start">Statistics</text>
+<text x="19" y="244" font-size="14" font-weight="600" fill="#aeafb8" text-anchor="start">⚙</text>
+<text x="41" y="244" font-size="13" font-weight="450" fill="#eeeeef" text-anchor="start">Settings</text>
+<text x="19" y="275" font-size="14" font-weight="600" fill="#aeafb8" text-anchor="start">◇</text>
+<text x="41" y="275" font-size="13" font-weight="450" fill="#eeeeef" text-anchor="start">Tools</text>
+<rect x="10" y="396" width="151" height="39" rx="8" fill="#222226" stroke="#34343a"/>
+<circle cx="23" cy="410" r="4" fill="#30d158"/>
+<text x="32" y="414" font-size="12" font-weight="650" fill="#eeeeef" text-anchor="start">Connected</text>
+<text x="148" y="414" font-size="11" font-weight="400" fill="#aeafb8" text-anchor="end">42 ms</text>
+<text x="20" y="428" font-size="10" font-weight="400" fill="#aeafb8" text-anchor="start">203.0.113.8</text>
+<text x="188" y="40" font-size="25" font-weight="700" fill="#eeeeef" text-anchor="start">App Routing</text>
+<text x="189" y="64" font-size="13" font-weight="650" fill="#aeafb8">Proxy Mode</text>
+<rect x="188" y="76" width="225" height="103" fill="#222226" rx="10" stroke="#34343a"/>
+<g transform="translate(201 87)" fill="none" stroke="#d0d2da" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="10" rx="2"/><path d="M7 17h6M10 14v3M6 7l2 2-2 2m4 0h3"/></g>
+<circle cx="395" cy="97" r="5.5" stroke="#777881" fill="none" stroke-width="1.2"/>
+<text x="202" y="128" font-size="14" font-weight="650" fill="#eeeeef">Local Proxy Only</text>
+<text x="202" y="149" font-size="12" font-weight="400" fill="#aeafb8">Connect through the local proxy</text>
+<text x="202" y="165" font-size="12" font-weight="400" fill="#aeafb8">by setting it in each app.</text>
+<rect x="423" y="76" width="225" height="103" fill="#1b3047" rx="10" stroke="#528fd5"/>
+<g transform="translate(436 87)" fill="none" stroke="#82beff" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="5" r="2"/><circle cx="15" cy="5" r="2"/><circle cx="10" cy="15" r="2"/><path d="M6 7l3 6m5-6-3 6M7 5h6"/></g>
+<circle cx="630" cy="97" r="5.5" stroke="#6ab3ff" fill="none" stroke-width="1.2"/><circle cx="630" cy="97" r="2.7" fill="#6ab3ff"/>
+<text x="437" y="128" font-size="14" font-weight="650" fill="#eeeeef">Per-App Routing</text>
+<text x="437" y="149" font-size="12" font-weight="400" fill="#c6daef">Apply your routing rules to</text>
+<text x="437" y="165" font-size="12" font-weight="400" fill="#c6daef">apps you’ve enabled below.</text>
+<rect x="658" y="76" width="225" height="103" fill="#222226" rx="10" stroke="#34343a"/>
+<g transform="translate(671 87)" fill="none" stroke="#d0d2da" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7.4"/><ellipse cx="10" cy="10" rx="3.1" ry="7.4"/><path d="M3 10h14"/></g>
+<circle cx="865" cy="97" r="5.5" stroke="#777881" fill="none" stroke-width="1.2"/>
+<text x="672" y="128" font-size="14" font-weight="650" fill="#eeeeef">Global Proxy</text>
+<text x="672" y="149" font-size="12" font-weight="400" fill="#aeafb8">Use the macOS SOCKS proxy</text>
+<text x="672" y="165" font-size="12" font-weight="400" fill="#aeafb8">for apps that follow system settings.</text>
+<rect x="188" y="198" width="210" height="236" rx="11" fill="#222226" stroke="#34343a"/>
+<text x="203" y="222" font-size="14" font-weight="700" fill="#eeeeef" text-anchor="start">Applications</text>
+<rect x="352" y="207" width="31" height="25" rx="6" fill="#343438" stroke="none"/><text x="367.5" y="224" font-size="12" font-weight="500" fill="#eeeeef" text-anchor="middle">+</text>
+<rect x="201" y="237" width="184" height="45" rx="7" fill="#1c3046" stroke="none"/>
+<rect x="209" y="247" width="24" height="24" rx="6" fill="#cd6a48" stroke="none"/><text x="221" y="264" font-size="17" font-weight="600" fill="#ffffff" text-anchor="middle">✳</text>
+<text x="242" y="257" font-size="13" font-weight="650" fill="#eeeeef" text-anchor="start">Claude</text>
+<text x="242" y="273" font-size="11" font-weight="400" fill="#aeafb8" text-anchor="start">Paused</text>
+<rect x="209" y="297" width="24" height="24" rx="6" fill="#287c66" stroke="none"/><text x="221" y="314" font-size="17" font-weight="600" fill="#ffffff" text-anchor="middle">N</text>
+<text x="242" y="308" font-size="13" font-weight="600" fill="#eeeeef" text-anchor="start">Notes</text>
+<text x="242" y="324" font-size="11" font-weight="400" fill="#aeafb8" text-anchor="start">Proxy All</text>
+<text x="203" y="418" font-size="11" font-weight="400" fill="#aeafb8" text-anchor="start">2 apps</text>
+<g aria-label="Paused"><rect x="343" y="250" width="34" height="19" rx="10" fill="#585861" stroke="none"/><circle cx="353" cy="259.5" r="7" fill="#f7f7f8"/></g>
+<g aria-label="Enabled"><rect x="343" y="300" width="34" height="19" rx="10" fill="#0a83ff" stroke="none"/><circle cx="367" cy="309.5" r="7" fill="#f7f7f8"/></g>
+<rect x="411" y="198" width="472" height="155" rx="11" fill="#222226" stroke="#34343a"/>
+<text x="426" y="223" font-size="15" font-weight="700" fill="#eeeeef" text-anchor="start">Claude</text>
+<rect x="799" y="207" width="69" height="25" rx="6" fill="#343438" stroke="none"/><text x="833.5" y="224" font-size="12" font-weight="500" fill="#eeeeef" text-anchor="middle">Remove</text>
+<text x="426" y="252" font-size="12" font-weight="400" fill="#aeafb8" text-anchor="start">New connections use the system network while paused.</text>
+<text x="426" y="283" font-size="13" font-weight="500" fill="#eeeeef" text-anchor="start">Connection Policy</text>
+<rect x="554" y="266" width="113" height="25" rx="6" fill="#343438" stroke="none"/><text x="610.5" y="283" font-size="12" font-weight="500" fill="#eeeeef" text-anchor="middle">Proxy All  ⌄</text>
+<rect x="775" y="317" width="93" height="25" rx="6" fill="#343438" stroke="none"/><text x="821.5" y="334" font-size="12" font-weight="500" fill="#eeeeef" text-anchor="middle">Apply Rules</text>
+<rect x="411" y="366" width="472" height="68" rx="11" fill="#222226" stroke="#34343a"/>
+<text x="426" y="391" font-size="14" font-weight="700" fill="#eeeeef" text-anchor="start">Recent Connections</text>
+<text x="426" y="414" font-size="13" font-weight="400" fill="#aeafb8" text-anchor="start">No recent connections</text>
+</svg>

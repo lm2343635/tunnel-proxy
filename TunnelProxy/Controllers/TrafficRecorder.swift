@@ -8,10 +8,8 @@ import Combine
 ///   → flush to `TrafficStore` every ~`flushInterval` (and on disconnect/quit)
 ///   → prune old data.
 ///
-/// Correctness is inherited from `SpeedMonitor`: it only emits deltas when both
-/// consecutive samples share a 4-tuple, so watchdog reconnects contribute 0 and
-/// never spike, and its counters are u32-wrap-safe. This type never re-reads the
-/// TCP table — it only consumes those deltas.
+/// SpeedMonitor emits deltas across samples of the same transport. This type
+/// only consumes those deltas, so reconnects do not spike recorded usage.
 @MainActor
 final class TrafficRecorder: ObservableObject {
 

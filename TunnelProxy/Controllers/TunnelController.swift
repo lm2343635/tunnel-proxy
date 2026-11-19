@@ -6,7 +6,7 @@ import SwiftUI
 /// The tabs of the unified main window. Also used to route "open the window on
 /// tab X" requests from the popover and app menus (see `requestedTab`).
 enum WindowTab: String {
-    case connection, servers, logs, stats, settings, tools
+    case connection, appRouting, servers, logs, stats, settings, tools
 }
 
 /// High-level connection state used to drive the menu bar icon and popover.
@@ -72,6 +72,12 @@ final class TunnelController: ObservableObject {
     @Published var systemSocksOn: Bool {
         didSet { defaults.set(systemSocksOn, forKey: Keys.systemSocks) }
     }
+    @Published private(set) var proxyMode: ProxyMode
+    @Published private(set) var proxyModeError: String?
+    let appRouting = AppRoutingController()
+    private var routingTimer: Timer?
+    private var routingUpdates: AnyCancellable?
+    private var routingStarted = false
 
     /// Drives the connecting/reconnecting blink: the menu bar icon dims while
     /// this is `true`. Toggled by `blinkTimer`; only animates in those states.
@@ -138,12 +144,12 @@ final class TunnelController: ObservableObject {
     private var showMenuBarIconStore: Bool
 
     /// Publishes live up/down rates for the menu bar label.
-    let speedMonitor = SpeedMonitor()
+    let speedMonitor: SpeedMonitor
     /// Persists traffic usage over time; feeds the Statistics window.
     let recorder = TrafficRecorder()
 
     let defaults = UserDefaults.standard
-    private let engine = TunnelEngine()
+    private let engine: TunnelEngine
     private var pollTimer: Timer?
     private var blinkTimer: Timer?
 
@@ -153,18 +159,27 @@ final class TunnelController: ObservableObject {
         static let showSpeed = "showSpeed"
         static let recordStats = "recordStats"
         static let systemSocks = "systemSocksOn"
+        static let proxyMode = "proxyMode"
+        static let socksOwnerService = "ownedSystemSocksService"
+        static let socksOwnerPort = "ownedSystemSocksPort"
         static let showMenuBarIcon = "showMenuBarIcon"
         static let showDockStateIcon = "showDockStateIcon"
     }
 
     init() {
+        let engine = TunnelEngine()
+        self.engine = engine
+        self.speedMonitor = SpeedMonitor(engine: engine)
         config = TunnelConfig.load()
         watchdogEnabled = defaults.object(forKey: Keys.watchdog) as? Bool ?? true
         autoConnectOnLaunch = defaults.bool(forKey: Keys.autoConnect)
         launchAtLogin = (SMAppService.mainApp.status == .enabled)
         showSpeed = defaults.object(forKey: Keys.showSpeed) as? Bool ?? false
         recordStats = defaults.object(forKey: Keys.recordStats) as? Bool ?? true
-        systemSocksOn = defaults.bool(forKey: Keys.systemSocks)
+        let initialProxyMode = defaults.string(forKey: Keys.proxyMode).flatMap(ProxyMode.init(rawValue:))
+            ?? (defaults.bool(forKey: Keys.systemSocks) ? .global : .local)
+        proxyMode = initialProxyMode
+        systemSocksOn = initialProxyMode == .global
         showMenuBarIconStore = defaults.object(forKey: Keys.showMenuBarIcon) as? Bool ?? true
         showDockStateIcon = defaults.object(forKey: Keys.showDockStateIcon) as? Bool ?? true
         AppPaths.ensureSupportDirectory()
@@ -177,11 +192,12 @@ final class TunnelController: ObservableObject {
         }
         // Let the launch fallback reach us if the menu bar icon was hidden.
         AppDelegate.controller = self
+        routingUpdates = appRouting.objectWillChange.sink { [weak self] in self?.objectWillChange.send() }
         // Reflect the initial (disconnected) state on the Dock tile if it's shown.
         updateDockIcon()
     }
 
-    /// Sampling (the 1 Hz TCP-table read) must run whenever we either show the
+    /// Sampling must run whenever we either show the
     /// live speed *or* record statistics — both consume `SpeedMonitor`'s deltas.
     /// The recorder additionally gates on connection state and its own toggle.
     private func syncSampling() {
@@ -259,6 +275,21 @@ final class TunnelController: ObservableObject {
         reconcileSystemSocksState()
         // Ensure sampling is live (for speed display and/or recording).
         syncSampling()
+        if !routingStarted {
+            routingStarted = true
+            Task {
+                await appRouting.adopt()
+                if proxyMode == .appRouting {
+                    _ = await appRouting.enable(using: await engine.routingPeer())
+                }
+            }
+            routingTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self, self.proxyMode == .appRouting else { return }
+                    await self.appRouting.heartbeat(peer: self.engine.routingPeer())
+                }
+            }
+        }
         if autoConnectOnLaunch, config.canConnect, case .disconnected = state {
             Task { await connect() }
         }
@@ -270,6 +301,7 @@ final class TunnelController: ObservableObject {
     /// flag is untouched — a later connect re-applies it.
     func reconcileSystemSocksState() {
         let service = config.networkService
+        guard defaults.string(forKey: Keys.socksOwnerService) == service else { return }
         Task { [weak self] in
             guard let self else { return }
             let enabled = await Task.detached {
@@ -497,6 +529,7 @@ final class TunnelController: ObservableObject {
         // so the next connect re-applies it automatically.
         if systemSocksOn { await applySystemSocks(on: false) }
         await engine.stop()
+        if proxyMode == .appRouting { await appRouting.heartbeat(peer: nil) }
         state = .disconnected
         exitIP = nil
     }
@@ -542,6 +575,71 @@ final class TunnelController: ObservableObject {
 
     // MARK: - System SOCKS proxy
 
+    var proxyModeDetail: String? {
+        if let proxyModeError { return proxyModeError }
+        if proxyMode == .appRouting || appRouting.busy { return appRouting.message }
+        if proxyMode == .global, !isConnected { return routingText("Waiting for the SSH tunnel") }
+        return nil
+    }
+
+    func chooseProxyMode(_ mode: ProxyMode) async {
+        guard !isBusy, !appRouting.busy, mode != proxyMode || (mode == .appRouting && !appRouting.confirmed) else { return }
+        isBusy = true
+        proxyModeError = nil
+        defer { isBusy = false }
+        let previous = proxyMode
+        if (previous == .global && mode == .appRouting) || (previous == .appRouting && mode == .global) {
+            proxyModeError = routingText("This switch cannot be verified. Choose Local Proxy Only first.")
+            return
+        }
+        switch mode {
+        case .appRouting:
+            guard await appRouting.enable(using: await engine.routingPeer()) else {
+                proxyModeError = appRouting.message
+                return
+            }
+        case .global:
+            if isConnected, !(await applySystemSocks(on: true)) {
+                proxyModeError = routingText("Could not change proxy mode")
+                return
+            }
+        case .local:
+            if previous == .appRouting, !(await appRouting.disable()) { return }
+            if previous == .global, !(await applySystemSocks(on: false)) {
+                proxyModeError = routingText("Could not change proxy mode")
+                return
+            }
+        }
+        proxyMode = mode
+        systemSocksOn = mode == .global
+        defaults.set(mode.rawValue, forKey: Keys.proxyMode)
+    }
+
+    func saveRoutingApp(_ rule: RoutingApp) async {
+        await appRouting.save(rule, peer: engine.routingPeer())
+    }
+
+    func setRoutingAppEnabled(_ enabled: Bool, for identity: RoutingAppIdentity) async {
+        guard !isBusy else { return }
+        await appRouting.setEnabled(enabled, for: identity, peer: engine.routingPeer())
+    }
+
+    func deleteRoutingApp(_ identity: RoutingAppIdentity) async {
+        await appRouting.delete(identity, peer: engine.routingPeer())
+    }
+
+    func prepareToQuit() async -> Bool {
+        appRouting.cancelApproval()
+        for _ in 0..<60 where isBusy || appRouting.busy {
+            try? await Task.sleep(for: .milliseconds(250))
+        }
+        guard !isBusy, !appRouting.busy else { return false }
+        if proxyMode == .appRouting, !(await appRouting.disable()) { return false }
+        if systemSocksOn, !(await applySystemSocks(on: false)) { return false }
+        await engine.stop()
+        return true
+    }
+
     /// Enable/disable the macOS system SOCKS proxy for the configured network
     /// service. `networksetup` changes the current user's own network settings,
     /// which does not require administrator rights — so no password prompt.
@@ -551,23 +649,18 @@ final class TunnelController: ObservableObject {
     /// the tunnel is up: `connect()`/`disconnect()` apply and clear it to match
     /// intent, so the machine keeps working when the tunnel is down.
     func toggleSystemSocks(on: Bool) async {
-        guard !isBusy else { return }
-        isBusy = true
-        defer { isBusy = false }
-
-        let ok = await applySystemSocks(on: on)
-        if !ok {
-            // Revert the toggle in the UI if the change failed.
-            systemSocksOn = !on
-        }
+        await chooseProxyMode(on ? .global : .local)
     }
 
     /// Push the SOCKS proxy state to `networksetup` without touching the
     /// `systemSocksOn` intent flag. Returns whether the change succeeded.
     @discardableResult
     private func applySystemSocks(on: Bool) async -> Bool {
-        let service = config.networkService
-        let port = config.socksPort
+        let ownedService = defaults.string(forKey: Keys.socksOwnerService)
+        let ownedPort = defaults.integer(forKey: Keys.socksOwnerPort)
+        guard on || ownedService != nil else { return true }
+        let service = on ? config.networkService : ownedService ?? config.networkService
+        let port = on ? config.socksPort : ownedPort
         let networksetup = "/usr/sbin/networksetup"
 
         let result: CommandResult = await Task.detached {
@@ -578,6 +671,10 @@ final class TunnelController: ObservableObject {
                 return ProcessRunner.run(networksetup,
                     ["-setsocksfirewallproxystate", service, "on"], timeout: 20)
             } else {
+                let saved = ProcessRunner.run(networksetup, ["-getsocksfirewallproxy", service], timeout: 10)
+                guard saved.succeeded else { return saved }
+                guard saved.stdout.contains("Server: 127.0.0.1"),
+                      saved.stdout.contains("Port: \(port)\n") || saved.stdout.hasSuffix("Port: \(port)") else { return saved }
                 return ProcessRunner.run(networksetup,
                     ["-setsocksfirewallproxystate", service, "off"], timeout: 20)
             }
@@ -585,6 +682,12 @@ final class TunnelController: ObservableObject {
 
         if !result.succeeded {
             NSLog("System SOCKS toggle failed: \(result.output)")
+        } else if on {
+            defaults.set(service, forKey: Keys.socksOwnerService)
+            defaults.set(port, forKey: Keys.socksOwnerPort)
+        } else {
+            defaults.removeObject(forKey: Keys.socksOwnerService)
+            defaults.removeObject(forKey: Keys.socksOwnerPort)
         }
         return result.succeeded
     }
@@ -607,6 +710,10 @@ final class TunnelController: ObservableObject {
         // The system SOCKS proxy is now off; keep the UI intent flag in sync so
         // the next connect doesn't silently turn it back on.
         systemSocksOn = false
+        if ok, proxyMode == .global {
+            proxyMode = .local
+            defaults.set(ProxyMode.local.rawValue, forKey: Keys.proxyMode)
+        }
         return ok
     }
 

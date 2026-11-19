@@ -29,6 +29,8 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Tunnel Proxy</string>
+	<key>NSSystemExtensionUsageDescription</key>
+	<string>Tunnel Proxy routes connections from the apps you select through your SSH tunnel.</string>
 	<!-- Built against the macOS 26 SDK. Without this, a 26-SDK binary opts into
 	     the "Liquid Glass" design system, which breaks the MenuBarExtra status
 	     item on macOS 15 (process runs, but no menu bar icon appears). This key

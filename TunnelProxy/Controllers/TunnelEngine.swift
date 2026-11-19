@@ -24,7 +24,20 @@ actor TunnelEngine {
     }
 
     private var sshProcess: Process?
+    private var sshCounters: SSHTransportCounters?
 
+    func transportCounters() -> SSHTransportCounters? {
+        sshProcess?.isRunning == true ? sshCounters : nil
+    }
+
+    func routingPeer() -> RoutingSOCKSPeer? {
+        guard let sshProcess, sshProcess.isRunning,
+              let port = UInt16(exactly: config.socksPort), port > 0,
+              let ssh = RoutingProcess.inspect(sshProcess.processIdentifier)?.identity,
+              let host = RoutingProcess.inspect(ProcessInfo.processInfo.processIdentifier)?.identity else { return nil }
+        let peer = RoutingSOCKSPeer(ssh: ssh, host: host, port: port)
+        return peer.isCurrent ? peer : nil
+    }
     private var privoxyProcess: Process?
     private var watchdogTask: Task<Void, Never>?
     private var config = TunnelConfig()
@@ -143,7 +156,18 @@ actor TunnelEngine {
             "-D", "\(config.socksPort)",
         ]
 
-        args += ["-o", "ProxyCommand=\(route.proxyCommand)",
+        let counters = SSHTransportCounters()
+        let command: String
+        if let counters, let executable = Bundle.main.executableURL,
+           Bundle.main.bundleIdentifier == "com.xwkj.tunnelproxy" {
+            command = SSHTransport.proxyCommand(executable: executable, counters: counters, command: route.proxyCommand)
+            sshCounters = counters
+        } else {
+            // Keep connectivity if the private counter file cannot be opened.
+            command = route.proxyCommand
+            sshCounters = nil
+        }
+        args += ["-o", "ProxyCommand=\(command)",
                  "-o", "ProxyJump=none", "-o", "ConnectionAttempts=1"]
         sshOutput = SSHStartupOutput()
         var env = ProcessInfo.processInfo.environment
@@ -182,6 +206,7 @@ actor TunnelEngine {
             try p.run()
             sshProcess = p
         } catch {
+            sshCounters = nil
             log("Failed to launch ssh: \(error.localizedDescription)")
         }
     }
@@ -555,6 +580,7 @@ actor TunnelEngine {
     // MARK: - Process helpers
 
     private func terminate(_ process: inout Process?, name: String) {
+        if name == "ssh" { sshCounters = nil }
         guard let p = process else { return }
         if p.isRunning {
             p.terminate()

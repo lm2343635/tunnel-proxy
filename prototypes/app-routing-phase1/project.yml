@@ -1,0 +1,64 @@
+name: AppRoutingLab
+options:
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_STYLE: Manual
+    REGISTER_APP_GROUPS: NO
+    ENABLE_HARDENED_RUNTIME: YES
+    MARKETING_VERSION: "0.1"
+    CURRENT_PROJECT_VERSION: "5"
+  configs:
+    Debug:
+      CODE_SIGN_IDENTITY: Apple Development
+      LAB_NETWORK_EXTENSION_TYPE: app-proxy-provider
+    Release:
+      CODE_SIGN_IDENTITY: Developer ID Application
+      LAB_NETWORK_EXTENSION_TYPE: app-proxy-provider-systemextension
+targets:
+  AppRoutingLab:
+    type: application
+    platform: macOS
+    sources: [Host, Shared]
+    dependencies:
+      - target: TransparentProxy
+        embed: true
+        codeSign: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.xwkj.tunnelproxy.lab
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: Host/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Host/Lab.entitlements
+  TransparentProxy:
+    type: system-extension
+    platform: macOS
+    sources: [Provider, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.xwkj.tunnelproxy.lab.proxy
+        PRODUCT_NAME: "$(PRODUCT_BUNDLE_IDENTIFIER)"
+        PRODUCT_MODULE_NAME: TransparentProxy
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Provider/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Provider/Proxy.entitlements
+        SWIFT_OBJC_BRIDGING_HEADER: Provider/LabAuditToken.h
+        OTHER_LDFLAGS: "-lbsm"
+  RoutingProbe:
+    type: application
+    platform: macOS
+    sources: [Probe, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.xwkj.tunnelproxy.lab.probe
+        GENERATE_INFOPLIST_FILE: YES
+        SKIP_INSTALL: YES
+schemes:
+  AppRoutingLab:
+    build:
+      targets:
+        AppRoutingLab: all
+        RoutingProbe: all

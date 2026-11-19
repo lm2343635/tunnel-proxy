@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="760" viewBox="0 0 1120 760" role="img" aria-labelledby="title">
+<title id="title">B 连接页入口 · 实时测速工作台</title>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB",sans-serif;font-variant-numeric:tabular-nums}</style>
+<rect x="0" y="0" width="1120" height="760" rx="0" fill="#17181c" stroke="none"/>
+<g aria-label="TunnelProxy 导航">
+<rect x="0" y="0" width="190" height="760" rx="0" fill="#222328" stroke="none"/>
+<line x1="189" y1="0" x2="189" y2="760" stroke="#333740" stroke-dasharray=""/>
+<circle cx="19" cy="20" r="5.5" fill="#ff605c"/>
+<circle cx="38" cy="20" r="5.5" fill="#ffbd44"/>
+<circle cx="57" cy="20" r="5.5" fill="#00ca4e"/>
+<rect x="15" y="46" width="23" height="23" rx="6" fill="#2667d8" stroke="none"/>
+<text x="26.5" y="62" fill="white" font-size="16" font-weight="700" text-anchor="middle">↗</text>
+<text x="47" y="64" fill="#f3f5fb" font-size="17" font-weight="700" text-anchor="start">Tunnel Proxy</text>
+<rect x="11" y="89" width="168" height="36" rx="8" fill="#1671e8" stroke="none"/>
+<text x="23" y="113" fill="#f3f5fb" font-size="15" font-weight="650" text-anchor="start">◉</text>
+<text x="49" y="113" fill="#f3f5fb" font-size="14" font-weight="600" text-anchor="start">连接</text>
+<text x="23" y="156" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">◇</text>
+<text x="49" y="156" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">应用路由</text>
+<text x="23" y="199" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">≡</text>
+<text x="49" y="199" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">服务器</text>
+<text x="23" y="242" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">▤</text>
+<text x="49" y="242" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">日志</text>
+<text x="23" y="285" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">▥</text>
+<text x="49" y="285" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">统计</text>
+<text x="23" y="328" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">⚙</text>
+<text x="49" y="328" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">设置</text>
+<text x="23" y="371" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">⌘</text>
+<text x="49" y="371" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">工具</text>
+<line x1="17" y1="694" x2="173" y2="694" stroke="#333740" stroke-dasharray=""/>
+<circle cx="23" cy="719" r="4" fill="#56d9a3"/>
+<text x="34" y="724" fill="#f3f5fb" font-size="13" font-weight="650" text-anchor="start">已连接</text>
+<text x="34" y="744" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="start">东京 SSH 节点</text>
+</g>
+<text x="220" y="52" fill="#66acff" font-size="13" font-weight="650" text-anchor="start">‹  返回连接</text>
+<text x="220" y="91" fill="#f3f5fb" font-size="29" font-weight="720" text-anchor="start">隧道测速</text>
+<text x="220" y="120" fill="#a3aab8" font-size="13" font-weight="400" text-anchor="start">东京 SSH 节点  ·  经上游代理  ·  测到服务器本机</text>
+<rect x="961" y="73" width="129" height="40" rx="8" fill="#4b2c33" stroke="none"/>
+<text x="1025.5" y="98.0" fill="#ffb7bd" font-size="14" font-weight="650" text-anchor="middle">取消测速</text>
+<g aria-label="正在进行的测速">
+<rect x="220" y="145" width="870" height="398" rx="14" fill="#18222e" stroke="#31465d"/>
+<circle cx="246" cy="176" r="4" fill="#56d9a3"/>
+<text x="260" y="181" fill="#f3f5fb" font-size="15" font-weight="650" text-anchor="start">正在测上传</text>
+<text x="1065" y="181" fill="#a3aab8" font-size="13" font-weight="600" text-anchor="end">2 / 2</text>
+<text x="244" y="220" fill="#a3aab8" font-size="13" font-weight="600" text-anchor="start">下载 · 已完成</text>
+<text x="244" y="263" fill="#66acff" font-size="37" font-weight="720" text-anchor="start">178.9</text>
+<text x="369" y="263" fill="#a3aab8" font-size="13" font-weight="400" text-anchor="start">Mbps</text>
+<text x="502" y="220" fill="#a3aab8" font-size="13" font-weight="600" text-anchor="start">上传 · 当前速率</text>
+<text x="502" y="263" fill="#56d9a3" font-size="37" font-weight="720" text-anchor="start">41.6</text>
+<text x="601" y="263" fill="#a3aab8" font-size="13" font-weight="400" text-anchor="start">Mbps</text>
+<circle cx="926" cy="261" r="4" fill="#66acff"/>
+<text x="937" y="266" fill="#a3aab8" font-size="12" font-weight="400" text-anchor="start">下载</text>
+<circle cx="992" cy="261" r="4" fill="#56d9a3"/>
+<text x="1003" y="266" fill="#a3aab8" font-size="12" font-weight="400" text-anchor="start">上传</text>
+<text x="244" y="300" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="start">Mbps</text>
+<line x1="285" y1="463.0" x2="1039" y2="463.0" stroke="#333740" stroke-dasharray=""/>
+<text x="275" y="467.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">0</text>
+<line x1="285" y1="426.0" x2="1039" y2="426.0" stroke="#333740" stroke-dasharray="3 5"/>
+<text x="275" y="430.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">50</text>
+<line x1="285" y1="389.0" x2="1039" y2="389.0" stroke="#333740" stroke-dasharray="3 5"/>
+<text x="275" y="393.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">100</text>
+<line x1="285" y1="352.0" x2="1039" y2="352.0" stroke="#333740" stroke-dasharray="3 5"/>
+<text x="275" y="356.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">150</text>
+<line x1="285" y1="315.0" x2="1039" y2="315.0" stroke="#333740" stroke-dasharray="3 5"/>
+<text x="275" y="319.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">200</text>
+<rect x="725" y="315" width="314" height="148" rx="0" fill="#20352f" stroke="none"/>
+<line x1="285" y1="463.0" x2="1039" y2="463.0" stroke="#333740" stroke-dasharray=""/>
+<text x="275" y="467.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">0</text>
+<line x1="285" y1="426.0" x2="1039" y2="426.0" stroke="#333740" stroke-dasharray="3 5"/>
+<text x="275" y="430.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">50</text>
+<line x1="285" y1="389.0" x2="1039" y2="389.0" stroke="#333740" stroke-dasharray="3 5"/>
+<text x="275" y="393.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">100</text>
+<line x1="285" y1="352.0" x2="1039" y2="352.0" stroke="#333740" stroke-dasharray="3 5"/>
+<text x="275" y="356.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">150</text>
+<line x1="285" y1="315.0" x2="1039" y2="315.0" stroke="#333740" stroke-dasharray="3 5"/>
+<text x="275" y="319.0" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">200</text>
+<line x1="725" y1="315" x2="725" y2="463" stroke="#667383" stroke-dasharray="4 5"/>
+<polyline points="285.0,463.0 320.4,415.6 355.8,372.0 391.2,351.3 426.7,358.7 462.1,336.5 497.5,329.1 532.9,339.4 568.3,324.6 603.8,326.8 639.2,332.8 674.6,320.9 710.0,330.5" fill="none" stroke="#66acff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="710.0" cy="330.53999999999996" r="4" fill="#66acff"/>
+<polyline points="725.0,463.0 763.6,447.5 802.1,440.1 840.7,430.4 879.3,436.4 917.9,432.7 956.4,434.9 995.0,432.2" fill="none" stroke="#56d9a3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="995.0" cy="432.216" r="4" fill="#56d9a3"/>
+<text x="285" y="485" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="middle">0 秒</text>
+<text x="505" y="485" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="middle">3 秒</text>
+<text x="725" y="485" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="middle">6 秒</text>
+<text x="945" y="485" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="middle">9 秒</text>
+<rect x="245" y="504" width="820" height="4" rx="2" fill="#344358" stroke="none"/>
+<rect x="245" y="504" width="704" height="4" rx="2" fill="#56d9a3" stroke="none"/>
+<text x="245" y="529" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="start">下载完成</text>
+<text x="1065" y="529" fill="#56d9a3" font-size="11" font-weight="550" text-anchor="end">上传进行中</text>
+</g>
+<g aria-label="测速历史">
+<text x="220" y="576" fill="#f3f5fb" font-size="17" font-weight="700" text-anchor="start">测速历史</text>
+<rect x="981" y="558" width="109" height="29" rx="8" fill="#303540" stroke="none"/>
+<text x="1035.5" y="577.5" fill="#f3f5fb" font-size="14" font-weight="650" text-anchor="middle">查看全部</text>
+<rect x="220" y="597" width="282" height="123" rx="10" fill="#212329" stroke="#333740"/>
+<text x="237" y="625" fill="#f3f5fb" font-size="13" font-weight="600" text-anchor="start">今天 23:10</text>
+<text x="237" y="652" fill="#a3aab8" font-size="12" font-weight="400" text-anchor="start">经上游代理</text>
+<text x="237" y="689" fill="#66acff" font-size="20" font-weight="700" text-anchor="start">↓ 176.4</text>
+<text x="350" y="689" fill="#56d9a3" font-size="20" font-weight="700" text-anchor="start">↑ 42.8</text>
+<text x="483" y="689" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">Mbps</text>
+<rect x="514" y="597" width="282" height="123" rx="10" fill="#212329" stroke="#333740"/>
+<text x="531" y="625" fill="#f3f5fb" font-size="13" font-weight="600" text-anchor="start">今天 22:46</text>
+<text x="531" y="652" fill="#a3aab8" font-size="12" font-weight="400" text-anchor="start">经上游代理</text>
+<text x="531" y="689" fill="#66acff" font-size="20" font-weight="700" text-anchor="start">↓ 161.2</text>
+<text x="644" y="689" fill="#56d9a3" font-size="20" font-weight="700" text-anchor="start">↑ 39.5</text>
+<text x="777" y="689" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">Mbps</text>
+<rect x="808" y="597" width="282" height="123" rx="10" fill="#212329" stroke="#333740"/>
+<text x="825" y="625" fill="#f3f5fb" font-size="13" font-weight="600" text-anchor="start">今天 21:32</text>
+<text x="825" y="652" fill="#a3aab8" font-size="12" font-weight="400" text-anchor="start">直连 SSH</text>
+<text x="825" y="689" fill="#66acff" font-size="20" font-weight="700" text-anchor="start">↓ 189.7</text>
+<text x="938" y="689" fill="#56d9a3" font-size="20" font-weight="700" text-anchor="start">↑ 46.1</text>
+<text x="1071" y="689" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="end">Mbps</text>
+</g>
+</svg>

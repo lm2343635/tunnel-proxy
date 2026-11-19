@@ -41,7 +41,7 @@ extension TunnelController {
     var stateSubtitleText: String {
         switch state {
         case .connected: return String(localized: "Tunnel + HTTP proxy active")
-        case .disconnected: return String(localized: "Traffic goes out directly")
+        case .disconnected: return routingText("Tunnel disconnected")
         case .connecting: return String(localized: "Establishing tunnel…")
         case .reconnecting: return String(localized: "Watchdog reconnecting…")
         case .error: return String(localized: "Something went wrong")

@@ -337,15 +337,7 @@ private struct OptionsTile: View {
             VStack(alignment: .leading, spacing: 7) {
                 TileCaption("Options").padding(.leading, 2)
 
-                // Intent binding: run the toggle action only on a real change so a
-                // programmatic state sync never re-issues networksetup.
-                OptionCard(title: "Route Mac traffic",
-                           isOn: .constant(controller.systemSocksOn),
-                           onTap: { newValue in
-                               guard newValue != controller.systemSocksOn else { return }
-                               controller.systemSocksOn = newValue
-                               Task { await controller.toggleSystemSocks(on: newValue) }
-                           })
+                ProxyModeSummary { controller.requestedTab = .appRouting }
                 OptionCard(title: "Auto-reconnect",
                            caption: controller.reconnectEnabled
                                ? controller.automaticRouting ? String(localized: "Automatic path recovery") : String(localized: "Watchdog · On")

@@ -2,24 +2,9 @@ import Foundation
 import Combine
 import Darwin
 
-/// Publishes the SSH tunnel's own download / upload rates for the menu bar —
-/// not the whole system's. All proxied traffic flows through the single
-/// `ssh -D` process listening on the SOCKS port, so the byte rate of that
-/// process's connection to the SSH server *is* the tunnel's throughput (with
-/// `-C` these are the compressed on-wire bytes).
-///
-/// Implementation: once per second, read the kernel's TCP connection table
-/// (`net.inet.tcp.pcblist_n` — the same sysctl `netstat -anv` uses; ~2 ms, no
-/// subprocesses). Find who listens on the SOCKS port, take that pid's
-/// non-loopback connections (the ssh↔server link), and derive rates from TCP
-/// sequence-number deltas: Δrcv_nxt = bytes received, Δsnd_max = bytes sent.
-/// Sequence numbers are protocol truth — they exclude retransmits and dodge a
-/// kernel quirk where per-socket rx byte *counters* run double. 32-bit
-/// wraparound cancels out in unsigned delta arithmetic (safe below 4 GB/s).
-///
-/// Working from the listener port (not a stored pid) means the readout follows
-/// watchdog reconnects automatically and also works for tunnels started by the
-/// shell scripts rather than this app.
+/// Publishes the SSH tunnel's download and upload rates. App-managed sessions
+/// share counters with the ProxyCommand relay. Legacy shell-launched sessions
+/// can still be sampled through their SSH process's TCP sequence numbers.
 @MainActor
 final class SpeedMonitor: ObservableObject {
     @Published private(set) var downText: String = "0 KB/s"
@@ -49,16 +34,19 @@ final class SpeedMonitor: ObservableObject {
     private var socksPort: Int = 1080
     private var timer: Timer?
     private var sampling = false
-    /// Previous tick's per-connection sequence counters, keyed by 4-tuple.
-    private var prev: [ConnKey: SeqCounters] = [:]
+    private let engine: TunnelEngine
+    private var samplingGeneration = 0
+    private var previous: TransportSample?
     private var prevAt: Date?
+
+    init(engine: TunnelEngine) { self.engine = engine }
 
     // MARK: - Control
 
     /// Begin monitoring the tunnel serving `socksPort` (mirrors the
     /// "Show network speed" preference being switched on).
     func start(socksPort: Int) {
-        self.socksPort = socksPort
+        updateSocksPort(socksPort)
         guard timer == nil else { return }
         let t = Timer(timeInterval: 1.0, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
@@ -71,11 +59,10 @@ final class SpeedMonitor: ObservableObject {
     func stop() {
         timer?.invalidate()
         timer = nil
-        prev = [:]
+        samplingGeneration &+= 1
+        previous = nil
         prevAt = nil
         showZero()
-        downRate = 0
-        upRate = 0
         history.removeAll()
     }
 
@@ -83,7 +70,8 @@ final class SpeedMonitor: ObservableObject {
     func updateSocksPort(_ port: Int) {
         guard port != socksPort else { return }
         socksPort = port
-        prev = [:]              // different tunnel: rebase the deltas
+        samplingGeneration &+= 1
+        previous = nil
         prevAt = nil
     }
 
@@ -93,49 +81,41 @@ final class SpeedMonitor: ObservableObject {
         guard !sampling else { return }
         sampling = true
         let port = socksPort
+        let generation = samplingGeneration
         let now = Date()
-        Task.detached(priority: .utility) { [weak self] in
-            let conns = Self.tunnelConnections(socksPort: port)
+        Task.detached(priority: .utility) { [weak self, engine] in
+            let sample: TransportSample?
+            if let counters = await engine.transportCounters() {
+                sample = counters.read().map { .managed(counters, down: $0.down, up: $0.up) }
+            } else {
+                let connections = Self.tunnelConnections(socksPort: port)
+                sample = connections.isEmpty ? nil : .legacy(connections)
+            }
             await MainActor.run { [weak self] in
                 guard let self else { return }
                 self.sampling = false
-                guard self.socksPort == port else { return }   // port changed mid-flight
+                guard self.timer != nil, self.samplingGeneration == generation else { return }
                 defer {
-                    self.prev = conns
+                    self.previous = sample
                     self.prevAt = now
                 }
-                guard let prevAt = self.prevAt else {
-                    if conns.isEmpty { self.showZero() }
-                    return                                     // first sample seeds baseline
+                guard let sample, let previous = self.previous,
+                      let delta = sample.delta(since: previous), let prevAt = self.prevAt else {
+                    self.showZero()
+                    self.record(down: 0, up: 0)
+                    return
                 }
                 let elapsed = now.timeIntervalSince(prevAt)
                 guard elapsed > 0 else { return }
 
-                // Sum per-connection deltas for tuples present in both samples.
-                // A reconnected tunnel (new tuple) contributes nothing this tick
-                // and seeds the next one — no spikes, no stale readings.
-                var dRx: UInt64 = 0, dTx: UInt64 = 0
-                for (key, cur) in conns {
-                    guard let old = self.prev[key] else { continue }
-                    dRx += UInt64(cur.rcvNxt &- old.rcvNxt)    // u32 wrap-safe
-                    dTx += UInt64(cur.sndMax &- old.sndMax)
-                }
-                if conns.isEmpty {
-                    self.showZero()                            // tunnel down
-                    self.record(down: 0, up: 0)
-                } else {
-                    let down = Double(dRx) / elapsed
-                    let up = Double(dTx) / elapsed
-                    self.downRate = down
-                    self.upRate = up
-                    self.downText = Self.format(bytesPerSec: down)
-                    self.upText = Self.format(bytesPerSec: up)
-                    self.record(down: down, up: up)
-                    // Feed the recorder the same deltas we just formatted. Only
-                    // reached when both samples exist, so reconnected tunnels
-                    // (new 4-tuples) contribute 0 this tick — no spikes.
-                    self.onDelta?(dRx, dTx, elapsed)
-                }
+                let down = Double(delta.down) / elapsed
+                let up = Double(delta.up) / elapsed
+                self.downRate = down
+                self.upRate = up
+                self.downText = Self.format(bytesPerSec: down)
+                self.upText = Self.format(bytesPerSec: up)
+                self.record(down: down, up: up)
+                self.onDelta?(delta.down, delta.up, elapsed)
             }
         }
     }
@@ -167,6 +147,31 @@ final class SpeedMonitor: ObservableObject {
         let rcvNxt: UInt32, sndMax: UInt32
     }
 
+    private enum TransportSample {
+        case managed(SSHTransportCounters, down: UInt64, up: UInt64)
+        case legacy([ConnKey: SeqCounters])
+
+        func delta(since previous: Self) -> (down: UInt64, up: UInt64)? {
+            switch (self, previous) {
+            case let (.managed(session, down, up), .managed(oldSession, oldDown, oldUp)):
+                guard session === oldSession, down >= oldDown, up >= oldUp else { return nil }
+                return (down - oldDown, up - oldUp)
+            case let (.legacy(connections), .legacy(oldConnections)):
+                var down: UInt64 = 0, up: UInt64 = 0
+                var hasBaseline = false
+                for (key, current) in connections {
+                    guard let old = oldConnections[key] else { continue }
+                    hasBaseline = true
+                    down += UInt64(current.rcvNxt &- old.rcvNxt)
+                    up += UInt64(current.sndMax &- old.sndMax)
+                }
+                return hasBaseline ? (down, up) : nil
+            default:
+                return nil
+            }
+        }
+    }
+
     /// Read `net.inet.tcp.pcblist_n` and return the sequence counters of every
     /// non-loopback connection owned by the process listening on `socksPort`.
     /// Blocking (~2 ms); call off the main thread.
@@ -180,6 +185,7 @@ final class SpeedMonitor: ObservableObject {
     ///   SOCKET (kind 0x001): so_last_pid@68
     ///   TCPCB  (kind 0x020): snd_max@52, rcv_nxt@80
     nonisolated private static func tunnelConnections(socksPort: Int) -> [ConnKey: SeqCounters] {
+        guard let port = UInt16(exactly: socksPort), port != 0 else { return [:] }
         var len = 0
         guard sysctlbyname("net.inet.tcp.pcblist_n", nil, &len, nil, 0) == 0, len > 24 else { return [:] }
         len += len / 8 + 1024                       // slack: table may grow between calls
@@ -230,7 +236,7 @@ final class SpeedMonitor: ObservableObject {
 
         // The tunnel process = whoever listens on the SOCKS port.
         var listener: Int32 = -1
-        for e in entries where e.key.lport == UInt16(socksPort) && e.key.fport == 0 {
+        for e in entries where e.key.lport == port && e.key.fport == 0 {
             listener = e.pid
         }
         guard listener > 0 else { return [:] }

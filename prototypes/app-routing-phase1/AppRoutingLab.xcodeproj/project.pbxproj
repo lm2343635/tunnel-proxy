@@ -1,0 +1,558 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00C5D25AEF4005894A81C12B /* RoutingProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8851E4759363C376B687326 /* RoutingProbe.swift */; };
+		1AD9A7660EFBD139FAC32858 /* TransparentProxy.systemextension in Embed System Extensions */ = {isa = PBXBuildFile; fileRef = 132098B272C5CD9AB69C5E91 /* TransparentProxy.systemextension */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		26A22AC9F9F58A3D9885AD1C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4113BDE015BEEAE4CDE0855 /* main.swift */; };
+		2E6E3F9E2F7D62FE30FA644D /* LabProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832184B1375B1B58E58F86EC /* LabProtocol.swift */; };
+		46B5838B16DF25CEA0825E5E /* LabProcessIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A0589EEA50B23B30F92A2A /* LabProcessIdentity.swift */; };
+		52BD3277842812614EA2C82D /* LabSSHSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 660B1C15F57C2ADF57AC517C /* LabSSHSocket.swift */; };
+		664371128F6570D547E9B468 /* LabProcessIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A0589EEA50B23B30F92A2A /* LabProcessIdentity.swift */; };
+		846D041757DC479B36EB6924 /* ProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B716088CF8F251430F4505A /* ProxyProvider.swift */; };
+		87AE55022472C2E551EEC403 /* LabProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832184B1375B1B58E58F86EC /* LabProtocol.swift */; };
+		9CFB4999BB26E9F0034A09FD /* LabApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCBB13A1B58994F372BB8DE /* LabApp.swift */; };
+		B2A53442F92DC1E994721B3B /* LabProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832184B1375B1B58E58F86EC /* LabProtocol.swift */; };
+		C6F740CA684BFEEE2858E53A /* ClaudeFlowSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E70B806FF4E92445AAD3BB /* ClaudeFlowSource.swift */; };
+		C7D8F31AD2FF8F44F6460B29 /* ClaudeCONNECTRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96803B8B88D0C263B12DD2E /* ClaudeCONNECTRelay.swift */; };
+		D72036B1A4CEAAB5FF145EBE /* LabProcessIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A0589EEA50B23B30F92A2A /* LabProcessIdentity.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		79D47A34B08CA1C215CCAFE8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31970708A7921E1CB59532C2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEADBCFD32F610DD5F897161;
+			remoteInfo = TransparentProxy;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C2FE5DD6A35F5202B2B5DD58 /* Embed System Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(SYSTEM_EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				1AD9A7660EFBD139FAC32858 /* TransparentProxy.systemextension in Embed System Extensions */,
+			);
+			name = "Embed System Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		03CDBB4DF8E1FD32DE9DDD96 /* RoutingProbe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RoutingProbe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		04A0589EEA50B23B30F92A2A /* LabProcessIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabProcessIdentity.swift; sourceTree = "<group>"; };
+		075D2C545723A557A26AEBD3 /* AppRoutingLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppRoutingLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		132098B272C5CD9AB69C5E91 /* TransparentProxy.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = TransparentProxy.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B716088CF8F251430F4505A /* ProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyProvider.swift; sourceTree = "<group>"; };
+		25231EE74FFBA7E9C613933A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		3DCBB13A1B58994F372BB8DE /* LabApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabApp.swift; sourceTree = "<group>"; };
+		4E72583A60513DA79485154D /* Proxy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Proxy.entitlements; sourceTree = "<group>"; };
+		50A6BBFD4026C3A03C248E0E /* Lab.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Lab.entitlements; sourceTree = "<group>"; };
+		660B1C15F57C2ADF57AC517C /* LabSSHSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabSSHSocket.swift; sourceTree = "<group>"; };
+		832184B1375B1B58E58F86EC /* LabProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabProtocol.swift; sourceTree = "<group>"; };
+		84E70B806FF4E92445AAD3BB /* ClaudeFlowSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeFlowSource.swift; sourceTree = "<group>"; };
+		A8851E4759363C376B687326 /* RoutingProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingProbe.swift; sourceTree = "<group>"; };
+		A96803B8B88D0C263B12DD2E /* ClaudeCONNECTRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCONNECTRelay.swift; sourceTree = "<group>"; };
+		D3447BDAAC6E88C7372F0063 /* LabAuditToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LabAuditToken.h; sourceTree = "<group>"; };
+		D4113BDE015BEEAE4CDE0855 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		FAD3170831FE89DEDD834A34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		4C0921D924C9D5C45BAEE4ED = {
+			isa = PBXGroup;
+			children = (
+				90288A0F5587CA4BF4624B2E /* Host */,
+				E6F8C7A6DD8D8047948D9EB8 /* Probe */,
+				5B6724FAA7043E2799E0C176 /* Provider */,
+				DE35F0A23F593B70C02BD011 /* Shared */,
+				BEB41F75C2A4C8DB6A269D0D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5B6724FAA7043E2799E0C176 /* Provider */ = {
+			isa = PBXGroup;
+			children = (
+				A96803B8B88D0C263B12DD2E /* ClaudeCONNECTRelay.swift */,
+				84E70B806FF4E92445AAD3BB /* ClaudeFlowSource.swift */,
+				FAD3170831FE89DEDD834A34 /* Info.plist */,
+				D3447BDAAC6E88C7372F0063 /* LabAuditToken.h */,
+				660B1C15F57C2ADF57AC517C /* LabSSHSocket.swift */,
+				D4113BDE015BEEAE4CDE0855 /* main.swift */,
+				4E72583A60513DA79485154D /* Proxy.entitlements */,
+				1B716088CF8F251430F4505A /* ProxyProvider.swift */,
+			);
+			path = Provider;
+			sourceTree = "<group>";
+		};
+		90288A0F5587CA4BF4624B2E /* Host */ = {
+			isa = PBXGroup;
+			children = (
+				25231EE74FFBA7E9C613933A /* Info.plist */,
+				50A6BBFD4026C3A03C248E0E /* Lab.entitlements */,
+				3DCBB13A1B58994F372BB8DE /* LabApp.swift */,
+			);
+			path = Host;
+			sourceTree = "<group>";
+		};
+		BEB41F75C2A4C8DB6A269D0D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				075D2C545723A557A26AEBD3 /* AppRoutingLab.app */,
+				03CDBB4DF8E1FD32DE9DDD96 /* RoutingProbe.app */,
+				132098B272C5CD9AB69C5E91 /* TransparentProxy.systemextension */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DE35F0A23F593B70C02BD011 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				04A0589EEA50B23B30F92A2A /* LabProcessIdentity.swift */,
+				832184B1375B1B58E58F86EC /* LabProtocol.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		E6F8C7A6DD8D8047948D9EB8 /* Probe */ = {
+			isa = PBXGroup;
+			children = (
+				A8851E4759363C376B687326 /* RoutingProbe.swift */,
+			);
+			path = Probe;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		00469CCA1EAF4068970C8F97 /* RoutingProbe */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 971559F69D38B60055BB4CA6 /* Build configuration list for PBXNativeTarget "RoutingProbe" */;
+			buildPhases = (
+				1BB9C45D99066A6B2A72BBF9 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RoutingProbe;
+			packageProductDependencies = (
+			);
+			productName = RoutingProbe;
+			productReference = 03CDBB4DF8E1FD32DE9DDD96 /* RoutingProbe.app */;
+			productType = "com.apple.product-type.application";
+		};
+		447690F60B9D42DE47E2430C /* AppRoutingLab */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FE3BF9006D339467A1691A5 /* Build configuration list for PBXNativeTarget "AppRoutingLab" */;
+			buildPhases = (
+				42668296272B10A255BC7A6C /* Sources */,
+				C2FE5DD6A35F5202B2B5DD58 /* Embed System Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FB5EECFC418B6E3442F7C204 /* PBXTargetDependency */,
+			);
+			name = AppRoutingLab;
+			packageProductDependencies = (
+			);
+			productName = AppRoutingLab;
+			productReference = 075D2C545723A557A26AEBD3 /* AppRoutingLab.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CEADBCFD32F610DD5F897161 /* TransparentProxy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24D916F60CC0E383D9565D10 /* Build configuration list for PBXNativeTarget "TransparentProxy" */;
+			buildPhases = (
+				5BA366163BC10111F6DD3ED4 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TransparentProxy;
+			packageProductDependencies = (
+			);
+			productName = TransparentProxy;
+			productReference = 132098B272C5CD9AB69C5E91 /* TransparentProxy.systemextension */;
+			productType = "com.apple.product-type.system-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		31970708A7921E1CB59532C2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					00469CCA1EAF4068970C8F97 = {
+						ProvisioningStyle = Manual;
+					};
+					447690F60B9D42DE47E2430C = {
+						ProvisioningStyle = Manual;
+					};
+					CEADBCFD32F610DD5F897161 = {
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = F82E8DCE372ED25979E44C9F /* Build configuration list for PBXProject "AppRoutingLab" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 4C0921D924C9D5C45BAEE4ED;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = BEB41F75C2A4C8DB6A269D0D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				447690F60B9D42DE47E2430C /* AppRoutingLab */,
+				CEADBCFD32F610DD5F897161 /* TransparentProxy */,
+				00469CCA1EAF4068970C8F97 /* RoutingProbe */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1BB9C45D99066A6B2A72BBF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				46B5838B16DF25CEA0825E5E /* LabProcessIdentity.swift in Sources */,
+				B2A53442F92DC1E994721B3B /* LabProtocol.swift in Sources */,
+				00C5D25AEF4005894A81C12B /* RoutingProbe.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		42668296272B10A255BC7A6C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CFB4999BB26E9F0034A09FD /* LabApp.swift in Sources */,
+				D72036B1A4CEAAB5FF145EBE /* LabProcessIdentity.swift in Sources */,
+				87AE55022472C2E551EEC403 /* LabProtocol.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5BA366163BC10111F6DD3ED4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C7D8F31AD2FF8F44F6460B29 /* ClaudeCONNECTRelay.swift in Sources */,
+				C6F740CA684BFEEE2858E53A /* ClaudeFlowSource.swift in Sources */,
+				664371128F6570D547E9B468 /* LabProcessIdentity.swift in Sources */,
+				2E6E3F9E2F7D62FE30FA644D /* LabProtocol.swift in Sources */,
+				52BD3277842812614EA2C82D /* LabSSHSocket.swift in Sources */,
+				846D041757DC479B36EB6924 /* ProxyProvider.swift in Sources */,
+				26A22AC9F9F58A3D9885AD1C /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FB5EECFC418B6E3442F7C204 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEADBCFD32F610DD5F897161 /* TransparentProxy */;
+			targetProxy = 79D47A34B08CA1C215CCAFE8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0031FB5E8021B6FDA6B8FB6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Provider/Proxy.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Provider/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = "-lbsm";
+				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy.lab.proxy;
+				PRODUCT_MODULE_NAME = TransparentProxy;
+				PRODUCT_NAME = "$(PRODUCT_BUNDLE_IDENTIFIER)";
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = Provider/LabAuditToken.h;
+			};
+			name = Debug;
+		};
+		218E78B3137FCB0516D23C79 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Host/Lab.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Host/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy.lab;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		295FE101284529F6105909AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Provider/Proxy.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Provider/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = "-lbsm";
+				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy.lab.proxy;
+				PRODUCT_MODULE_NAME = TransparentProxy;
+				PRODUCT_NAME = "$(PRODUCT_BUNDLE_IDENTIFIER)";
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = Provider/LabAuditToken.h;
+			};
+			name = Release;
+		};
+		631CDA6923108B271D2B7586 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Host/Lab.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Host/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy.lab;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		66938DF3CEAC8931C1EFDFB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 5;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LAB_NETWORK_EXTENSION_TYPE = "app-proxy-provider-systemextension";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = NO;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		8893B2EEF76057C342B1BFC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 5;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LAB_NETWORK_EXTENSION_TYPE = "app-proxy-provider";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = NO;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DA12BF1C0ED7D6628347EAD5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy.lab.probe;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E2943AE5033F02CB23A8100A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy.lab.probe;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		24D916F60CC0E383D9565D10 /* Build configuration list for PBXNativeTarget "TransparentProxy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0031FB5E8021B6FDA6B8FB6E /* Debug */,
+				295FE101284529F6105909AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		6FE3BF9006D339467A1691A5 /* Build configuration list for PBXNativeTarget "AppRoutingLab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				218E78B3137FCB0516D23C79 /* Debug */,
+				631CDA6923108B271D2B7586 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		971559F69D38B60055BB4CA6 /* Build configuration list for PBXNativeTarget "RoutingProbe" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA12BF1C0ED7D6628347EAD5 /* Debug */,
+				E2943AE5033F02CB23A8100A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F82E8DCE372ED25979E44C9F /* Build configuration list for PBXProject "AppRoutingLab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8893B2EEF76057C342B1BFC5 /* Debug */,
+				66938DF3CEAC8931C1EFDFB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 31970708A7921E1CB59532C2 /* Project object */;
+}

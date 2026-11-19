@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleName</key>
+    <string>App Routing Lab Proxy</string>
+    <key>CFBundlePackageType</key>
+    <string>SYSX</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(MARKETING_VERSION)</string>
+    <key>CFBundleVersion</key>
+    <string>$(CURRENT_PROJECT_VERSION)</string>
+    <key>NSSystemExtensionUsageDescription</key>
+    <string>App Routing Lab observes test TCP and UDP flows to its lab endpoint and hands them back to macOS.</string>
+    <key>NetworkExtension</key>
+    <dict>
+        <key>NEMachServiceName</key>
+        <string>$(TeamIdentifierPrefix)com.xwkj.tunnelproxy.lab.proxy</string>
+        <key>NEProviderClasses</key>
+        <dict>
+            <key>com.apple.networkextension.app-proxy</key>
+            <string>$(PRODUCT_MODULE_NAME).ProxyProvider</string>
+        </dict>
+    </dict>
+</dict>
+</plist>

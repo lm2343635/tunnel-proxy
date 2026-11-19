@@ -47,6 +47,27 @@ enum KeychainStore { static func deleteSecret(for id: UUID) {} }
         try check(server.effectiveRouting.mode == .automatic, "old profiles default to automatic")
         let roundTrip = try JSONDecoder().decode(ServerProfile.self, from: JSONEncoder().encode(server))
         try check(roundTrip == server, "profile round trip preserves legacy data")
+        let legacyApp = #"""
+        {
+          "identity": {"team":"test","identifier":"example.app"},
+          "name":"Example","directory":"file:///Applications/Example.app",
+          "bundledHelpers":[],"policy":"proxyListed","domains":["example.com"]
+        }
+        """#
+        let app = try JSONDecoder().decode(RoutingApp.self, from: Data(legacyApp.utf8))
+        try check(app.isEnabled, "existing app rules default to enabled")
+        var paused = app
+        paused.isEnabled = false
+        let other = RoutingApp(identity: .init(team: "test", identifier: "other.app"),
+                               name: "Other", directory: app.directory, bundledHelpers: [])
+        let rules = RoutingRules(apps: [paused, other])
+        let saved = try JSONDecoder().decode(RoutingRules.self, from: JSONEncoder().encode(rules))
+        try check(saved == rules, "paused app and its policy survive persistence")
+        try check(saved.providerRules.apps == [other] && saved.providerRules.version == saved.version,
+                  "the provider receives only enabled apps and can confirm the rules version")
+        var resumed = saved
+        resumed.apps[0].isEnabled = true
+        try check(resumed.providerRules.apps == [app, other], "resuming restores the saved app policy")
         var config = TunnelConfig()
         config.socksPort = 19080; config.httpProxyPort = 19118
         if CommandLine.arguments.contains("--live") {

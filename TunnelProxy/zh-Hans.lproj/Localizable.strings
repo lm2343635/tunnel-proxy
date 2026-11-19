@@ -240,3 +240,5 @@
 "SOCKS port is occupied by another process" = "SOCKS 端口被其他进程占用";
 "Automatic path recovery" = "自动恢复连接路径";
 "Automatic mode includes path recovery." = "自动模式会持续恢复可用的连接路径。";
+
+"App Routing" = "应用分流";

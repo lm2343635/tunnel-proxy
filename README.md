@@ -21,6 +21,22 @@ open ~/Library/Developer/Xcode/DerivedData/TunnelProxy-*/Build/Products/Debug/Tu
 
 Or open `TunnelProxy.xcodeproj` in Xcode and press ⌘R. Requires Xcode 15+ and macOS 14+.
 
+## Per-app routing
+
+Install TunnelProxy in Applications and connect to your SSH server. In **App
+Routing**, add a signed desktop application and save its policy. Choose **Per-App
+Routing** and allow the TunnelProxy network extension and proxy configuration
+when macOS asks. Open or relaunch the selected app after the rules are active
+to start new connections. The routing view shows the extension's decisions for
+recent connections.
+
+For Claude Desktop, add `Claude.app` and choose **Proxy All**. The extension
+recognizes the signed main app, its bundled Helpers and Claude Code processes
+whose ancestry can be verified back to the desktop app. External TCP uses the
+SSH SOCKS listener. UDP that requires the tunnel is blocked. Loopback and
+local-link traffic use the system network. For a trial with the other proxies
+off, keep TunnelProxy's own SSH connection running.
+
 ## Automatic SSH routing
 
 Server profiles default to **Automatic**, including profiles saved by older builds.
@@ -61,10 +77,12 @@ data directory and clean up their own child processes. They never install the ap
 
 ## Release (signed DMG)
 
-`release.sh` archives, exports a Developer ID-signed `.app` (team `X92HAV9XYP`),
-verifies the signature of the app **and** the nested bundled privoxy, then builds
-and signs a DMG at `build/TunnelProxy-<version>.dmg` with an `/Applications`
-symlink for drag-install.
+`release.sh` archives the app and its routing system extension, then exports both
+with Developer ID signatures (team `X92HAV9XYP`). Xcode needs access to the
+team to prepare provisioning profiles for `com.xwkj.tunnelproxy` and
+`com.xwkj.tunnelproxy.approuting`. The script checks the signatures and network
+extension entitlements, then creates `build/TunnelProxy-<version>.dmg` with an
+`Applications` shortcut for drag-install. Earlier DMGs remain in `build/`.
 
 ```bash
 ./release.sh                      # signed DMG (not notarized)

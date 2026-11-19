@@ -39,10 +39,12 @@ EXPORT_OPTIONS="ExportOptions.plist"
 SIGN_IDENTITY="Developer ID Application: Hubei Kabocha Network Technology Co., Ltd. (X92HAV9XYP)"
 
 BUILD_DIR="$SCRIPT_DIR/build"
-ARCHIVE_PATH="$BUILD_DIR/$APP_NAME.xcarchive"
-EXPORT_DIR="$BUILD_DIR/export"
+mkdir -p "$BUILD_DIR"
+WORK_DIR="$(mktemp -d "$BUILD_DIR/release.XXXXXX")"
+ARCHIVE_PATH="$WORK_DIR/$APP_NAME.xcarchive"
+EXPORT_DIR="$WORK_DIR/export"
 APP_PATH="$EXPORT_DIR/$APP_NAME.app"
-DMG_STAGING="$BUILD_DIR/dmg"
+DMG_STAGING="$WORK_DIR/dmg"
 
 # Read the version from the built app later; default here for the filename.
 VERSION="${VERSION:-}"
@@ -53,12 +55,8 @@ fail() { printf '\033[1;31merror:\033[0m %s\n' "$*" >&2; exit 1; }
 
 # ---- Preflight -------------------------------------------------------------
 command -v xcodebuild >/dev/null || fail "xcodebuild not found"
-security find-identity -v -p codesigning | grep -q "X92HAV9XYP" \
+security find-identity -v -p codesigning | grep -F "$SIGN_IDENTITY" >/dev/null \
     || fail "Developer ID Application identity (X92HAV9XYP) not found in keychain"
-
-log "Cleaning previous build output"
-rm -rf "$BUILD_DIR"
-mkdir -p "$BUILD_DIR"
 
 # ---- Archive ---------------------------------------------------------------
 log "Archiving $SCHEME ($CONFIGURATION)…"
@@ -67,20 +65,25 @@ xcodebuild archive \
     -scheme "$SCHEME" \
     -configuration "$CONFIGURATION" \
     -archivePath "$ARCHIVE_PATH" \
+    -derivedDataPath "$WORK_DIR/DerivedData" \
     -destination 'generic/platform=macOS' \
+    -allowProvisioningUpdates \
     CODE_SIGN_STYLE=Automatic \
+    'CODE_SIGN_IDENTITY=Apple Development' \
+    TP_NETWORK_EXTENSION_TYPE=app-proxy-provider \
     DEVELOPMENT_TEAM=X92HAV9XYP \
-    | grep -E "Archive|Signing|error:|warning:.*\.swift" || true
+    >"$WORK_DIR/archive.log" 2>&1 || { tail -60 "$WORK_DIR/archive.log" >&2; fail "archive failed"; }
 [ -d "$ARCHIVE_PATH" ] || fail "archive failed — no .xcarchive produced"
 ok "Archived: $ARCHIVE_PATH"
 
 # ---- Export ----------------------------------------------------------------
-log "Exporting Developer ID app…"
+log "Exporting Developer ID app and system extension…"
 xcodebuild -exportArchive \
     -archivePath "$ARCHIVE_PATH" \
     -exportOptionsPlist "$EXPORT_OPTIONS" \
     -exportPath "$EXPORT_DIR" \
-    | grep -E "Export|error:" || true
+    -allowProvisioningUpdates \
+    >"$WORK_DIR/export.log" 2>&1 || { tail -60 "$WORK_DIR/export.log" >&2; fail "Developer ID export failed"; }
 [ -d "$APP_PATH" ] || fail "export failed — no .app at $APP_PATH"
 ok "Exported: $APP_PATH"
 
@@ -89,12 +92,22 @@ if [ -z "$VERSION" ]; then
     VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \
         "$APP_PATH/Contents/Info.plist" 2>/dev/null || echo 1.0)"
 fi
-DMG_PATH="$BUILD_DIR/$APP_NAME-$VERSION.dmg"
+DMG_NAME="$APP_NAME-$VERSION.dmg"
+DMG_PATH="$WORK_DIR/$DMG_NAME"
 
 # ---- Verify signature ------------------------------------------------------
 log "Verifying code signature…"
 codesign --verify --deep --strict --verbose=2 "$APP_PATH" \
     || fail "signature verification failed"
+EXT_PATH="$APP_PATH/Contents/Library/SystemExtensions/com.xwkj.tunnelproxy.approuting.systemextension"
+EXPECTED_NE=app-proxy-provider-systemextension
+for bundle in "$APP_PATH" "$EXT_PATH"; do
+    codesign --verify --strict "$bundle"
+    codesign -d --entitlements - --xml "$bundle" >"$WORK_DIR/entitlements.plist"
+    [[ "$(/usr/libexec/PlistBuddy -c 'Print :com.apple.developer.networking.networkextension:0' "$WORK_DIR/entitlements.plist")" == "$EXPECTED_NE" ]] \
+        || fail "wrong Network Extension entitlement in $bundle"
+    [ -s "$bundle/Contents/embedded.provisionprofile" ] || fail "missing provisioning profile in $bundle"
+done
 # Gatekeeper assessment (will note 'rejected' until notarized — that's expected here).
 spctl --assess --type execute --verbose=4 "$APP_PATH" 2>&1 | sed 's/^/    /' || true
 ok "Signed by: $(codesign -dvv "$APP_PATH" 2>&1 | grep '^Authority' | head -1 | sed 's/Authority=//')"
@@ -122,13 +135,11 @@ fi
 
 # ---- Build the DMG ---------------------------------------------------------
 log "Building DMG…"
-rm -rf "$DMG_STAGING"
 mkdir -p "$DMG_STAGING"
 # Copy the app and add an /Applications symlink for drag-to-install.
 ditto "$APP_PATH" "$DMG_STAGING/$APP_NAME.app"
 ln -s /Applications "$DMG_STAGING/Applications"
 
-rm -f "$DMG_PATH"
 hdiutil create \
     -volname "$APP_NAME" \
     -srcfolder "$DMG_STAGING" \
@@ -148,7 +159,8 @@ if [ "$DO_NOTARIZE" -eq 1 ]; then
     if notarize "$DMG_PATH"; then
         log "Stapling notarization ticket…"
         xcrun stapler staple "$DMG_PATH"
-        xcrun stapler validate "$DMG_PATH" && ok "DMG notarized & stapled"
+        xcrun stapler validate "$DMG_PATH"
+        ok "DMG notarized & stapled"
         # Gatekeeper should now accept it.
         spctl --assess --type open --context context:primary-signature \
             --verbose=4 "$DMG_PATH" 2>&1 | sed 's/^/    /' || true
@@ -158,6 +170,9 @@ if [ "$DO_NOTARIZE" -eq 1 ]; then
 fi
 
 # ---- Done ------------------------------------------------------------------
+hdiutil verify "$DMG_PATH" >/dev/null
+mv -f "$DMG_PATH" "$BUILD_DIR/$DMG_NAME"
+DMG_PATH="$BUILD_DIR/$DMG_NAME"
 echo
 ok "Release ready:"
 printf '   %s\n' "$DMG_PATH"

@@ -69,6 +69,7 @@ struct UnifiedWindowView: View {
     private var tabContent: some View {
         switch tab {
         case .connection: ConnectionTab()
+        case .appRouting: AppRoutingView(routing: controller.appRouting)
         case .servers:    ServersView()
         case .logs:       LogsView()
         case .stats:      StatisticsView()
@@ -95,6 +96,7 @@ private struct Sidebar: View {
 
     private let items: [Item] = [
         .init(tab: .connection, title: "Connection", symbol: "bolt.horizontal.circle"),
+        .init(tab: .appRouting, title: "App Routing", symbol: "point.3.connected.trianglepath.dotted"),
         .init(tab: .servers,    title: "Servers",    symbol: "server.rack"),
         .init(tab: .logs,       title: "Logs",       symbol: "doc.plaintext"),
         .init(tab: .stats,      title: "Statistics", symbol: "chart.bar"),

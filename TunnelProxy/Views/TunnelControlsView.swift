@@ -105,14 +105,7 @@ struct TunnelControlsView: View {
 
     private var optionsTile: some View {
         HStack(spacing: 8) {
-            OptionCard(title: "Route Mac traffic",
-                       isOn: .constant(controller.systemSocksOn),
-                       onTap: { newValue in
-                           guard newValue != controller.systemSocksOn else { return }
-                           controller.systemSocksOn = newValue
-                           Task { await controller.toggleSystemSocks(on: newValue) }
-                       },
-                       titleSize: 11.5, captionSize: 10)
+            ProxyModeSummary { openMain(tab: .appRouting) }
             OptionCard(title: "Auto-reconnect",
                        caption: controller.reconnectEnabled
                            ? controller.automaticRouting ? String(localized: "Automatic path recovery") : String(localized: "Watchdog · On")

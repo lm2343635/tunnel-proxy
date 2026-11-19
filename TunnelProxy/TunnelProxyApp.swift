@@ -1,6 +1,16 @@
 import SwiftUI
 
 @main
+enum TunnelProxyEntry {
+    @MainActor static func main() {
+        let arguments = CommandLine.arguments
+        if arguments.dropFirst().first == SSHTransport.argument {
+            exit(SSHTransport.run(arguments: Array(arguments.dropFirst(2))))
+        }
+        TunnelProxyApp.main()
+    }
+}
+
 struct TunnelProxyApp: App {
     @StateObject private var controller = TunnelController()
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
@@ -128,6 +138,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ notification: Notification) {
         AppDelegate.onTerminate?()
     }
+
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard let controller = AppDelegate.controller else { return .terminateNow }
+        Task { @MainActor in
+            let ready = await controller.prepareToQuit()
+            if !ready {
+                let alert = NSAlert()
+                alert.messageText = routingText("Routing state unknown")
+                alert.informativeText = routingText("Disable app routing before quitting, then try again.")
+                alert.runModal()
+            }
+            sender.reply(toApplicationShouldTerminate: ready)
+        }
+        return .terminateLater
+    }
 }
 
 /// The status-item label. `MenuBarExtra` clips a multi-line SwiftUI label to the
@@ -245,14 +270,25 @@ struct TunnelCommands: Commands {
 
             Divider()
 
-            Toggle("macOS SOCKS proxy", isOn: Binding(
-                get: { controller.systemSocksOn },
-                set: { newValue in
-                    guard newValue != controller.systemSocksOn else { return }
-                    controller.systemSocksOn = newValue
-                    Task { await controller.toggleSystemSocks(on: newValue) }
+            Menu(routingText("Proxy Mode")) {
+                ForEach(ProxyMode.allCases) { mode in
+                    Button {
+                        if mode == .appRouting {
+                            controller.requestedTab = .appRouting
+                            openWindow(id: "main")
+                            TunnelUI.activateApp()
+                        }
+                        Task { await controller.chooseProxyMode(mode) }
+                    } label: {
+                        if controller.proxyMode == mode && (mode != .appRouting || controller.appRouting.confirmed) {
+                            Label(mode.label, systemImage: "checkmark")
+                        } else {
+                            Text(mode.label)
+                        }
+                    }
                 }
-            ))
+            }
+            .disabled(controller.isBusy || controller.appRouting.busy)
             Toggle("Auto-reconnect (watchdog)", isOn: $controller.watchdogEnabled)
             Toggle("Show network speed", isOn: $controller.showSpeed)
         }
@@ -261,6 +297,11 @@ struct TunnelCommands: Commands {
         // the app's tabs + the menu-bar-icon toggle. Logs/Statistics are now tabs
         // of the main window, so these select the tab and raise the window.
         CommandGroup(after: .sidebar) {
+            Button(routingText("App Routing")) {
+                controller.requestedTab = .appRouting
+                openWindow(id: "main")
+                TunnelUI.activateApp()
+            }
             Button("Logs") {
                 controller.requestedTab = .logs
                 openWindow(id: "main")

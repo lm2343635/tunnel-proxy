@@ -15,8 +15,11 @@ swiftc -module-cache-path "$ROUTING_TEST_ROOT/module-cache" -parse-as-library \
   TunnelProxy/Controllers/ServerProfile.swift \
   TunnelProxy/Controllers/TunnelConfig.swift \
   TunnelProxy/Controllers/SSHRoutePlanner.swift \
+  TunnelProxy/Controllers/SSHTransport.swift \
   TunnelProxy/Controllers/TunnelEngine.swift \
   TunnelProxy/Controllers/ProcessRunner.swift \
   TunnelProxy/Controllers/PortInspector.swift \
+  TunnelProxy/AppRouting/RoutingProcess.swift \
+  TunnelProxy/AppRouting/RoutingRules.swift \
   tests/RoutingHarness.swift -o "$ROUTING_TEST_ROOT/check"
 "$ROUTING_TEST_ROOT/check" "$@"
