@@ -19,6 +19,8 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXBuildFile section */
+		A20000000000000000000001 = {isa = PBXBuildFile; fileRef = B20000000000000000000001; };
+		A20000000000000000000002 = {isa = PBXBuildFile; fileRef = B20000000000000000000002; };
 		CA0000010000000000000001 /* SSHRoutePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0000020000000000000002; };
 		7066A8D746E84105888AFBD7 /* SSHTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51868FCBAA12419AB97F08B4; };
 		A1000001000000000000001 /* TunnelProxyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000001000000000000001 /* TunnelProxyApp.swift */; };
@@ -65,7 +67,9 @@
 		BB8F28263007D9C1003B52E2 /* logs.svg in Resources */ = {isa = PBXBuildFile; fileRef = BB8F28183007D9C1003B52E2 /* logs.svg */; };
 		BB8F28273007D9C1003B52E2 /* traffic-stats-plan.md in Resources */ = {isa = PBXBuildFile; fileRef = BB8F281F3007D9C1003B52E2 /* traffic-stats-plan.md */; };
 		BB8F28283007D9C1003B52E2 /* menu-bar-disconnected.svg in Resources */ = {isa = PBXBuildFile; fileRef = BB8F281A3007D9C1003B52E2 /* menu-bar-disconnected.svg */; };
+		0CB71A7762EA4DC79B49DCE3 /* RoutingHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0D3292F5814C9C814EC4B7; };
 		3E66A9DC37365098DFE1A7ED /* RoutingRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B5657BFB01572042B73E67; };
+		C7756CAD2F654989AD363E3C /* RoutingHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0D3292F5814C9C814EC4B7; };
 		960BD12269D649B92F41FA42 /* RoutingRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B5657BFB01572042B73E67; };
 		67E4D12C870A87FEA5EDAF79 /* RoutingProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE72D1DDDA99187208C4F31; };
 		D1E241D562264BAE383C6C3D /* RoutingProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE72D1DDDA99187208C4F31; };
@@ -77,6 +81,7 @@
 		20F08CD57D24EC64809F6B54 /* RoutingAttribution.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF5BEE57A30836A533DBD57; };
 		72BC977F59C1AA89574B2081 /* RoutingDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1433266ECB6A41576825A8C; };
 		31075E254AE939604CAF72B3 /* RoutingTCPRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6917AB36C01E8DDE7CF4BF66; };
+		A447D929CCBF4DA1A8593D6C /* RoutingSniffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8894DA2B6485FB40DD12C; };
 		4457990AA880D5A58EFCC9C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61A146FF648CA6A21AA7BB7; };
 		128D118182FB1138DF644072 = {isa = PBXBuildFile; fileRef = 250270099DD813EA953AD9FD; };
 		26269190D7A3F5B3A16A88FE = {isa = PBXBuildFile; fileRef = B4E640FC7E280FC0ECEBCB6D; };
@@ -86,6 +91,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B20000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelSpeedTest.swift; sourceTree = "<group>"; };
+		B20000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedTestView.swift; sourceTree = "<group>"; };
 		CA0000020000000000000002 /* SSHRoutePlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHRoutePlanner.swift; sourceTree = "<group>"; };
 		51868FCBAA12419AB97F08B4 /* SSHTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHTransport.swift; sourceTree = "<group>"; };
 		B1000001000000000000001 /* TunnelProxyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelProxyApp.swift; sourceTree = "<group>"; };
@@ -136,6 +143,7 @@
 		BB8F281F3007D9C1003B52E2 /* traffic-stats-plan.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "traffic-stats-plan.md"; sourceTree = "<group>"; };
 		V100000000000000000002 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		V100000000000000000003 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		BD0D3292F5814C9C814EC4B7 /* RoutingHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TunnelProxy/AppRouting/RoutingHistoryStore.swift"; sourceTree = SOURCE_ROOT; };
 		E1B5657BFB01572042B73E67 /* RoutingRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TunnelProxy/AppRouting/RoutingRules.swift"; sourceTree = SOURCE_ROOT; };
 		3EE72D1DDDA99187208C4F31 /* RoutingProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TunnelProxy/AppRouting/RoutingProcess.swift"; sourceTree = SOURCE_ROOT; };
 		5426A921D81566C7C9101CC6 /* RoutingSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TunnelProxy/AppRouting/RoutingSigning.swift"; sourceTree = SOURCE_ROOT; };
@@ -145,6 +153,7 @@
 		DCF5BEE57A30836A533DBD57 /* RoutingAttribution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TunnelProxyRoutingExtension/RoutingAttribution.swift"; sourceTree = SOURCE_ROOT; };
 		E1433266ECB6A41576825A8C /* RoutingDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TunnelProxyRoutingExtension/RoutingDestination.swift"; sourceTree = SOURCE_ROOT; };
 		6917AB36C01E8DDE7CF4BF66 /* RoutingTCPRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TunnelProxyRoutingExtension/RoutingTCPRelay.swift"; sourceTree = SOURCE_ROOT; };
+		CFB8894DA2B6485FB40DD12C /* RoutingSniffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TunnelProxyRoutingExtension/RoutingSniffer.swift"; sourceTree = SOURCE_ROOT; };
 		A61A146FF648CA6A21AA7BB7 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TunnelProxyRoutingExtension/main.swift"; sourceTree = SOURCE_ROOT; };
 		E17E7C810528D9BF87B75120 = {isa = PBXFileReference; explicitFileType = wrapper.system-extension; path = com.xwkj.tunnelproxy.approuting.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
 		577CC2F3B901FFBB24106E97 = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en"; path = "TunnelProxy/en.lproj/AppRouting.strings"; sourceTree = SOURCE_ROOT; };
@@ -231,6 +240,7 @@
 				B100000E00000000000000E /* AppPaths.swift */,
 				B100000F00000000000000F /* TunnelConfig.swift */,
 				B100001100000000000011 /* ServerProfile.swift */,
+				B20000000000000000000001 /* TunnelSpeedTest.swift */,
 				B100001200000000000012 /* KeychainStore.swift */,
 				B100001500000000000015 /* NetworkServices.swift */,
 				B100001700000000000017 /* SpeedMonitor.swift */,
@@ -263,6 +273,7 @@
 				B100002200000000000022 /* TunnelControlsView.swift */,
 				B100002300000000000023 /* TunnelUI.swift */,
 				B1000007000000000000007 /* SettingsView.swift */,
+				B20000000000000000000002 /* SpeedTestView.swift */,
 				B100001300000000000013 /* ServersView.swift */,
 				B1000008000000000000008 /* LogsView.swift */,
 				B100001A0000000000001A /* ManualView.swift */,
@@ -281,7 +292,7 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		C76820C54532069BC9459764 = {isa = PBXGroup; children = (E1B5657BFB01572042B73E67, 3EE72D1DDDA99187208C4F31, 5426A921D81566C7C9101CC6, BA0A2E40B87D3E991BB5C64E, A641226EDB05E0B4BDC03A38, 7CEC7B72DA96840AC4FECC52, DCF5BEE57A30836A533DBD57, E1433266ECB6A41576825A8C, 6917AB36C01E8DDE7CF4BF66, A61A146FF648CA6A21AA7BB7, 250270099DD813EA953AD9FD, B4E640FC7E280FC0ECEBCB6D, 5B4CC750FB090FB539D4FD94, EE05CA0B584D8157286256F8, ); name = "App Routing"; sourceTree = "<group>"; };
+		C76820C54532069BC9459764 = {isa = PBXGroup; children = (E1B5657BFB01572042B73E67, BD0D3292F5814C9C814EC4B7, 3EE72D1DDDA99187208C4F31, 5426A921D81566C7C9101CC6, BA0A2E40B87D3E991BB5C64E, A641226EDB05E0B4BDC03A38, 7CEC7B72DA96840AC4FECC52, DCF5BEE57A30836A533DBD57, E1433266ECB6A41576825A8C, 6917AB36C01E8DDE7CF4BF66, CFB8894DA2B6485FB40DD12C, A61A146FF648CA6A21AA7BB7, 250270099DD813EA953AD9FD, B4E640FC7E280FC0ECEBCB6D, 5B4CC750FB090FB539D4FD94, EE05CA0B584D8157286256F8, ); name = "App Routing"; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -406,6 +417,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E66A9DC37365098DFE1A7ED,
+				0CB71A7762EA4DC79B49DCE3,
 				67E4D12C870A87FEA5EDAF79,
 				E4562FC68001D6E8FFAA95A9,
 				ABA239ADF983B4D17A36AC42,
@@ -433,6 +445,8 @@
 				A100002200000000000022 /* TunnelControlsView.swift in Sources */,
 				A100002300000000000023 /* TunnelUI.swift in Sources */,
 				A1000007000000000000007 /* SettingsView.swift in Sources */,
+				A20000000000000000000001 /* TunnelSpeedTest.swift in Sources */,
+				A20000000000000000000002 /* SpeedTestView.swift in Sources */,
 				A100001300000000000013 /* ServersView.swift in Sources */,
 				A1000008000000000000008 /* LogsView.swift in Sources */,
 				A100001A0000000000001A /* ManualView.swift in Sources */,
@@ -446,7 +460,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E3AFE5F77DC6127D05B69E3D = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (960BD12269D649B92F41FA42, D1E241D562264BAE383C6C3D, FFD2C727AB44FB302E6ECD90, C605905E7C9BB5E088C07165, 20F08CD57D24EC64809F6B54, 72BC977F59C1AA89574B2081, 31075E254AE939604CAF72B3, 4457990AA880D5A58EFCC9C1, ); runOnlyForDeploymentPostprocessing = 0; };
+		E3AFE5F77DC6127D05B69E3D = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (960BD12269D649B92F41FA42, C7756CAD2F654989AD363E3C, D1E241D562264BAE383C6C3D, FFD2C727AB44FB302E6ECD90, C605905E7C9BB5E088C07165, 20F08CD57D24EC64809F6B54, 72BC977F59C1AA89574B2081, 31075E254AE939604CAF72B3, A447D929CCBF4DA1A8593D6C, 4457990AA880D5A58EFCC9C1, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -519,7 +533,7 @@
 				TP_NETWORK_EXTENSION_TYPE = app-proxy-provider;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = X92HAV9XYP;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -529,7 +543,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -549,7 +563,7 @@
 				TP_NETWORK_EXTENSION_TYPE = app-proxy-provider-systemextension;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = X92HAV9XYP;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -559,7 +573,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -573,13 +587,13 @@
 				CODE_SIGN_ENTITLEMENTS = TunnelProxyRoutingExtension/Routing.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = X92HAV9XYP;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TunnelProxyRoutingExtension/Info.plist;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				OTHER_LDFLAGS = "-lbsm";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy.approuting;
 				PRODUCT_MODULE_NAME = TunnelProxyRoutingExtension;
@@ -599,13 +613,13 @@
 				CODE_SIGN_ENTITLEMENTS = TunnelProxyRoutingExtension/Routing.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = X92HAV9XYP;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TunnelProxyRoutingExtension/Info.plist;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				OTHER_LDFLAGS = "-lbsm";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xwkj.tunnelproxy.approuting;
 				PRODUCT_MODULE_NAME = TunnelProxyRoutingExtension;

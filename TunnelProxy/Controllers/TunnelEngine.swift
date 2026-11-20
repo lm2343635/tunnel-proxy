@@ -1,6 +1,15 @@
 import Foundation
 import Darwin
 
+struct SpeedTestTarget {
+    let peer: RoutingSOCKSPeer
+    let server: String
+    let route: String
+    let controlSocket: String
+
+    var endpoint: String { "SSH" }
+}
+
 /// Natively manages the tunnel pipeline that the shell scripts used to run:
 ///
 ///   ssh -N -D <socksPort> <host>   (SOCKS5 proxy)
@@ -25,6 +34,7 @@ actor TunnelEngine {
 
     private var sshProcess: Process?
     private var sshCounters: SSHTransportCounters?
+    private var sshControlDirectory: String?
 
     func transportCounters() -> SSHTransportCounters? {
         sshProcess?.isRunning == true ? sshCounters : nil
@@ -38,6 +48,18 @@ actor TunnelEngine {
         let peer = RoutingSOCKSPeer(ssh: ssh, host: host, port: port)
         return peer.isCurrent ? peer : nil
     }
+    func speedTestTarget(serverID: UUID) async -> SpeedTestTarget? {
+        guard !establishing, activeRoute != nil, server.id == serverID,
+              let directory = sshControlDirectory, let peer = routingPeer(),
+              await processOwnsListener(sshProcess, port: Int(peer.port)),
+              !establishing, server.id == serverID, routingPeer() == peer else { return nil }
+        return SpeedTestTarget(peer: peer, server: server.displayName, route: routeMessage, controlSocket: directory + "/control")
+    }
+
+    func isCurrentSpeedTestTarget(_ target: SpeedTestTarget) -> Bool {
+        !establishing && activeRoute != nil && routingPeer() == target.peer
+    }
+
     private var privoxyProcess: Process?
     private var watchdogTask: Task<Void, Never>?
     private var config = TunnelConfig()
@@ -156,6 +178,18 @@ actor TunnelEngine {
             "-D", "\(config.socksPort)",
         ]
 
+        // Keep the control socket private and short enough for sockaddr_un.
+        // If creation fails, ordinary tunnel connections still work.
+        var template = Array("/tmp/tunnelproxy.XXXXXXXX".utf8CString)
+        if let directory = mkdtemp(&template) {
+            let path = String(cString: directory)
+            sshControlDirectory = path
+            args += ["-o", "ControlMaster=yes", "-o", "ControlPersist=no",
+                     "-o", "ControlPath=\(path)/control"]
+        } else {
+            args += ["-o", "ControlMaster=no", "-o", "ControlPath=none"]
+        }
+
         let counters = SSHTransportCounters()
         let command: String
         if let counters, let executable = Bundle.main.executableURL,
@@ -206,7 +240,7 @@ actor TunnelEngine {
             try p.run()
             sshProcess = p
         } catch {
-            sshCounters = nil
+            terminate(&sshProcess, name: "ssh")
             log("Failed to launch ssh: \(error.localizedDescription)")
         }
     }
@@ -580,7 +614,15 @@ actor TunnelEngine {
     // MARK: - Process helpers
 
     private func terminate(_ process: inout Process?, name: String) {
-        if name == "ssh" { sshCounters = nil }
+        defer {
+            if name == "ssh" {
+                sshCounters = nil
+                if let directory = sshControlDirectory {
+                    try? FileManager.default.removeItem(atPath: directory)
+                    sshControlDirectory = nil
+                }
+            }
+        }
         guard let p = process else { return }
         if p.isRunning {
             p.terminate()

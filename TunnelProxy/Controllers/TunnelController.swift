@@ -6,7 +6,7 @@ import SwiftUI
 /// The tabs of the unified main window. Also used to route "open the window on
 /// tab X" requests from the popover and app menus (see `requestedTab`).
 enum WindowTab: String {
-    case connection, appRouting, servers, logs, stats, settings, tools
+    case connection, appRouting, servers, logs, stats, settings, speedTest, tools
 }
 
 /// High-level connection state used to drive the menu bar icon and popover.
@@ -36,6 +36,7 @@ final class TunnelController: ObservableObject {
     // Published UI state.
     @Published private(set) var state: ConnectionState = .disconnected {
         didSet {
+            if oldValue == .connected && state != .connected { speedTest.cancel(connectionChanged: true) }
             updateBlink()
             syncRecorderState()
             syncLatencyProbing()
@@ -68,7 +69,7 @@ final class TunnelController: ObservableObject {
     @Published var requestedTab: WindowTab?
     /// User intent to route all system traffic through the tunnel's SOCKS proxy.
     /// Persisted so it survives relaunches; the *actual* OS proxy is applied on
-    /// connect and cleared on disconnect (see `applySystemSocks`).
+    /// connect and cleared on disconnect (see `applySystemProxy`).
     @Published var systemSocksOn: Bool {
         didSet { defaults.set(systemSocksOn, forKey: Keys.systemSocks) }
     }
@@ -147,6 +148,7 @@ final class TunnelController: ObservableObject {
     let speedMonitor: SpeedMonitor
     /// Persists traffic usage over time; feeds the Statistics window.
     let recorder = TrafficRecorder()
+    let speedTest = TunnelSpeedTest()
 
     let defaults = UserDefaults.standard
     private let engine: TunnelEngine
@@ -162,6 +164,7 @@ final class TunnelController: ObservableObject {
         static let proxyMode = "proxyMode"
         static let socksOwnerService = "ownedSystemSocksService"
         static let socksOwnerPort = "ownedSystemSocksPort"
+        static let socksOwnerHttpPort = "ownedSystemHttpProxyPort"
         static let showMenuBarIcon = "showMenuBarIcon"
         static let showDockStateIcon = "showDockStateIcon"
     }
@@ -188,7 +191,10 @@ final class TunnelController: ObservableObject {
         syncSampling()
         // Flush recorded traffic when the app quits (⌘Q or menu Quit).
         AppDelegate.onTerminate = { [weak self] in
-            MainActor.assumeIsolated { self?.recorder.shutdown() }
+            MainActor.assumeIsolated {
+                self?.speedTest.cancel()
+                self?.recorder.shutdown()
+            }
         }
         // Let the launch fallback reach us if the menu bar icon was hidden.
         AppDelegate.controller = self
@@ -222,6 +228,15 @@ final class TunnelController: ObservableObject {
     /// The currently selected server, if any.
     var selectedServer: ServerProfile? { config.selectedServer }
 
+    var canStartSpeedTest: Bool {
+        isConnected && selectedServer != nil
+    }
+
+    func startSpeedTest() {
+        guard canStartSpeedTest, let server = selectedServer else { return }
+        speedTest.start(engine: engine, serverID: server.id)
+    }
+
     // MARK: - Server management
 
     /// Add or update a server profile, storing its secret in the Keychain.
@@ -245,11 +260,13 @@ final class TunnelController: ObservableObject {
     }
 
     func deleteServer(_ serverID: UUID) {
+        if selectedServer?.id == serverID { speedTest.cancel(connectionChanged: true) }
         config.remove(serverID)   // also removes the Keychain secret
         saveConfig()
     }
 
     func selectServer(_ serverID: UUID) {
+        if selectedServer?.id != serverID { speedTest.cancel(connectionChanged: true) }
         config.selectedServerID = serverID
         saveConfig()
         refreshStatus()
@@ -285,7 +302,9 @@ final class TunnelController: ObservableObject {
             }
             routingTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    guard let self, self.proxyMode == .appRouting else { return }
+                    guard let self else { return }
+                    self.appRouting.maintainHistory()
+                    guard self.proxyMode == .appRouting else { return }
                     await self.appRouting.heartbeat(peer: self.engine.routingPeer())
                 }
             }
@@ -295,27 +314,28 @@ final class TunnelController: ObservableObject {
         }
     }
 
-    /// On launch, clear any stale OS SOCKS proxy left behind by a crash or a
-    /// non-graceful quit: if the proxy is actually enabled but no tunnel is up,
-    /// disabling it prevents a "no internet" state. The `systemSocksOn` intent
-    /// flag is untouched — a later connect re-applies it.
+    /// On launch, clear any stale OS proxy left behind by a crash or a
+    /// non-graceful quit: if SOCKS or HTTP/HTTPS is actually enabled but no
+    /// tunnel is up, disabling them prevents a "no internet" state. The
+    /// `systemSocksOn` intent flag is untouched — a later connect re-applies it.
     func reconcileSystemSocksState() {
         let service = config.networkService
         guard defaults.string(forKey: Keys.socksOwnerService) == service else { return }
         Task { [weak self] in
             guard let self else { return }
             let enabled = await Task.detached {
-                let r = ProcessRunner.run("/usr/sbin/networksetup",
-                                          ["-getsocksfirewallproxy", service], timeout: 10)
-                return r.stdout.range(of: #"Enabled:\s*Yes"#,
-                                      options: .regularExpression) != nil
+                ["-getsocksfirewallproxy", "-getwebproxy"].contains { get in
+                    let r = ProcessRunner.run("/usr/sbin/networksetup", [get, service], timeout: 10)
+                    return r.stdout.range(of: #"Enabled:\s*Yes"#,
+                                          options: .regularExpression) != nil
+                }
             }.value
             guard enabled else { return }
             // Only clear it if there is no app-owned local tunnel. Exit-IP is
             // telemetry: an ipify/DNS outage must not masquerade as tunnel death.
             let tunnelUp = await self.engine.checkHealth() != .down
             if !tunnelUp {
-                await self.applySystemSocks(on: false)
+                await self.applySystemProxy(on: false)
             }
         }
     }
@@ -485,7 +505,7 @@ final class TunnelController: ObservableObject {
             state = .connected
             lastConnected = Date()
             // Honor the persisted "route all traffic" intent now that we're up.
-            if systemSocksOn { await applySystemSocks(on: true) }
+            if systemSocksOn { await applySystemProxy(on: true) }
         case .tunnelOnly:
             state = .error(String(localized: "Tunnel OK but proxy failed"))
         case .down:
@@ -527,7 +547,7 @@ final class TunnelController: ObservableObject {
         // Always clear the *actual* OS SOCKS proxy so the machine keeps working
         // once the tunnel is gone — but leave the `systemSocksOn` intent flag on,
         // so the next connect re-applies it automatically.
-        if systemSocksOn { await applySystemSocks(on: false) }
+        if systemSocksOn { await applySystemProxy(on: false) }
         await engine.stop()
         if proxyMode == .appRouting { await appRouting.heartbeat(peer: nil) }
         state = .disconnected
@@ -588,24 +608,43 @@ final class TunnelController: ObservableObject {
         proxyModeError = nil
         defer { isBusy = false }
         let previous = proxyMode
-        if (previous == .global && mode == .appRouting) || (previous == .appRouting && mode == .global) {
-            proxyModeError = routingText("This switch cannot be verified. Choose Local Proxy Only first.")
-            return
-        }
+        // Global and Per-App Routing are two different transports and must never
+        // be live at the same time, but that only means the outgoing one has to
+        // be torn down *before* the incoming one starts — not that a direct
+        // switch needs a detour through Local Proxy Only. Every step is rolled
+        // back on failure so a failed switch never leaves the app claiming a mode
+        // whose transport is off.
         switch mode {
         case .appRouting:
+            if previous == .global {
+                guard await applySystemProxy(on: false) else {
+                    proxyModeError = routingText("Could not change proxy mode")
+                    return
+                }
+            }
             guard await appRouting.enable(using: await engine.routingPeer()) else {
+                if previous == .global { _ = await applySystemProxy(on: true) }
                 proxyModeError = appRouting.message
                 return
             }
         case .global:
-            if isConnected, !(await applySystemSocks(on: true)) {
+            if previous == .appRouting {
+                guard await appRouting.disable() else {
+                    proxyModeError = appRouting.message
+                    return
+                }
+            }
+            if isConnected, !(await applySystemProxy(on: true)) {
+                if previous == .appRouting { _ = await appRouting.enable(using: await engine.routingPeer()) }
                 proxyModeError = routingText("Could not change proxy mode")
                 return
             }
         case .local:
-            if previous == .appRouting, !(await appRouting.disable()) { return }
-            if previous == .global, !(await applySystemSocks(on: false)) {
+            if previous == .appRouting, !(await appRouting.disable()) {
+                proxyModeError = appRouting.message
+                return
+            }
+            if previous == .global, !(await applySystemProxy(on: false)) {
                 proxyModeError = routingText("Could not change proxy mode")
                 return
             }
@@ -635,7 +674,7 @@ final class TunnelController: ObservableObject {
         }
         guard !isBusy, !appRouting.busy else { return false }
         if proxyMode == .appRouting, !(await appRouting.disable()) { return false }
-        if systemSocksOn, !(await applySystemSocks(on: false)) { return false }
+        if systemSocksOn, !(await applySystemProxy(on: false)) { return false }
         await engine.stop()
         return true
     }
@@ -652,44 +691,96 @@ final class TunnelController: ObservableObject {
         await chooseProxyMode(on ? .global : .local)
     }
 
-    /// Push the SOCKS proxy state to `networksetup` without touching the
+    /// Push the system proxy state to `networksetup` without touching the
     /// `systemSocksOn` intent flag. Returns whether the change succeeded.
+    ///
+    /// Global mode sets a SOCKS proxy **and** an HTTP/HTTPS proxy:
+    ///
+    /// - SOCKS (`127.0.0.1:socksPort`) for apps that only speak SOCKS.
+    /// - HTTP/HTTPS (`127.0.0.1:httpProxyPort`, the bundled Privoxy) because a
+    ///   SOCKS client hands the proxy an *already resolved* address, so a
+    ///   poisoned/hijacked local DNS answer is dialled verbatim and the tunnel
+    ///   fails at the far end. An HTTP request or `CONNECT` carries the hostname,
+    ///   and Privoxy passes that hostname on to `ssh -D`, which resolves it on
+    ///   the server side. Chromium-based browsers (Chrome) and the ChatGPT /
+    ///   Claude desktop apps only reach their backends through this path on
+    ///   networks that tamper with DNS.
+    ///
+    /// `networksetup` needs no administrator rights here: it edits the current
+    /// user's own network settings.
     @discardableResult
-    private func applySystemSocks(on: Bool) async -> Bool {
+    private func applySystemProxy(on: Bool) async -> Bool {
         let ownedService = defaults.string(forKey: Keys.socksOwnerService)
-        let ownedPort = defaults.integer(forKey: Keys.socksOwnerPort)
+        let ownedSocks = defaults.integer(forKey: Keys.socksOwnerPort)
+        let ownedHTTP = defaults.integer(forKey: Keys.socksOwnerHttpPort)
         guard on || ownedService != nil else { return true }
         let service = on ? config.networkService : ownedService ?? config.networkService
-        let port = on ? config.socksPort : ownedPort
-        let networksetup = "/usr/sbin/networksetup"
+        let socksPort = on ? config.socksPort : ownedSocks
+        let httpPort = on ? config.httpProxyPort : ownedHTTP
 
         let result: CommandResult = await Task.detached {
-            if on {
-                let set = ProcessRunner.run(networksetup,
-                    ["-setsocksfirewallproxy", service, "127.0.0.1", "\(port)"], timeout: 20)
-                guard set.succeeded else { return set }
-                return ProcessRunner.run(networksetup,
-                    ["-setsocksfirewallproxystate", service, "on"], timeout: 20)
-            } else {
-                let saved = ProcessRunner.run(networksetup, ["-getsocksfirewallproxy", service], timeout: 10)
-                guard saved.succeeded else { return saved }
-                guard saved.stdout.contains("Server: 127.0.0.1"),
-                      saved.stdout.contains("Port: \(port)\n") || saved.stdout.hasSuffix("Port: \(port)") else { return saved }
-                return ProcessRunner.run(networksetup,
-                    ["-setsocksfirewallproxystate", service, "off"], timeout: 20)
-            }
+            on ? Self.turnOnSystemProxy(service: service, socksPort: socksPort, httpPort: httpPort)
+                : Self.turnOffSystemProxy(service: service, socksPort: socksPort, httpPort: httpPort)
         }.value
 
         if !result.succeeded {
-            NSLog("System SOCKS toggle failed: \(result.output)")
+            NSLog("System proxy toggle failed: \(result.output)")
         } else if on {
             defaults.set(service, forKey: Keys.socksOwnerService)
-            defaults.set(port, forKey: Keys.socksOwnerPort)
+            defaults.set(socksPort, forKey: Keys.socksOwnerPort)
+            defaults.set(httpPort, forKey: Keys.socksOwnerHttpPort)
         } else {
             defaults.removeObject(forKey: Keys.socksOwnerService)
             defaults.removeObject(forKey: Keys.socksOwnerPort)
+            defaults.removeObject(forKey: Keys.socksOwnerHttpPort)
         }
         return result.succeeded
+    }
+
+    private nonisolated static func turnOnSystemProxy(service: String, socksPort: Int, httpPort: Int) -> CommandResult {
+        let networksetup = "/usr/sbin/networksetup"
+        let writes: [[String]] = [
+            ["-setsocksfirewallproxy", service, "127.0.0.1", "\(socksPort)"],
+            ["-setsocksfirewallproxystate", service, "on"],
+            ["-setwebproxy", service, "127.0.0.1", "\(httpPort)"],
+            ["-setwebproxystate", service, "on"],
+            ["-setsecurewebproxy", service, "127.0.0.1", "\(httpPort)"],
+            ["-setsecurewebproxystate", service, "on"],
+        ]
+        var failure: CommandResult?
+        for args in writes {
+            let result = ProcessRunner.run(networksetup, args, timeout: 20)
+            if !result.succeeded, failure == nil { failure = result }
+        }
+        // A half-applied proxy set is worse than none: undo it before reporting.
+        if let failure {
+            _ = turnOffSystemProxy(service: service, socksPort: socksPort, httpPort: httpPort)
+            return failure
+        }
+        return CommandResult(exitCode: 0, stdout: "", stderr: "")
+    }
+
+    private nonisolated static func turnOffSystemProxy(service: String, socksPort: Int, httpPort: Int) -> CommandResult {
+        let networksetup = "/usr/sbin/networksetup"
+        let writes = [("-setsocksfirewallproxystate", "-getsocksfirewallproxy", socksPort),
+                      ("-setwebproxystate", "-getwebproxy", httpPort),
+                      ("-setsecurewebproxystate", "-getsecurewebproxy", httpPort)]
+        var failure: CommandResult?
+        for (set, get, port) in writes where points(atUs: get, service: service, port: port) {
+            let result = ProcessRunner.run(networksetup, [set, service, "off"], timeout: 20)
+            if !result.succeeded, failure == nil { failure = result }
+        }
+        return failure ?? CommandResult(exitCode: 0, stdout: "", stderr: "")
+    }
+
+    /// Only a proxy that still points at this app's own local listener is ours to
+    /// turn off; something the user configured themselves must survive a switch.
+    private nonisolated static func points(atUs get: String, service: String, port: Int) -> Bool {
+        guard port > 0 else { return false }
+        let saved = ProcessRunner.run("/usr/sbin/networksetup", [get, service], timeout: 10)
+        guard saved.succeeded else { return false }
+        return saved.stdout.contains("Server: 127.0.0.1")
+            && (saved.stdout.contains("Port: \(port)\n") || saved.stdout.hasSuffix("Port: \(port)"))
     }
 
     /// Turn off every proxy (HTTP, HTTPS, SOCKS, and PAC) for the configured

@@ -2,7 +2,9 @@
 #
 # Build a signed (and optionally notarized) DMG of Tunnel Proxy.
 #
-#   ./release.sh
+#   ./release.sh                           # legacy signed DMG
+#   ./release.sh 1.2.4                     # new build, sign and notarize
+#   ./release.sh --resume 8                # continue an existing build
 #
 # Signs with the Developer ID Application identity (team X92HAV9XYP). The bundled
 # privoxy binary + dylibs are re-signed during the build (see the "Sign bundled
@@ -31,6 +33,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+if [ "$#" -gt 0 ]; then
+    exec /usr/bin/python3 "$SCRIPT_DIR/release_workflow.py" "$@"
+fi
+
 PROJECT="TunnelProxy.xcodeproj"
 SCHEME="TunnelProxy"
 APP_NAME="TunnelProxy"
@@ -48,6 +54,15 @@ DMG_STAGING="$WORK_DIR/dmg"
 
 # Read the version from the built app later; default here for the filename.
 VERSION="${VERSION:-}"
+# The release workflow supplies both settings and a private output directory.
+RELEASE_VERSION="${TP_RELEASE_VERSION:-}"
+RELEASE_BUILD="${TP_RELEASE_BUILD:-}"
+RELEASE_OUTPUT="${TP_RELEASE_OUTPUT:-}"
+XCODE_VERSION_SETTINGS=()
+if [ -n "$RELEASE_OUTPUT" ]; then
+    XCODE_VERSION_SETTINGS=("MARKETING_VERSION=$RELEASE_VERSION" "CURRENT_PROJECT_VERSION=$RELEASE_BUILD")
+    VERSION="$RELEASE_VERSION-build$RELEASE_BUILD"
+fi
 
 log()  { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 ok()   { printf '\033[1;32m ✓\033[0m %s\n' "$*"; }
@@ -72,6 +87,7 @@ xcodebuild archive \
     'CODE_SIGN_IDENTITY=Apple Development' \
     TP_NETWORK_EXTENSION_TYPE=app-proxy-provider \
     DEVELOPMENT_TEAM=X92HAV9XYP \
+    ${XCODE_VERSION_SETTINGS[@]+"${XCODE_VERSION_SETTINGS[@]}"} \
     >"$WORK_DIR/archive.log" 2>&1 || { tail -60 "$WORK_DIR/archive.log" >&2; fail "archive failed"; }
 [ -d "$ARCHIVE_PATH" ] || fail "archive failed — no .xcarchive produced"
 ok "Archived: $ARCHIVE_PATH"
@@ -103,6 +119,13 @@ EXT_PATH="$APP_PATH/Contents/Library/SystemExtensions/com.xwkj.tunnelproxy.appro
 EXPECTED_NE=app-proxy-provider-systemextension
 for bundle in "$APP_PATH" "$EXT_PATH"; do
     codesign --verify --strict "$bundle"
+    if [ -n "$RELEASE_OUTPUT" ]; then
+        info_plist="$bundle/Contents/Info.plist"
+        [[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$info_plist")" == "$RELEASE_VERSION" ]] \
+            || fail "wrong release version in $bundle"
+        [[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$info_plist")" == "$RELEASE_BUILD" ]] \
+            || fail "wrong release build in $bundle"
+    fi
     codesign -d --entitlements - --xml "$bundle" >"$WORK_DIR/entitlements.plist"
     [[ "$(/usr/libexec/PlistBuddy -c 'Print :com.apple.developer.networking.networkextension:0' "$WORK_DIR/entitlements.plist")" == "$EXPECTED_NE" ]] \
         || fail "wrong Network Extension entitlement in $bundle"
@@ -128,7 +151,9 @@ notarize() {
 }
 
 DO_NOTARIZE=1
-if [ -z "${NOTARY_PROFILE:-}" ] && [ -z "${NOTARY_APPLE_ID:-}" ]; then
+if [ -n "$RELEASE_OUTPUT" ]; then
+    DO_NOTARIZE=0 # The release workflow records the submission and handles recovery.
+elif [ -z "${NOTARY_PROFILE:-}" ] && [ -z "${NOTARY_APPLE_ID:-}" ]; then
     DO_NOTARIZE=0
     log "No notary credentials set — skipping notarization (DMG will be signed but not notarized)."
 fi
@@ -171,13 +196,19 @@ fi
 
 # ---- Done ------------------------------------------------------------------
 hdiutil verify "$DMG_PATH" >/dev/null
-mv -f "$DMG_PATH" "$BUILD_DIR/$DMG_NAME"
-DMG_PATH="$BUILD_DIR/$DMG_NAME"
+if [ -n "$RELEASE_OUTPUT" ]; then
+    # An atomic link publishes the finished signed input without overwriting it.
+    ln "$DMG_PATH" "$RELEASE_OUTPUT/$DMG_NAME"
+    DMG_PATH="$RELEASE_OUTPUT/$DMG_NAME"
+else
+    mv -f "$DMG_PATH" "$BUILD_DIR/$DMG_NAME"
+    DMG_PATH="$BUILD_DIR/$DMG_NAME"
+fi
 echo
 ok "Release ready:"
 printf '   %s\n' "$DMG_PATH"
 du -h "$DMG_PATH" | awk '{print "   size: "$1}'
-if [ "$DO_NOTARIZE" -eq 0 ]; then
+if [ "$DO_NOTARIZE" -eq 0 ] && [ -z "$RELEASE_OUTPUT" ]; then
     echo
     echo "   Note: not notarized. To distribute without Gatekeeper warnings, set"
     echo "   NOTARY_PROFILE (or NOTARY_APPLE_ID/NOTARY_PASSWORD) and re-run."

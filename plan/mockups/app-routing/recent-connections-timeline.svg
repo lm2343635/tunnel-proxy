@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="672" viewBox="0 0 1120 672" role="img" aria-labelledby="title desc">
+<title id="title">App Routing · Recent Connections timeline</title><desc id="desc">Claude’s routing settings and recent connections occupy separate cards. The lower card shows a date-grouped timeline next to the selected event details.</desc>
+<rect x="0" y="0" width="1120" height="672" rx="0" fill="#111216" stroke="none"/>
+<rect x="10" y="10" width="1100" height="652" rx="15" fill="#18191d" stroke="#393a42"/>
+<rect x="11" y="11" width="183" height="650" rx="14" fill="#212227" stroke="none"/>
+<rect x="180" y="11" width="14" height="650" rx="0" fill="#212227" stroke="none"/>
+<rect x="194" y="11" width="1" height="650" rx="0" fill="#393a42" stroke="none"/>
+<circle cx="29" cy="29" r="5" fill="#ff625a"/>
+<circle cx="47" cy="29" r="5" fill="#ffbd44"/>
+<circle cx="65" cy="29" r="5" fill="#36c94e"/>
+<rect x="27" y="49" width="24" height="24" rx="6" fill="#2859a4" stroke="none"/>
+<text x="39" y="66" fill="#fff" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="750" text-anchor="middle">T</text>
+<text x="60" y="67" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="700" text-anchor="start">Tunnel Proxy</text>
+<path d="M0 8h3l2-4 3 7 2-3h4" transform="translate(32 93)" stroke="#b4b6bf" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="57" y="105" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="start">Connection</text>
+<rect x="21" y="120" width="163" height="30" rx="7" fill="#1563b5" stroke="none"/>
+<path d="M3 4l4 7 4-7M3 4h8" transform="translate(32 128)" stroke="#f4f4f6" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="57" y="140" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="600" text-anchor="start">App Routing</text>
+<path d="M1 2h12v5H1zM1 9h12v5H1z" transform="translate(32 163)" stroke="#b4b6bf" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="57" y="175" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="start">Servers</text>
+<path d="M2 1h10v14H2zM4 5h6M4 8h6M4 11h4" transform="translate(32 198)" stroke="#b4b6bf" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="57" y="210" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="start">Logs</text>
+<path d="M1 14V8h3v6zM6 14V5h3v9zM11 14V2h3v12z" transform="translate(32 233)" stroke="#b4b6bf" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="57" y="245" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="start">Statistics</text>
+<path d="M7 1v2M7 13v2M0 8h2M12 8h2M3 4l1 1M10 11l1 1M3 12l1-1M10 5l1-1M7 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" transform="translate(32 268)" stroke="#b4b6bf" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="57" y="280" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="start">Settings</text>
+<path d="M2 14l8-8M9 5l1-3 3-1-2 3 2 2 2-2-1 3-3 1M2 11l3 3" transform="translate(32 303)" stroke="#b4b6bf" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="57" y="315" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="500" text-anchor="start">Tools</text>
+<rect x="22" y="609" width="160" height="35" rx="8" fill="#25262b" stroke="#393a42"/>
+<circle cx="35" cy="626" r="4" fill="#83dfb3"/>
+<text x="46" y="631" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="start">Connected</text>
+<text x="171" y="631" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="500" text-anchor="end">167 ms</text>
+<text x="220" y="57" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="31" font-weight="700" text-anchor="start">App Routing</text>
+<rect x="220" y="79" width="862" height="52" rx="12" fill="#232429" stroke="#393a42"/>
+<text x="236" y="108" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="start">Proxy Mode</text>
+<rect x="323" y="89" width="117" height="29" rx="7" fill="#303138" stroke="none"/>
+<text x="381.5" y="108" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Local Proxy Only</text>
+<rect x="444" y="89" width="132" height="29" rx="7" fill="#233e5e" stroke="none"/>
+<text x="510.0" y="108" fill="#8bbfff" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Per-App Routing</text>
+<rect x="580" y="89" width="98" height="29" rx="7" fill="#303138" stroke="none"/>
+<text x="629.0" y="108" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Global Proxy</text>
+<rect x="220" y="147" width="183" height="494" rx="12" fill="#232429" stroke="#393a42"/>
+<text x="237" y="175" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="start">Applications</text>
+<rect x="355" y="154" width="30" height="29" rx="7" fill="#303138" stroke="none"/>
+<text x="370.0" y="173" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="middle">+</text>
+<rect x="231" y="195" width="160" height="46" rx="8" fill="#26394d" stroke="none"/>
+<rect x="240" y="206" width="24" height="24" rx="6" fill="#a75038" stroke="none"/>
+<text x="252" y="223" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="700" text-anchor="middle">C</text>
+<text x="273" y="223" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="start">Claude</text>
+<rect x="240" y="257" width="24" height="24" rx="6" fill="#305eaa" stroke="none"/>
+<text x="252" y="274" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="700" text-anchor="middle">G</text>
+<text x="273" y="274" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="start">Google Chrome</text>
+<rect x="419" y="147" width="663" height="106" rx="12" fill="#232429" stroke="#393a42"/>
+<text x="436" y="175" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="17" font-weight="700" text-anchor="start">Claude</text>
+<circle cx="956" cy="170" r="3" fill="#83dfb3"/>
+<text x="1064" y="175" fill="#83dfb3" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="end">Routing enabled</text>
+<rect x="436" y="188" width="629" height="1" rx="0" fill="#393a42" stroke="none"/>
+<text x="436" y="221" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" text-anchor="start">Connection Policy</text>
+<rect x="561" y="201" width="106" height="29" rx="7" fill="#303138" stroke="none"/>
+<text x="614.0" y="220" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Proxy All  ⌄</text>
+<rect x="964" y="201" width="101" height="29" rx="7" fill="#233e5e" stroke="none"/>
+<text x="1014.5" y="220" fill="#8bbfff" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Apply Rules</text>
+<rect x="419" y="268" width="663" height="373" rx="12" fill="#232429" stroke="#393a42"/>
+<text x="436" y="298" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="17" font-weight="700" text-anchor="start">Recent Connections · Claude</text>
+<text x="1065" y="297" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="400" text-anchor="end">Last 7 days · Up to 1,000 per app</text>
+<rect x="436" y="313" width="629" height="1" rx="0" fill="#393a42" stroke="none"/>
+<text x="437" y="338" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="650" text-anchor="start">Today · Nov 19</text>
+<rect x="511" y="357" width="1" height="107" rx="0" fill="#393a42" stroke="none"/>
+<text x="440" y="365" fill="#b4b6bf" font-family="Menlo, monospace" font-size="12" font-weight="400" text-anchor="start">22:16:28</text>
+<circle cx="511.5" cy="361" r="4" fill="#83dfb3"/>
+<text x="525" y="365" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="450" text-anchor="start">api.anthropic.com</text>
+<text x="788" y="365" fill="#83dfb3" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="end">Proxied</text>
+<rect x="430" y="378" width="370" height="32" rx="7" fill="#26394d" stroke="none"/>
+<rect x="430" y="383" width="2" height="22" rx="1" fill="#8bbfff" stroke="none"/>
+<text x="440" y="398" fill="#b4b6bf" font-family="Menlo, monospace" font-size="12" font-weight="400" text-anchor="start">22:15:41</text>
+<circle cx="511.5" cy="394" r="4" fill="#ffa2a6"/>
+<text x="525" y="398" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="start">telemetry.example.net</text>
+<text x="788" y="398" fill="#ffa2a6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="end">Blocked</text>
+<text x="440" y="431" fill="#b4b6bf" font-family="Menlo, monospace" font-size="12" font-weight="400" text-anchor="start">22:14:56</text>
+<circle cx="511.5" cy="427" r="4" fill="#83dfb3"/>
+<text x="525" y="431" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="450" text-anchor="start">cdn.example.net</text>
+<text x="788" y="431" fill="#83dfb3" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="end">Proxied</text>
+<text x="440" y="464" fill="#b4b6bf" font-family="Menlo, monospace" font-size="12" font-weight="400" text-anchor="start">22:13:22</text>
+<circle cx="511.5" cy="460" r="4" fill="#b4b6bf"/>
+<text x="525" y="464" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="450" text-anchor="start">192.168.1.10</text>
+<text x="788" y="464" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="end">Direct</text>
+<text x="437" y="517" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="650" text-anchor="start">Yesterday · Nov 18</text>
+<rect x="511" y="536" width="1" height="41" rx="0" fill="#393a42" stroke="none"/>
+<text x="440" y="544" fill="#b4b6bf" font-family="Menlo, monospace" font-size="12" font-weight="400" text-anchor="start">20:45:11</text>
+<circle cx="511.5" cy="540" r="4" fill="#83dfb3"/>
+<text x="525" y="544" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="450" text-anchor="start">api.anthropic.com</text>
+<text x="788" y="544" fill="#83dfb3" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="end">Proxied</text>
+<text x="440" y="577" fill="#b4b6bf" font-family="Menlo, monospace" font-size="12" font-weight="400" text-anchor="start">20:43:32</text>
+<circle cx="511.5" cy="573" r="4" fill="#83dfb3"/>
+<text x="525" y="577" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="450" text-anchor="start">cdn.example.net</text>
+<text x="788" y="577" fill="#83dfb3" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="end">Proxied</text>
+<rect x="437" y="594" width="356" height="1" rx="0" fill="#393a42" stroke="none"/>
+<text x="615" y="620" fill="#8bbfff" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="middle">Show earlier connections</text>
+<rect x="815" y="328" width="250" height="295" rx="9" fill="#1c1d21" stroke="#393a42"/>
+<text x="830" y="354" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="start">Connection Details</text>
+<rect x="830" y="366" width="65" height="24" rx="6" fill="#402c33" stroke="none"/>
+<text x="862.5" y="382" fill="#ffa2a6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="650" text-anchor="middle">Blocked</text>
+<rect x="830" y="406" width="220" height="1" rx="0" fill="#393a42" stroke="none"/>
+<text x="830" y="427" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="start">Destination</text>
+<text x="830" y="447" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" text-anchor="start">telemetry.example.net</text>
+<text x="830" y="483" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="start">Local time</text>
+<text x="830" y="503" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" text-anchor="start">Nov 19, 2026 · 22:15:41</text>
+<text x="830" y="539" fill="#b4b6bf" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="start">Reason</text>
+<text x="830" y="559" fill="#f4f4f6" font-family="-apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" text-anchor="start">SSH connection timed out</text>
+</svg>

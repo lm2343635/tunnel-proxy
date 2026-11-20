@@ -17,10 +17,28 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
     private var outstandingHeartbeat = false
     private var enableCanceled = false
     private var controlSequence: UInt64 = 0
-    private var eventApp: RoutingAppIdentity?
+    private let historyStore = RoutingHistoryStore()
+    private let historyOwner: UUID
+    private var historySyncInProgress = false
+    private var lastHistoryMaintenance: Date?
+    @Published private(set) var historySyncFailed = false
+
+    struct History {
+        var page = RoutingHistoryStore.Page()
+        var hasLoaded = false
+        var isLoading = false
+        var failed = false
+        var request: UUID?
+    }
+
+    @Published private(set) var histories: [RoutingAppIdentity: History] = [:]
 
     override init() {
-        let data = UserDefaults.standard.data(forKey: "appRoutingRules")
+        let defaults = UserDefaults.standard
+        let owner = defaults.string(forKey: "appRoutingHistoryOwner").flatMap(UUID.init(uuidString:)) ?? UUID()
+        historyOwner = owner
+        defaults.set(owner.uuidString, forKey: "appRoutingHistoryOwner")
+        let data = defaults.data(forKey: "appRoutingRules")
         rules = data.flatMap { try? JSONDecoder().decode(RoutingRules.self, from: $0) } ?? RoutingRules()
         super.init()
     }
@@ -51,6 +69,14 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
         busy = true
         defer { busy = false }
         enableCanceled = false
+        // macOS refuses to activate a system extension from an app outside
+        // /Applications, and only says so deep inside the request (as an
+        // untranslated string the user cannot act on). Check first and say what
+        // to do instead of asking for an approval that is doomed to fail.
+        guard Self.isInstalled else {
+            message = routingText("Move Tunnel Proxy into the Applications folder to enable app routing")
+            return false
+        }
         message = routingText("Preparing app routing")
         guard await approve(), !enableCanceled else { return false }
         do {
@@ -61,7 +87,8 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
                 let configuration = existing.protocolConfiguration as? NETunnelProviderProtocol
                 let id = configuration?.providerConfiguration?[AppRoutingProtocol.sessionKey] as? String
                 session = id.flatMap(UUID.init(uuidString:))
-                if session != nil {
+                let owner = configuration?.providerConfiguration?[AppRoutingProtocol.historyOwnerKey] as? String
+                if session != nil, owner == historyOwner.uuidString {
                     let updated = try await applyCurrentRules(to: existing, peer: peer)
                     if updated { return true }
                 }
@@ -122,6 +149,7 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
         guard !busy else { return false }
         busy = true
         defer { busy = false }
+        await syncHistory()
         do {
             if let manager = try await savedManager(), !(await remove(manager)) { return false }
             status = nil
@@ -139,11 +167,91 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
         guard !busy, !outstandingHeartbeat, session != nil else { return }
         outstandingHeartbeat = true
         defer { outstandingHeartbeat = false }
-        _ = await send(rules: nil, peer: peer)
+        if await send(rules: nil, peer: peer) {
+            Task { await self.syncHistory() }
+        }
     }
 
-    func observeEvents(for identity: RoutingAppIdentity?) {
-        eventApp = identity
+    private func syncHistory() async {
+        guard !historySyncInProgress, let session,
+              let connection = manager?.connection as? NETunnelProviderSession,
+              connection.status == .connected else { return }
+        historySyncInProgress = true
+        defer { historySyncInProgress = false }
+        var acknowledgements: [UUID] = []
+        let store = historyStore
+
+        // Bound each drain so recording cannot delay the routing heartbeat.
+        for _ in 0..<9 {
+            let request = RoutingHistoryRequest(historySession: session, historyAcknowledgements: acknowledgements)
+            guard let payload = try? JSONEncoder().encode(request),
+                  let data = await exchange(payload, via: connection),
+                  let reply = try? JSONDecoder().decode(RoutingHistoryReply.self, from: data) else {
+                if self.session == session { historySyncFailed = true }
+                return
+            }
+            guard self.session == session else { return }
+            if reply.events.isEmpty {
+                historySyncFailed = false
+                return
+            }
+            do {
+                try await Task.detached(priority: .utility) { try store.append(reply.events) }.value
+            } catch {
+                historySyncFailed = true
+                return
+            }
+            guard self.session == session else { return }
+            historySyncFailed = false
+            acknowledgements = reply.events.map(\.id)
+        }
+        // The next drain may receive the last batch again. Inserts are idempotent.
+    }
+
+    func maintainHistory() {
+        let now = Date()
+        if let lastHistoryMaintenance, now.timeIntervalSince(lastHistoryMaintenance) < 60 { return }
+        lastHistoryMaintenance = now
+        let store = historyStore
+        Task.detached(priority: .utility) {
+            do { try store.append([], now: now) }
+            catch { NSLog("App Routing history maintenance failed") }
+        }
+    }
+
+    func loadHistory(for app: RoutingAppIdentity, earlier: Bool = false) async {
+        guard rules.apps.contains(where: { $0.id == app }) else { return }
+        var history = histories[app] ?? History()
+        guard !history.isLoading else { return }
+        history.page.events.removeAll { $0.time < RoutingHistoryStore.cutoff() }
+        let oldest = history.page.events.last
+        if earlier && (!history.page.hasEarlier || oldest == nil) { return }
+
+        let request = UUID()
+        history.request = request
+        history.isLoading = true
+        histories[app] = history
+        let store = historyStore
+        let read = Task.detached(priority: .utility) {
+            try store.read(app, through: earlier ? nil : oldest, before: earlier ? oldest : nil)
+        }
+        do {
+            let page = try await read.value
+            if earlier {
+                history.page.events.append(contentsOf: page.events)
+                history.page.hasEarlier = page.hasEarlier
+            } else {
+                history.page = page
+            }
+            history.hasLoaded = true
+            history.failed = false
+        } catch {
+            history.failed = true
+        }
+        history.isLoading = false
+        guard histories[app]?.request == request else { return }
+        history.request = nil
+        histories[app] = history
     }
 
     func save(_ app: RoutingApp, peer: RoutingSOCKSPeer?) async {
@@ -168,6 +276,7 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
     func delete(_ identity: RoutingAppIdentity, peer: RoutingSOCKSPeer?) async {
         guard !busy else { return }
         rules.apps.removeAll { $0.id == identity }
+        histories.removeValue(forKey: identity)
         await commit(peer: peer)
     }
 
@@ -185,6 +294,7 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
 
     private func providerConfiguration(_ id: UUID) throws -> [String: Any] {
         [AppRoutingProtocol.sessionKey: id.uuidString,
+         AppRoutingProtocol.historyOwnerKey: historyOwner.uuidString,
          AppRoutingProtocol.rulesKey: try JSONEncoder().encode(rules.providerRules)]
     }
 
@@ -200,21 +310,13 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
         guard let session, let connection = manager?.connection as? NETunnelProviderSession,
               connection.status == .connected,
               let payload = try? JSONEncoder().encode(RoutingControl(session: session,
-                    version: update?.version, rules: update?.providerRules, tunnel: peer, eventApp: eventApp)) else {
+                    version: update?.version, rules: update?.providerRules, tunnel: peer)) else {
             status = nil
             return false
         }
         controlSequence &+= 1
         let sequence = controlSequence
-        let reply: Data? = await withCheckedContinuation { continuation in
-            let completion = DispatchOnce { continuation.resume(returning: $0) }
-            do {
-                try connection.sendProviderMessage(payload) { completion.finish($0) }
-                DispatchQueue.global().asyncAfter(deadline: .now() + 4) { completion.finish(nil) }
-            } catch {
-                completion.finish(nil)
-            }
-        }
+        let reply = await exchange(payload, via: connection)
         guard self.session == session, sequence == controlSequence else { return false }
         guard let reply, let value = try? JSONDecoder().decode(RoutingStatus.self, from: reply),
               value.session == session else {
@@ -229,6 +331,18 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
         }
         message = value.tunnelReady ? nil : routingText("Waiting for the SSH tunnel")
         return true
+    }
+
+    private func exchange(_ payload: Data, via connection: NETunnelProviderSession) async -> Data? {
+        await withCheckedContinuation { continuation in
+            let completion = DispatchOnce { continuation.resume(returning: $0) }
+            do {
+                try connection.sendProviderMessage(payload) { completion.finish($0) }
+                DispatchQueue.global().asyncAfter(deadline: .now() + 4) { completion.finish(nil) }
+            } catch {
+                completion.finish(nil)
+            }
+        }
     }
 
     private func savedManager() async throws -> NETransparentProxyManager? {
@@ -316,9 +430,20 @@ final class AppRoutingController: NSObject, ObservableObject, OSSystemExtensionR
     nonisolated func request(_ request: OSSystemExtensionRequest, didFailWithError error: Error) {
         MainActor.assumeIsolated {
             guard activation === request else { return }
-            completeApproval(false, status: "App routing extension could not be enabled")
-            message = (message ?? "") + " · " + error.localizedDescription
+            let description = error.localizedDescription
+            let outsideApplications = description.contains("/Applications")
+            completeApproval(false, status: outsideApplications
+                             ? "Move Tunnel Proxy into the Applications folder to enable app routing"
+                             : "App routing extension could not be enabled")
+            if !outsideApplications {
+                message = (message ?? "") + " · " + description
+            }
         }
+    }
+
+    /// A system extension can only be activated by an app in `/Applications`.
+    private static var isInstalled: Bool {
+        Bundle.main.bundleURL.resolvingSymlinksInPath().path.hasPrefix("/Applications/")
     }
 
     nonisolated static func inspectApp(_ url: URL) -> RoutingApp? {

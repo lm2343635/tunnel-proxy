@@ -242,3 +242,36 @@
 "Automatic mode includes path recovery." = "自动模式会持续恢复可用的连接路径。";
 
 "App Routing" = "应用分流";
+
+// Tunnel speed test
+"Download" = "下载";
+"Upload" = "上传";
+"Tunnel Speed Test" = "隧道测速";
+"Optional" = "选填";
+"The SSH connection changed." = "SSH 连接已变更。";
+"The speed test request timed out." = "测速请求超时。";
+"The speed test could not be started." = "无法启动测速。";
+"Complete · Short sample" = "已完成 · 短样本";
+"Complete" = "已完成";
+"Speed test history could not be saved." = "无法保存测速历史。";
+"Speed test canceled." = "测速已取消。";
+"Connect to an SSH server first." = "请先连接 SSH 服务器。";
+"Speed Test History" = "测速历史";
+"Start Speed Test" = "开始测速";
+"Speed test progress" = "测速进度";
+"Cancel Speed Test" = "取消测速";
+"Test Again" = "重新测速";
+"Testing download…" = "正在测下载…";
+"Testing upload…" = "正在测上传…";
+"Elapsed time (s)" = "已用时间（秒）";
+"Live speed chart" = "实时速率图";
+"View All" = "查看全部";
+"No speed test history yet." = "暂无测速记录。";
+"Partial result" = "部分完成";
+"Short sample" = "短样本";
+"Done" = "完成";
+"Speed Test" = "测速";
+"Go to Connection" = "前往连接页";
+"Open Servers" = "打开服务器";
+"Add an SSH server to run a speed test." = "请先添加 SSH 服务器。";
+"SSH could not complete the temporary file transfer." = "SSH 未能完成临时文件传输。";

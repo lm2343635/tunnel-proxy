@@ -1,207 +1,268 @@
-# App Routing — fix for DNS poisoning / IP-only flows
+# App Routing — recover hostnames for IP-only proxied flows
 
-Status: plan (2026-11-19). Not implemented.
+Status: implemented in the working tree (2026-11-20). The local relay fixture
+exercises the production parser and relay. Signed-extension acceptance on the
+affected network and the ChatGPT desktop reproduction are still pending.
+
+> **Revision (2026-11-20, later):** the v1 rule "any `0xfe0d` extension means
+> `ECH or GREASE`, use the IP path" was dropped after real traffic hit it. On the
+> affected network every routed flow reported `ECH/GREASE` and none reached the
+> IP path successfully (`TLS names 0 · ECH/GREASE 7` in Recent Connections), so
+> discarding the visible name threw away the only usable hostname. The parser now
+> records the extension and keeps walking the extension list; the visible SNI
+> wins when it is present, and `echOrGrease` is reported only when a complete
+> ClientHello carries no SNI. Per RFC 9849 the outer `public_name` of a real ECH
+> hello identifies the client-facing server, so dialling it is correct (and still
+> better than a poisoned IP); GREASE keeps the real hostname next to the
+> extension. This does not change any direct-vs-proxy decision. Tests cover both
+> shapes: ECH + SNI → `.hostname`, ECH without SNI → `.echOrGrease`.
+>
+> Two relay defects surfaced in the same session and are fixed with it:
+> `start()` now opens the application flow **before** dialling (a flow opened only
+> after the SOCKS handshake was often abandoned by busy clients, reported as
+> `Could not open the application connection`), and a single client read larger
+> than 64 KiB is forwarded instead of aborting the flow (`Application data
+> exceeded the relay buffer` used to kill in-flight HTTP/2 connections).
+> Measured after the change: `TLS names 44 · ECH/GREASE 0`, with `chatgpt.com`
+> flows reaching the tunnel; only SNI-less IP flows (poisoned A/AAAA, IPv6 DNS)
+> still fail.
 
 ## Problem
 
-With Per-App Routing on, most connections from routed apps are shown as **Blocked**.
-ChatGPT fails completely. Claude mostly works.
+With Per-App Routing on, most connections from routed apps show **Blocked**.
+ChatGPT (desktop) fails completely; Claude mostly works.
 
-### Root cause (verified)
+### Observed facts
 
-1. **Local DNS is poisoned.** The resolver (`192.168.1.1`) returns GFW fake answers:
+1. **Local DNS returns known poisoned answers** (resolver `192.168.1.1`):
 
    | name | local A | local AAAA |
    |---|---|---|
-   | chatgpt.com | 104.244.43.52 (Twitter range) | 2a03:2880:…:face:b00c:0:25de (Facebook) |
+   | chatgpt.com | 104.244.43.52 (Twitter range) | 2a03:2880:…:face:b00c:0:25de (Facebook range) |
    | api.openai.com | 66.220.146.94 (Facebook range) | 2a03:2880:…:face:b00c:0:25de |
-   | claude.ai / api.anthropic.com | 160.79.104.10 (real) | 2607:6bc0::10 (real) |
+   | claude.ai / api.anthropic.com | 160.79.104.10 | 2607:6bc0::10 |
 
-   Every address in the screenshots (`104.244.46.17`, `128.242.240.x`, `31.13.84.2`,
-   `185.45.5.35`, `2a03:2880:f12c:83:face:b00c:0:25de`, …) is a typical poisoned answer.
-   Claude works because its domains are not poisoned.
+   The destinations in the screenshots (`104.244.46.17`, `128.242.240.x`, `31.13.84.2`,
+   `185.45.5.35`, `2a03:2880:f12c:83:face:b00c:0:25de`, …) are in the same poisoned
+   ranges, and they are shown as bare IPs (no hostname).
+2. **Remote resolution works, the poisoned IP does not** (SOCKS port 1080):
+   - `curl --socks5-hostname … https://chatgpt.com/` → 200.
+   - `curl --socks5 … --resolve chatgpt.com:443:104.244.43.52` → exit 35.
+   - `curl --socks5 … https://[2607:6bc0::10]/` → exit 97 (one IPv6 target).
+3. `tunnel.log` has many `channel N: open failed: connect failed: open failed` and
+   `… Connection timed out` lines at the times of the failures.
+4. **Code path:** `RoutingDestination` takes `flow.remoteHostname`, then a name
+   carried by the endpoint. When both are absent, `socksCommand` sends an IPv4/IPv6
+   address (ATYP 1/4), so the SSH server only sees the IP the app resolved.
 
-2. **The extension only sees an IP.** Chromium and Electron apps (and others) resolve
-   the name themselves and then `connect()` to an IP. So `flow.remoteHostname` is nil,
-   and `RoutingDestination.socksCommand` sends an ATYP 1/4 (IP) SOCKS request. The
-   SSH server then tries to connect to the fake IP.
-   - `curl --socks5-hostname 127.0.0.1:1080 https://chatgpt.com/` returns **200**
-     (the server resolves the name, so the tunnel works).
-   - `curl --socks5 … --resolve chatgpt.com:443:104.244.43.52` fails with exit 35.
+### Working hypothesis (to verify, see Instrumentation)
 
-3. **The SSH server has no IPv6 egress.** Any IPv6 literal target fails
-   (`curl --socks5 … https://[2607:6bc0::10]/` gives exit 97). `tunnel.log` shows
-   `channel N: open failed: connect failed: open failed`.
+The routed apps resolve names locally, get poisoned IPs, and connect by IP. The
+extension forwards that IP and the SSH server cannot reach it. Not yet proven:
 
-4. **The app's own DNS is blocked and falls back to poisoned DNS.** UDP flows from
-   routed apps (e.g. Chrome's built-in resolver to `8.8.8.8` /
-   `2001:4860:4860::8888`) are blocked ("UDP cannot use the SSH tunnel"). The app
-   then falls back to the system resolver, which `mDNSResponder` performs. That is
-   not a routed process, so the extension cannot intercept it.
+- that the ChatGPT desktop failures are exactly this path (which process/helper,
+  which original target, whether a hostname was ever available);
+- that Chrome's own DNS is blocked and it falls back to the system resolver;
+- whether the SSH server has IPv6 egress at all (one failed target is not proof).
 
-### How the UI reasons map to these causes
+## Scope of the first version
 
-| UI reason | Real meaning |
-|---|---|
-| SSH connection timed out | The server is still trying to reach a fake IP; the 12 s relay timer fired. |
-| SSH rejected SOCKS negotiation | OpenSSH buffers its SOCKS success reply until the server's channel opens. If the remote connect fails, ssh closes the socket and sends no reply, so `receive(4)` fails. It does **not** mean negotiation was rejected. |
-| Could not open the application connection | SOCKS succeeded too late; the app had already given up on the flow. |
-| UDP cannot use the SSH tunnel | The app's own DNS/QUIC was blocked (intended, but it causes cause 4). |
+Sniff a hostname **only** when all of these hold:
 
-Domain policies (`proxyListed`) also return `.blocked` ("Hostname unavailable")
-whenever the hostname is nil, so they fail for the same reason.
+- the app's policy is **Proxy All**;
+- the flow is **TCP** to an external destination (`isLocal == false`);
+- `destination.name == nil` (no `remoteHostname`, no name in the endpoint).
 
-## Fix
+Everything else is unchanged. In particular the product decision table in
+`app-routing-implementation.md` §2.2 stays as is:
 
-### Phase 1 — sniff the hostname from the first client bytes (main fix)
+- `proxyListed` + unknown name → **blocked**;
+- `directListed` + unknown name → **proxy by IP**;
+- no relay that connects directly from the extension.
 
-When `flow.remoteHostname` is nil, accept the flow and read the client's first
-bytes before connecting upstream. Get the real name from:
+A sniff miss (ECH/GREASE, no SNI, timeout, parse window exceeded) never goes direct. It falls
+back to today's behavior: SOCKS to the original IP.
 
-- the **TLS ClientHello SNI** (`server_name` extension), or
-- the **HTTP/1.x `Host:` header** (plain HTTP, port 80 and others).
+Known limit: `proxyListed` / `directListed` apps keep failing on poisoned domains.
+A later safe step for `directListed`: sniff, and if the name is **not** listed,
+proxy by name; if it is listed or unknown, keep proxying by IP. That never sends
+traffic direct. Not in v1.
 
-Then send a domain-name SOCKS request (ATYP 3), so the SSH server resolves the
-name. This fixes both the poisoned IPv4 answers and the unreachable IPv6 answers.
-It needs no DNS changes and covers almost all app traffic, which is HTTPS.
+## Design
 
-#### New file: `TunnelProxyRoutingExtension/RoutingSniffer.swift`
+### Hostname source: readable TLS SNI only
 
-Pure functions with no NetworkExtension dependency, so the harness can test them:
+New file `TunnelProxyRoutingExtension/RoutingSniffer.swift`, with pure functions
+and no NetworkExtension dependency:
 
 ```swift
 enum RoutingSniffer {
-    enum Result { case hostname(String), notApplicable, needMoreData }
-    static func sniff(_ prefix: Data) -> Result
+    enum Result { case hostname(String), echOrGrease, notApplicable, needMoreData }
+    static func sniffTLS(_ prefix: Data) -> Result
 }
 ```
 
-- **TLS:** record type `0x16`, handshake type `0x01`. Walk session id, cipher
-  suites, compression and extensions to extension `0x0000`, host_name (type 0).
-  Bounds-check every length. Accept a ClientHello split across several records up
-  to a 16 KB cap (post-quantum key shares make ClientHellos larger than one
-  segment).
-- **HTTP:** first line matches `METHOD SP target SP HTTP/1.x`. Find `Host:`
-  (case-insensitive) before `\r\n\r\n`, and strip the port.
-- Pass the result through `RoutingDomain.normalize`. Reject IP literals, so a
-  `Host: 1.2.3.4` keeps the IP path.
-- Return `.needMoreData` until the cap is reached; after that, `.notApplicable`.
+- Record type `0x16`, handshake `0x01`. Walk session id, cipher suites,
+  compression and extensions to `server_name` (type `0x0000`, host_name 0).
+  Bounds-check every length. Allow a ClientHello split across records or reads.
+- Parse window: 16 KB. Past it → `.notApplicable`.
+- Pass the result through `RoutingDomain.normalize`. IP literals are rejected,
+  which keeps the IP path.
+- The sniffed SNI is only a **hint for the proxied target**. Keep the original
+  port. It never affects a direct-vs-proxy decision, and `isLocal` stays based on
+  the original IP.
+- **ECH:** with ECH the readable SNI is the outer `public_name`, which identifies
+  the client-facing server (RFC 9849). GREASE can use the same extension while
+  the real hostname remains visible. A passive relay cannot use the presence of
+  0xfe0d alone to distinguish the two, and it cannot tell "no SNI because ECH"
+  apart from "no SNI for another reason" — so the extension is only recorded, not
+  acted on. The plaintext SNI, when the hello has one, is still the best target
+  available: it is a name for the right server, which beats the IP the app
+  resolved. Only a complete hello with 0xfe0d and no SNI is reported as
+  `ECH or GREASE` and left on the IP path.
+- **Plain HTTP `Host`** is left out of v1. A `Host` or `CONNECT` target can name
+  something behind an explicit proxy, so rewriting by it is unsafe without more
+  rules. Revisit later, and only for plain origin requests.
 
-#### `RoutingTCPRelay` changes
+### Relay changes (`RoutingTCPRelay`)
 
-Reorder the relay when sniffing is needed:
+For sniffing flows only:
 
-1. `flow.open(...)` first. This is needed to read the client's data, and it also
-   removes the "Could not open the application connection" race.
-2. Read client data into a prefix buffer until `sniff` returns `.hostname` or
-   `.notApplicable`, or a **sniff timeout** (≈300 ms) passes. Server-speaks-first
-   protocols (SMTP, SSH, FTP) send nothing first, so they hit the timeout.
-3. Build the SOCKS command: the sniffed name and original port, otherwise the
-   original IP target.
-4. Connect, verify the peer and negotiate as today. Then **write the buffered
-   prefix upstream** before starting `readClient()` / `readSSH()`.
+1. `flow.open(...)` first. Reading the hello needs an open flow.
+2. **One outstanding client read at a time** — a rule for the relay's whole life,
+   not only during sniffing:
+   - append each read's bytes to a pending buffer, in order;
+   - while sniffing and still under the window, issue the next read only after
+     the previous callback returns.
+3. Sniffing ends with the first of these: a hostname, ECH/GREASE, `.notApplicable`, or the
+   **sniff timeout (300 ms)**. The timeout only ends the *decision*:
+   - Any read still in flight keeps running. Its data is appended to the pending
+     buffer, and that same callback chain continues into normal forwarding. No
+     second `readData` is ever started.
+   - After the timeout, the upstream may connect and receive server-first bytes
+     (SMTP/SSH greetings) while the client read is still pending.
+4. Build the SOCKS command: the sniffed name with the original port, otherwise the
+   original IP. Connect, verify the peer and negotiate exactly as today.
+5. Once SOCKS succeeds, write the whole pending buffer upstream **once, in
+   order**. This includes bytes past the 16 KB window and any bytes after the
+   ClientHello in the same callback. Start upstream reads immediately on CONNECT
+   success, independently of client reads or pending writes.
+6. Half-close and tunnel loss follow today's rules:
+   - client EOF before SOCKS completes → remember it and send FIN after the
+     buffer is flushed;
+   - tunnel loss → `finish` with a reason.
 
-When `remoteHostname` is already known, keep today's flow unchanged.
+Non-sniffing flows keep today's order (SOCKS first, then `flow.open`). The
+64 KiB chunk guard applies to each read. Once the routing decision is made, pause
+new client reads until CONNECT succeeds and pending bytes have been sent. At
+most one partial parse window plus one callback (under 80 KiB) awaits forwarding.
+Opening the app flow does not mark the tunnel ready or disarm the 12-second
+setup deadline. Only completed SOCKS setup plus an open app flow does that.
 
-The relay takes a `destination` (or a closure that builds the command from the
-sniffed name) instead of a ready-made `command`.
+### Accurate failure reasons (`RoutingTCPRelay`)
 
-#### `AppRoutingProvider` changes — decisions that depend on the hostname
+Replace the shared "SSH rejected SOCKS negotiation" message with one reason per
+stage:
 
-`proxyAll` needs no decision before sniffing. Domain policies do, because a
-direct verdict currently returns `false` (hand back to the system). A flow that
-was already accepted for sniffing cannot be handed back. Plan:
+| Stage | Reason |
+|---|---|
+| loopback connect / `.waiting` / `.failed` | SSH SOCKS listener unavailable |
+| peer verification | Tunnel identity not verified (unchanged) |
+| method reply short or EOF | Connection closed during SOCKS greeting |
+| method reply not `05 00` | SSH rejected SOCKS method |
+| CONNECT reply short or EOF | Connection closed while waiting for CONNECT reply |
+| valid CONNECT reply with REP ≠ 0 | Destination failure with the numeric SOCKS REP code in the event |
+| unknown ATYP in reply | Malformed SOCKS reply |
+| `flow.open` error | Could not open the application connection (unchanged) |
+| 12 s timer | Connection setup timed out; the event shows the current stage |
 
-- `remoteHostname` known → keep the current behavior (decide immediately; direct
-  returns `false`).
-- `remoteHostname` nil and policy is `proxyAll` → sniff, then proxy.
-- `remoteHostname` nil and policy is `proxyListed` / `directListed` → accept,
-  sniff, then decide with the sniffed name:
-  - proxy → SOCKS as above.
-  - direct → a **direct relay** from the extension: an `NWConnection` to the
-    original IP:port, with the same buffered-prefix write. The extension's own
-    sockets are not intercepted. The app's own (local) DNS answer is right for
-    direct traffic by definition.
-  - no name found → the existing fallback (`proxyListed` → direct relay;
-    `directListed` → proxy by IP). Remove the hard "Hostname unavailable"
-    block.
-- Factor the byte pump (`readClient` / `readSSH` / half-close) so the SOCKS relay
-  and the direct relay share it. Only the upstream setup differs.
+Track the current stage in a field so the 12 s timer can name it. OpenSSH usually
+closes the socket instead of sending a failure reply when the remote open fails,
+so "closed while waiting for CONNECT reply" is the common case. The text does not
+claim the destination was unreachable, because SSH dying looks the same.
 
-Record the event with the sniffed hostname as `destination` (keeping the IP in
-the reason, or as a secondary field), so the Recent Connections list shows
-`chatgpt.com` instead of a fake IP.
+Leave the IPv6 behavior and the 12 s timeout unchanged until the instrumentation
+has data. Add the new strings to `AppRouting.strings` (en / zh-Hans).
 
-### Phase 2 — fail fast and give accurate reasons
+### Instrumentation
 
-- Change the "SSH rejected SOCKS negotiation" text for the post-command
-  `receive(4)` failure to **"Server could not reach destination"**. Keep the
-  current text only for a bad `[5, 0]` method reply. Add the new string to both
-  `AppRouting.strings` files (en / zh-Hans).
-- IPv6 literal target with no sniffed name: send it anyway, but shorten the
-  timeout. Optionally add a profile setting "Server has IPv6" (default off). When
-  it is off, close IPv6-only flows at once with "Server has no IPv6", so Happy
-  Eyeballs falls back to IPv4 immediately instead of waiting.
-- Lower the 12 s connect timer for IP-only targets (e.g. 6 s). Keep 12 s for
-  name targets, which include remote DNS time.
+Keep original endpoint, actual process signing identifier, hostname source, SOCKS
+address type, stage and reply code in the existing per-app 50-event memory
+buffer. Recent Connections displays these details and counts unique flows in
+the visible sample with recovered SNI, ECH/GREASE, and other sniff misses.
+No per-flow logging is needed. Do not pass destination values to unified logs.
 
-### Phase 3 (optional) — proxy app-originated DNS
+On the affected network, reproduce the failing desktop action and check the
+responsible helper and sample counts. If required flows consistently skip SNI
+because of ECH/GREASE, the feature leaves those targets on the IP path. Record
+that limitation before attributing any improvement to hostname recovery.
 
-For routed apps, intercept UDP flows to port 53 instead of blocking them. Forward
-each query as **DNS-over-TCP** through SOCKS to a fixed resolver (`1.1.1.1:53` or
-`8.8.8.8:53`, configurable), and write the answer back to the UDP flow. This gives
-Chrome's built-in resolver clean A/AAAA and HTTPS records. It does not help
-`getaddrinfo` (that goes through `mDNSResponder`), so it complements Phase 1 and
-does not replace it. Keep other UDP (QUIC on 443) blocked; browsers fall back to
-TCP.
+## Out of scope (separate plans)
 
-## Risks / notes
-
-- **ECH:** Chrome may send an outer SNI (`public_name`, e.g. `cloudflare-ech.com`)
-  that differs from the real host. Connecting to the outer name still reaches the
-  same CDN edge, which decrypts the inner hello, so proxying still works.
-  Domain-list policies may match the cover name instead; document this limit.
-- **Latency:** sniffing costs nothing for client-speaks-first protocols. The data
-  is already there when the flow opens. Only server-speaks-first protocols pay the
-  ≈300 ms timeout.
-- **Memory:** the prefix buffer is capped at 16 KB per flow, under the existing
-  256-relay limit.
-- **Hostname trust:** sniffed names come from the app itself, so they are as
-  trustworthy as `remoteHostname`. Normalize them all the same, and never use them
-  to bypass `isLocal` (that check stays on the original IP).
+- **Forwarding app DNS through the tunnel.** It changes the existing DNS rules
+  (`app-routing-implementation.md` DNS table: UDP/53 is blocked under Proxy All)
+  and LAN/VPN/split-DNS behavior. The SDK also forbids port-53 address rules
+  ("Destination Domain-based rules must be used to match DNS traffic",
+  `NETransparentProxyNetworkSettings.h`). First measure on the target macOS which
+  UDP/53 flows actually reach the provider and whether they can be attributed to
+  the app. The current fix does not depend on it.
+- IPv6 fast-fail and timeout tuning: wait for instrumentation data.
+- Hostname recovery for domain-list policies (see Scope).
+- Plain HTTP `Host` sniffing.
 
 ## Files
 
 - `TunnelProxyRoutingExtension/RoutingSniffer.swift` — new; add it to the
   extension target in `project.pbxproj`.
-- `TunnelProxyRoutingExtension/RoutingTCPRelay.swift` — open-first and sniff
-  path, prefix replay, shared pump, direct-upstream variant.
-- `TunnelProxyRoutingExtension/AppRoutingProvider.swift` — deferred decisions
-  for IP-only flows, event destination from the sniffed name, (Phase 3) UDP 53.
-- `TunnelProxyRoutingExtension/RoutingDestination.swift` — build a command from
-  an override name; IPv6 helper.
-- `TunnelProxy/AppRouting/RoutingRules.swift` — `decision(hostname:)` callers
-  stop treating nil as final for flows that are still sniffing.
-- `TunnelProxy/*.lproj/AppRouting.strings` — new reason strings.
-- `tests/run-routing-checks.sh`, `tests/RoutingHarness.swift` — compile
-  `RoutingSniffer.swift` and `RoutingDomain` and add parser checks.
+- `TunnelProxyRoutingExtension/RoutingTCPRelay.swift` — open-first sniff path,
+  single-read invariant, pending-buffer replay, per-stage reasons.
+- `TunnelProxyRoutingExtension/AppRoutingProvider.swift` — eligibility check
+  (Proxy All + TCP + external + no name), instrumentation, event destination.
+- `TunnelProxyRoutingExtension/RoutingDestination.swift` — build the command with
+  an override name and the original port.
+- `TunnelProxy/*.lproj/AppRouting.strings` — new reasons.
+- `tests/run-routing-checks.sh`, `tests/RoutingHarness.swift` — compile the sniffer
+  and add the checks below.
 
 ## Validation
 
-1. **Parser unit checks (harness):** real ClientHellos (curl, Chrome, with a PQ key
-   share split across two records), truncated or malformed records, missing SNI,
-   HTTP `Host` with port, IP-literal Host, non-TLS/non-HTTP bytes, and the size
-   cap.
-2. **Tunnel checks:** against the live SOCKS port, confirm that ATYP 3
-   `chatgpt.com:443` succeeds where the poisoned IP fails. This is the same
-   comparison as in the investigation, written as a script.
-3. **End-to-end:** a Debug build with Per-App Routing:
-   - ChatGPT and Google Chrome on **Proxy All** load chatgpt.com.
-   - Recent Connections shows hostnames and **Proxy**.
-   - `tunnel.log` has no `open failed` for those hosts.
-   - Claude still works.
-   - A `proxyListed` app with `chatgpt.com` proxies that host and sends others
-     direct.
-4. **Regression:** local-network destinations stay direct; a server-speaks-first
-   connection (e.g. `ssh` to an external host from a routed terminal) still
-   connects after the sniff timeout.
+Run `bash tests/run-routing-checks.sh --relay` for parser checks and a loopback
+SOCKS fixture with a synthetic app flow. The fixture checks wire bytes and EOF,
+server-first traffic, ECH/GREASE, known hostnames, cancellation, and a listener
+that never replies to CONNECT. It uses its own peer check. The installed
+extension still requires the SSH socket ownership and heartbeat checks.
+
+Local verification (2026-11-20): the unsigned Debug app and extension built.
+All seven loopback scenarios and the routing harness passed. A separate offline
+check recovered the expected SNI from a 1,523-byte TLS-library ClientHello.
+The controlled SSH egress comparison and signed desktop cases below remain open.
+
+1. **Sniffer unit checks:**
+   - captured ClientHellos (curl, Chrome with a post-quantum key share split
+     across two records or reads);
+   - SNI absent, ECH present, truncated or malformed lengths, IP-literal SNI;
+   - a hello followed by application bytes in the same buffer;
+   - more than 16 KB before a decision.
+2. **Relay ordering checks** (harness, fake flow plus a local SOCKS fixture):
+   - the sniff timeout fires while a read is in flight → late bytes are
+     forwarded once, in order, and no second read is started;
+   - a first callback larger than 16 KB is forwarded intact;
+   - client EOF before SOCKS completes → FIN after the flush;
+   - the tunnel drops during sniffing and during the flush;
+   - a server-first protocol connects after the timeout.
+3. **Controlled poisoned-IP comparison** (same test path, old vs. new build):
+   - a test hostname resolves locally to a wrong IP;
+   - the old build sends ATYP 1 with the wrong IP and fails;
+   - the new build sends ATYP 3 with the name;
+   - the test site logs the SSH egress address as the client;
+   - the client completes TLS and an application request.
+4. **Real apps:**
+   - in ChatGPT desktop, repeat the failing action (start a chat, receive a
+     streamed reply);
+   - Google Chrome (Proxy All) loads chatgpt.com;
+   - regression: Claude desktop plus Claude Code;
+   - regression: `proxyListed` / `directListed` behave exactly as in §2.2;
+   - local destinations stay direct.
+
+   Recent Connections showing **Proxy** helps locate problems, but it is not
+   acceptance proof; the actions above are.

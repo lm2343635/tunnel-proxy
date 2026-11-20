@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release"
+  short_description: "Sign and notarize TunnelProxy releases"
+  default_prompt: "Use $release to sign and notarize TunnelProxy 1.2.4."

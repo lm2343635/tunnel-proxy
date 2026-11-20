@@ -36,6 +36,9 @@ enum KeychainStore { static func deleteSecret(for id: UUID) {} }
         return Int(UInt16(bigEndian: address.sin_port))
     }
     static func main() async throws {
+        try RoutingHistoryChecks.run(in: AppPaths.supportDirectory)
+        RoutingRelayChecks.parser()
+        if CommandLine.arguments.contains("--relay") { RoutingRelayChecks.relays() }
         struct Failure: Error { let message: String }
         func check(_ condition: @autoclosure () -> Bool, _ message: String) throws {
             guard condition() else { throw Failure(message: message) }

@@ -27,8 +27,9 @@ Install TunnelProxy in Applications and connect to your SSH server. In **App
 Routing**, add a signed desktop application and save its policy. Choose **Per-App
 Routing** and allow the TunnelProxy network extension and proxy configuration
 when macOS asks. Open or relaunch the selected app after the rules are active
-to start new connections. The routing view shows the extension's decisions for
-recent connections.
+to start new connections. The routing view shows a timeline for the selected
+app, with local timestamps and connection details. History stays on this Mac
+for up to 7 days, with a limit of 1,000 events per app.
 
 For Claude Desktop, add `Claude.app` and choose **Proxy All**. The extension
 recognizes the signed main app, its bundled Helpers and Claude Code processes
@@ -36,6 +37,26 @@ whose ancestry can be verified back to the desktop app. External TCP uses the
 SSH SOCKS listener. UDP that requires the tunnel is blocked. Loopback and
 local-link traffic use the system network. For a trial with the other proxies
 off, keep TunnelProxy's own SSH connection running.
+
+## Proxy modes
+
+- **Local Proxy Only** — nothing is changed system-wide; point an app at
+  `127.0.0.1:1080` (SOCKS5) or `127.0.0.1:8118` (HTTP) yourself.
+- **Per-App Routing** — the network extension routes only the apps you added.
+  When a routed app has already resolved a name itself, the extension recovers
+  the hostname from the TLS ClientHello and dials *that*, so the SSH server does
+  the DNS lookup.
+- **Global Proxy** — the macOS SOCKS proxy **and** the HTTP/HTTPS proxy are
+  pointed at this app (`127.0.0.1:1080` and `127.0.0.1:8118`). Both are needed:
+  a SOCKS client hands the proxy an already-resolved address, so a poisoned or
+  hijacked DNS answer is dialled verbatim, while an HTTP request or `CONNECT`
+  carries the hostname and Privoxy forwards it to `ssh -D`, which resolves it on
+  the server side.
+
+Global and Per-App Routing can be switched directly; the outgoing transport is
+torn down before the incoming one starts, and every step is rolled back on
+failure. Apps that ignore the system proxy settings (raw sockets, containers,
+VMs) are out of reach of Global Proxy — use Per-App Routing for those.
 
 ## Automatic SSH routing
 
@@ -74,6 +95,18 @@ tests/run-routing-checks.sh --live
 Live checks require a working local VPN proxy, a physical direct route and a key
 that works without an interactive passphrase. They use an isolated temporary app
 data directory and clean up their own child processes. They never install the app.
+
+## Tunnel speed test
+
+Connect to an SSH server and open **Speed Test** above **Tools**. Select
+**Start Speed Test** to upload an 8 MiB temporary file and download it back
+through the active SSH session. The remote account needs shell access and
+write access to its temporary directory. The file is removed when the
+remote command exits.
+
+The App shows live transfer rates and keeps the most recent 200 results
+locally. The test uses the configured SSH port and reuses the authenticated
+connection. It requires no separate speed test service.
 
 ## Release (signed DMG)
 

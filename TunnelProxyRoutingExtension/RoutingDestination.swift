@@ -4,6 +4,7 @@ import Network
 
 struct RoutingDestination {
     let name: String?
+    let nameSource: String
     let address: Network.NWEndpoint.Host
     let port: Network.NWEndpoint.Port
 
@@ -13,18 +14,21 @@ struct RoutingDestination {
         self.port = port
         if let hostname = hostname.flatMap(RoutingDomain.normalize) {
             name = hostname
+            nameSource = "remoteHostname"
         } else if case .name(let value, _) = address {
             name = RoutingDomain.normalize(value)
+            nameSource = name == nil ? "IP" : "Endpoint"
         } else {
             name = nil
+            nameSource = "IP"
         }
     }
 
     var display: String { name ?? String(describing: address) }
 
-    var socksCommand: Data? {
+    func socksCommand(recoveredName: String? = nil) -> Data? {
         let target: [UInt8]
-        if let name {
+        if let name = name ?? recoveredName {
             let bytes = Array(name.utf8)
             guard !bytes.isEmpty, bytes.count <= 255 else { return nil }
             target = [3, UInt8(bytes.count)] + bytes

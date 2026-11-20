@@ -11,20 +11,33 @@ struct AppRoutingView: View {
     @State private var picking = false
     @State private var pendingRemoval: RoutingAppIdentity?
     @FocusState private var focusedMode: ProxyMode?
+    @State private var selectedEvents: [RoutingAppIdentity: UUID] = [:]
+    @State private var timelineStacked = false
+
+    private var historyApp: RoutingApp? {
+        routing.rules.apps.first { $0.id == selected }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: DS.gridGap) {
             Text(routingText("App Routing")).font(.system(size: 24, weight: .bold))
             modeHeader
             HStack(alignment: .top, spacing: DS.gridGap) {
-                applicationList.frame(minWidth: 180, idealWidth: 200, maxWidth: 224)
+                applicationList.frame(width: 180)
                 editor.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
         }
         .padding(DS.contentPadding)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .onAppear { restoreSelection() }
-        .onDisappear { routing.observeEvents(for: nil) }
+        .task(id: historyApp?.id) {
+            guard let app = historyApp?.id else { return }
+            while !Task.isCancelled {
+                await routing.loadHistory(for: app)
+                do { try await Task.sleep(for: .seconds(2)) }
+                catch { return }
+            }
+        }
         .onChange(of: routing.rules.version) { _, _ in
             if let selected, !routing.rules.apps.contains(where: { $0.id == selected }) { restoreSelection() }
         }
@@ -33,7 +46,11 @@ struct AppRoutingView: View {
             Button(routingText("Remove"), role: .destructive) {
                 guard let identity = pendingRemoval else { return }
                 pendingRemoval = nil
-                Task { await controller.deleteRoutingApp(identity); restoreSelection() }
+                Task {
+                    await controller.deleteRoutingApp(identity)
+                    selectedEvents.removeValue(forKey: identity)
+                    restoreSelection()
+                }
             }
             Button(routingText("Cancel"), role: .cancel) {}
         } message: {
@@ -59,9 +76,10 @@ struct AppRoutingView: View {
             .fixedSize(horizontal: false, vertical: true)
             .disabled(busy)
             if let status {
-                HStack {
+                HStack(alignment: .firstTextBaseline) {
                     Text(status).font(.caption).foregroundStyle(.secondary)
-                    Spacer()
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 8)
                     if routing.canCancelApproval {
                         Button(routingText("Cancel")) { routing.cancelApproval() }
                     }
@@ -172,6 +190,12 @@ struct AppRoutingView: View {
     }
 
     private var editor: some View {
+        ScrollViewReader { proxy in
+            editorScrollView(proxy)
+        }
+    }
+
+    private func editorScrollView(_ proxy: ScrollViewProxy) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DS.gridGap) {
                 Tile {
@@ -220,46 +244,134 @@ struct AppRoutingView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-                if let selected { recent(selected) }
+                if let app = historyApp { recent(app, scrollProxy: proxy) }
             }
         }
     }
 
-    private func recent(_ identity: RoutingAppIdentity) -> some View {
-        let recent = routing.status?.events.filter { $0.application == identity }.reversed().prefix(50)
+    private func recent(_ app: RoutingApp, scrollProxy: ScrollViewProxy) -> some View {
+        let history = routing.histories[app.id] ?? AppRoutingController.History()
+        let events = history.page.events.filter { $0.time >= RoutingHistoryStore.cutoff() }
+        let selection = selectedEvents[app.id]
         return Tile {
-            VStack(alignment: .leading, spacing: 7) {
-                Text(routingText("Recent Connections")).font(.headline)
-                if let recent, !recent.isEmpty {
-                    ForEach(Array(recent)) { event in
-                        VStack(alignment: .leading, spacing: 2) {
-                            HStack {
-                                Text(event.destination.isEmpty ? routingText("Destination unavailable") : event.destination)
-                                    .lineLimit(1).truncationMode(.middle)
-                                Spacer()
-                                Text(event.decision.label)
-                                    .foregroundStyle(event.decision == .proxy ? DS.accent
-                                                     : event.decision == .blocked ? Color.red : DS.secondaryText)
-                            }
-                            if let reason = event.reason { Text(routingText(reason)).font(.caption).foregroundStyle(DS.secondaryText) }
-                        }
+            VStack(alignment: .leading, spacing: 10) {
+                ViewThatFits(in: .horizontal) {
+                    HStack {
+                        historyTitle(app)
+                        Spacer(minLength: 10)
+                        historyRetention
                     }
-                } else {
-                    Text(routingText("No recent connections")).foregroundStyle(DS.secondaryText).font(.callout)
+                    VStack(alignment: .leading, spacing: 4) {
+                        historyTitle(app)
+                        historyRetention
+                    }
+                }
+                Divider()
+                let syncFailed = controller.proxyMode == .appRouting && routing.confirmed && routing.historySyncFailed
+                if history.failed || syncFailed {
+                    Label(routingText("Could not refresh connections"), systemImage: "exclamationmark.circle")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                if !events.isEmpty {
+                    let selectedEvent = events.first { $0.id == selection }
+                    // Use one timeline in either layout to keep its scroll anchor.
+                    TimelineLayout {
+                        VStack(alignment: .leading, spacing: 6) {
+                            RoutingTimeline(events: events, selection: selection,
+                                            hasEarlier: history.page.hasEarlier, isLoading: history.isLoading,
+                                            select: { selectedEvents[app.id] = $0 },
+                                            loadEarlier: { Task { await routing.loadHistory(for: app.id, earlier: true) } })
+                                .id(app.id)
+                            if timelineStacked && selectedEvent != nil {
+                                Button(routingText("Show connection details")) {
+                                    withAnimation { scrollProxy.scrollTo("routing-history-details", anchor: .top) }
+                                }
+                            }
+                        }
+                        connectionDetails(selectedEvent).id("routing-history-details")
+                    }
+                    .onGeometryChange(for: Bool.self) { $0.size.width < TimelineLayout.splitWidth } action: {
+                        timelineStacked = $0
+                    }
+                    tlsSummary(events)
+                } else if !history.hasLoaded && !history.failed && !syncFailed {
+                    ProgressView(routingText("Loading connections…")).controlSize(.small)
+                } else if history.hasLoaded && !history.failed && !syncFailed {
+                    Text(routingText("No recent connections")).foregroundStyle(.secondary).font(.callout)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
+    private func historyTitle(_ app: RoutingApp) -> some View {
+        Text(String.localizedStringWithFormat(routingText("Recent Connections · %@"), app.name))
+            .font(.headline).accessibilityAddTraits(.isHeader)
+    }
+
+    private var historyRetention: some View {
+        Text(String.localizedStringWithFormat(routingText("Last %lld days · Up to %@ per app"),
+            Int64(RoutingHistoryStore.retention / 86_400), RoutingHistoryStore.perAppLimit.formatted()))
+            .font(.caption).foregroundStyle(.secondary)
+    }
+
+    @ViewBuilder private func tlsSummary(_ events: [RoutingEvent]) -> some View {
+        let samples = Dictionary(grouping: events.compactMap(\.tcp), by: \.flowID)
+            .compactMap { $0.value.first?.nameSource }
+        let sni = samples.filter { $0 == "TLS SNI" }.count
+        let ech = samples.filter { $0 == "ECH or GREASE" }.count
+        let misses = samples.filter { $0 == "SNI timeout" || $0 == "No usable SNI" }.count
+        if sni + ech + misses > 0 {
+            Text(String(format: routingText("TLS names %d · ECH/GREASE %d · Other misses %d"),
+                        sni, ech, misses)).font(.caption).foregroundStyle(DS.secondaryText)
+        }
+    }
+
+    private func connectionDetails(_ event: RoutingEvent?) -> some View {
+        VStack(alignment: .leading, spacing: 9) {
+            Text(routingText("Connection Details")).font(.subheadline.weight(.semibold))
+                .accessibilityAddTraits(.isHeader)
+            if let event {
+                Text(event.decision.label)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(timelineColor(event.decision))
+                Divider()
+                detailField("Destination", value: event.displayDestination)
+                detailField("Local time", value: event.time.formatted(
+                    .dateTime.year().month(.abbreviated).day().hour().minute().second()))
+                if let reason = event.reason { detailField("Reason", value: routingText(reason)) }
+                if let tcp = event.tcp {
+                    let fields = [tcp.originalEndpoint, tcp.process, routingText(tcp.nameSource),
+                                  tcp.addressType.map { "ATYP \($0)" }, routingText(tcp.stage),
+                                  tcp.replyCode.map { "REP \($0)" }]
+                    detailField("TCP details", value: fields.compactMap { $0 }.joined(separator: " · "))
+                }
+            } else {
+                Text(routingText("Select a connection to see its details."))
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(DS.canvas, in: RoundedRectangle(cornerRadius: 8))
+        .overlay { RoundedRectangle(cornerRadius: 8).strokeBorder(DS.tileBorder).allowsHitTesting(false) }
+    }
+
+    private func detailField(_ label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(routingText(label)).font(.caption.weight(.medium)).foregroundStyle(.secondary)
+            Text(value).font(.callout).textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
     private func restoreSelection() {
         if let first = routing.rules.apps.first { edit(first) }
-        else { selected = nil; draft = nil; domains = ""; routing.observeEvents(for: nil) }
+        else { selected = nil; draft = nil; domains = "" }
     }
 
     private func edit(_ app: RoutingApp) {
         selected = app.id
-        routing.observeEvents(for: app.id)
         draft = app
         domains = app.domains.joined(separator: "\n")
         notice = nil
@@ -272,22 +384,42 @@ struct AppRoutingView: View {
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
         panel.prompt = routingText("Add App")
-        panel.begin { response in
+        let chosen: (NSApplication.ModalResponse) -> Void = { response in
             guard response == .OK, let url = panel.url else { return }
-            picking = true
-            Task {
-                let app = await Task.detached { AppRoutingController.inspectApp(url) }.value
-                picking = false
-                guard let app else { notice = routingText("The app’s signing identity could not be verified."); return }
-                if let old = routing.rules.apps.first(where: { $0.id == app.id }) {
-                    var renewed = app
-                    renewed.policy = old.policy
-                    renewed.domains = old.domains
-                    edit(renewed)
-                } else {
-                    edit(app)
-                }
+            adopt(url)
+        }
+        // Attach the panel to the window as a sheet. A modeless `begin` panel in
+        // a menu-bar app can end up behind the main window — or never become the
+        // key window at all — where clicks and scrolling do nothing, which looks
+        // exactly like "Add App is broken".
+        if let window = NSApp.keyWindow ?? NSApp.mainWindow, !window.isSheet {
+            panel.beginSheetModal(for: window, completionHandler: chosen)
+        } else {
+            panel.begin(completionHandler: chosen)
+        }
+    }
+
+    /// Inspect the picked bundle and save it right away: "Add App" should add the
+    /// app to the list, not leave a draft that only Apply Rules commits.
+    private func adopt(_ url: URL) {
+        picking = true
+        Task {
+            let inspected = await Task.detached { AppRoutingController.inspectApp(url) }.value
+            picking = false
+            guard let inspected else {
+                notice = routingText("The app’s signing identity could not be verified.")
+                return
             }
+            var app = inspected
+            if let old = routing.rules.apps.first(where: { $0.id == inspected.id }) {
+                app.policy = old.policy
+                app.domains = old.domains
+                app.isEnabled = old.isEnabled
+            }
+            edit(app)
+            await controller.saveRoutingApp(app)
+            edit(app)
+            notice = routing.message
         }
     }
 
@@ -306,6 +438,159 @@ struct AppRoutingView: View {
         }
         basedOn.domains = normalized
         Task { await controller.saveRoutingApp(basedOn); edit(basedOn); notice = routing.message }
+    }
+}
+
+private struct RoutingTimeline: View {
+    let events: [RoutingEvent]
+    let selection: UUID?
+    let hasEarlier: Bool
+    let isLoading: Bool
+    let select: (UUID) -> Void
+    let loadEarlier: () -> Void
+    @State private var anchor: UUID?
+    @FocusState private var focusedEvent: UUID?
+    @Environment(\.calendar) private var calendar
+    @Environment(\.timeZone) private var timeZone
+
+    var body: some View {
+        let rows = timelineRows()
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                ForEach(rows) { row in
+                    VStack(alignment: .leading, spacing: 0) {
+                        if row.startsDay { dayHeading(row.day) }
+                        timelineRow(row)
+                    }
+                }
+                if hasEarlier {
+                    Button(routingText("Show earlier connections"), action: loadEarlier)
+                        .disabled(isLoading)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                }
+            }
+            .scrollTargetLayout()
+        }
+        .scrollPosition(id: $anchor, anchor: .top)
+        .frame(height: 244)
+    }
+
+    private struct Row: Identifiable {
+        let event: RoutingEvent
+        let day: Date
+        let startsDay: Bool
+        let endsDay: Bool
+        var id: UUID { event.id }
+    }
+
+    private func timelineRows() -> [Row] {
+        var localCalendar = calendar
+        localCalendar.timeZone = timeZone
+        let days = events.map { localCalendar.startOfDay(for: $0.time) }
+        return events.indices.map { index in
+            Row(event: events[index], day: days[index],
+                startsDay: index == 0 || days[index] != days[index - 1],
+                endsDay: index == events.count - 1 || days[index] != days[index + 1])
+        }
+    }
+
+    private func dayHeading(_ day: Date) -> some View {
+        var localCalendar = calendar
+        localCalendar.timeZone = timeZone
+        let date = day.formatted(.dateTime.year().month(.abbreviated).day())
+        let label: String
+        if localCalendar.isDateInToday(day) {
+            label = String.localizedStringWithFormat(routingText("Today · %@"), date)
+        } else if localCalendar.isDateInYesterday(day) {
+            label = String.localizedStringWithFormat(routingText("Yesterday · %@"), date)
+        } else {
+            label = date
+        }
+        return Text(label).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+            .accessibilityAddTraits(.isHeader)
+            .padding(.top, 8).padding(.bottom, 4)
+    }
+
+    private func timelineRow(_ row: Row) -> some View {
+        let event = row.event
+        let color = timelineColor(event.decision)
+        return Button { select(event.id) } label: {
+            HStack(spacing: 6) {
+                Text(event.time.formatted(.dateTime.hour().minute().second()))
+                    .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                    .fixedSize()
+                VStack(spacing: 0) {
+                    Rectangle().fill(row.startsDay ? Color.clear : DS.tileBorder)
+                    Circle().fill(color).frame(width: 7, height: 7)
+                    Rectangle().fill(row.endsDay ? Color.clear : DS.tileBorder)
+                }
+                .frame(width: 8, height: 29)
+                .accessibilityHidden(true)
+                Text(event.displayDestination)
+                    .lineLimit(1).truncationMode(.middle)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(event.decision.label)
+                    .font(.caption.weight(.medium)).foregroundStyle(color).fixedSize()
+            }
+            .font(.callout)
+            .padding(.horizontal, 5)
+            .contentShape(Rectangle())
+            .background(selection == event.id ? DS.accent.opacity(0.16) : .clear,
+                        in: RoundedRectangle(cornerRadius: 5))
+            .overlay {
+                if focusedEvent == event.id {
+                    RoundedRectangle(cornerRadius: 5).strokeBorder(DS.accent).allowsHitTesting(false)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .focused($focusedEvent, equals: event.id)
+        .accessibilityAddTraits(selection == event.id ? .isSelected : [])
+    }
+}
+
+private struct TimelineLayout: Layout {
+    private let spacing: CGFloat = 14
+    static let splitWidth: CGFloat = 390
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? Self.splitWidth
+        let sizes = sizes(for: width, subviews: subviews)
+        let height = width >= Self.splitWidth ? max(sizes.timeline.height, sizes.details.height)
+            : sizes.timeline.height + spacing + sizes.details.height
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let sizes = sizes(for: bounds.width, subviews: subviews)
+        let split = bounds.width >= Self.splitWidth
+        subviews[0].place(at: bounds.origin, anchor: .topLeading, proposal: ProposedViewSize(sizes.timeline))
+        let details = CGPoint(x: bounds.minX + (split ? sizes.timeline.width + spacing : 0),
+                              y: bounds.minY + (split ? 0 : sizes.timeline.height + spacing))
+        subviews[1].place(at: details, anchor: .topLeading, proposal: ProposedViewSize(sizes.details))
+    }
+
+    private func sizes(for width: CGFloat, subviews: Subviews) -> (timeline: CGSize, details: CGSize) {
+        let split = width >= Self.splitWidth
+        let detailsWidth = min(214, max(150, width * 0.36))
+        let timelineWidth = split ? width - detailsWidth - spacing : width
+        return (subviews[0].sizeThatFits(ProposedViewSize(width: timelineWidth, height: nil)),
+                subviews[1].sizeThatFits(ProposedViewSize(width: split ? detailsWidth : width, height: nil)))
+    }
+}
+
+private func timelineColor(_ decision: RoutingDecision) -> Color {
+    switch decision {
+    case .proxy: return .green
+    case .blocked: return .red
+    case .direct: return DS.secondaryText
+    }
+}
+
+private extension RoutingEvent {
+    var displayDestination: String {
+        destination.isEmpty ? routingText("Destination unavailable") : destination
     }
 }
 

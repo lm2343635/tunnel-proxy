@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="760" viewBox="0 0 1120 760" role="img" aria-labelledby="title">
-<title id="title">B 连接页入口 · 实时测速工作台</title>
+<title id="title">B 侧栏测速 · 实时测速工作台</title>
 <style>text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB",sans-serif;font-variant-numeric:tabular-nums}</style>
 <rect x="0" y="0" width="1120" height="760" rx="0" fill="#17181c" stroke="none"/>
 <g aria-label="TunnelProxy 导航">
@@ -11,9 +11,8 @@
 <rect x="15" y="46" width="23" height="23" rx="6" fill="#2667d8" stroke="none"/>
 <text x="26.5" y="62" fill="white" font-size="16" font-weight="700" text-anchor="middle">↗</text>
 <text x="47" y="64" fill="#f3f5fb" font-size="17" font-weight="700" text-anchor="start">Tunnel Proxy</text>
-<rect x="11" y="89" width="168" height="36" rx="8" fill="#1671e8" stroke="none"/>
-<text x="23" y="113" fill="#f3f5fb" font-size="15" font-weight="650" text-anchor="start">◉</text>
-<text x="49" y="113" fill="#f3f5fb" font-size="14" font-weight="600" text-anchor="start">连接</text>
+<text x="23" y="113" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">◉</text>
+<text x="49" y="113" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">连接</text>
 <text x="23" y="156" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">◇</text>
 <text x="49" y="156" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">应用路由</text>
 <text x="23" y="199" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">≡</text>
@@ -24,14 +23,16 @@
 <text x="49" y="285" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">统计</text>
 <text x="23" y="328" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">⚙</text>
 <text x="49" y="328" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">设置</text>
-<text x="23" y="371" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">⌘</text>
-<text x="49" y="371" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">工具</text>
+<rect x="11" y="347" width="168" height="36" rx="8" fill="#1671e8"/>
+<text x="23" y="371" fill="#f3f5fb" font-size="15" font-weight="650">◴</text>
+<text x="49" y="371" fill="#f3f5fb" font-size="14" font-weight="600">测速</text>
+<text x="23" y="414" fill="#a3aab8" font-size="15" font-weight="650" text-anchor="start">⌘</text>
+<text x="49" y="414" fill="#a3aab8" font-size="14" font-weight="600" text-anchor="start">工具</text>
 <line x1="17" y1="694" x2="173" y2="694" stroke="#333740" stroke-dasharray=""/>
 <circle cx="23" cy="719" r="4" fill="#56d9a3"/>
 <text x="34" y="724" fill="#f3f5fb" font-size="13" font-weight="650" text-anchor="start">已连接</text>
 <text x="34" y="744" fill="#a3aab8" font-size="11" font-weight="400" text-anchor="start">东京 SSH 节点</text>
 </g>
-<text x="220" y="52" fill="#66acff" font-size="13" font-weight="650" text-anchor="start">‹  返回连接</text>
 <text x="220" y="91" fill="#f3f5fb" font-size="29" font-weight="720" text-anchor="start">隧道测速</text>
 <text x="220" y="120" fill="#a3aab8" font-size="13" font-weight="400" text-anchor="start">东京 SSH 节点  ·  经上游代理  ·  测到服务器本机</text>
 <rect x="961" y="73" width="129" height="40" rx="8" fill="#4b2c33" stroke="none"/>

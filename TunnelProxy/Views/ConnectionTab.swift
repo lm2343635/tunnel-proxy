@@ -8,7 +8,6 @@ import Charts
 struct ConnectionTab: View {
     @EnvironmentObject var controller: TunnelController
     @Environment(\.openWindow) private var openWindow
-
     var body: some View {
         VStack(spacing: DS.gridGap) {
             warningBanner

@@ -52,7 +52,7 @@ enum AppRoutePolicy: String, CaseIterable, Codable, Identifiable {
     }
 }
 
-enum RoutingDecision: String, Codable {
+enum RoutingDecision: String, Codable, Sendable {
     case direct, proxy, blocked
 
     var label: String {
@@ -64,7 +64,7 @@ enum RoutingDecision: String, Codable {
     }
 }
 
-struct RoutingAppIdentity: Codable, Equatable, Hashable {
+struct RoutingAppIdentity: Codable, Equatable, Hashable, Sendable {
     let team: String
     let identifier: String
 
@@ -125,21 +125,35 @@ struct RoutingRules: Codable, Equatable {
     }
 }
 
-struct RoutingEvent: Codable, Identifiable {
+struct RoutingTCPDetails: Codable, Sendable {
+    var flowID = UUID()
+    let originalEndpoint: String
+    let process: String
+    var nameSource: String
+    var recoveredName: String?
+    var addressType: UInt8?
+    var stage = "Opening app flow"
+    var replyCode: UInt8?
+}
+
+struct RoutingEvent: Codable, Identifiable, Sendable {
     let id: UUID
     let time: Date
     let application: RoutingAppIdentity
     let destination: String
     let decision: RoutingDecision
     let reason: String?
+    let tcp: RoutingTCPDetails?
 
-    init(application: RoutingAppIdentity, destination: String, decision: RoutingDecision, reason: String?) {
+    init(application: RoutingAppIdentity, destination: String, decision: RoutingDecision,
+         reason: String?, tcp: RoutingTCPDetails? = nil, time: Date = .now) {
         id = UUID()
-        time = Date()
+        self.time = time
         self.application = application
         self.destination = destination
         self.decision = decision
         self.reason = reason
+        self.tcp = tcp
     }
 }
 
@@ -148,13 +162,24 @@ struct RoutingControl: Codable {
     let version: UUID?
     let rules: RoutingRules?
     let tunnel: RoutingSOCKSPeer?
-    let eventApp: RoutingAppIdentity?
 }
 
 struct RoutingStatus: Codable {
     let session: UUID
     let version: UUID
     let tunnelReady: Bool
+}
+
+struct RoutingHistoryRequest: Codable, Sendable {
+    static let batchSize = 32
+
+    // Keep the session key distinct so an older provider cannot interpret
+    // this request as a heartbeat with a missing tunnel.
+    let historySession: UUID
+    let historyAcknowledgements: [UUID]
+}
+
+struct RoutingHistoryReply: Codable, Sendable {
     let events: [RoutingEvent]
 }
 
@@ -162,4 +187,5 @@ enum AppRoutingProtocol {
     static let providerIdentifier = "com.xwkj.tunnelproxy.approuting"
     static let rulesKey = "AppRoutingRules"
     static let sessionKey = "AppRoutingSession"
+    static let historyOwnerKey = "AppRoutingHistoryOwner"
 }

@@ -74,6 +74,7 @@ struct UnifiedWindowView: View {
         case .logs:       LogsView()
         case .stats:      StatisticsView()
         case .settings:   SettingsTab()
+        case .speedTest:  SpeedTestView(test: controller.speedTest)
         case .tools:      ToolsTab()
         }
     }
@@ -81,7 +82,7 @@ struct UnifiedWindowView: View {
 
 // MARK: - Sidebar
 
-/// The left navigation sidebar: app header, a nav list of the six tabs, and a
+/// The left navigation sidebar: app header, a nav list, and a
 /// pinned connection-status card at the bottom.
 private struct Sidebar: View {
     @Binding var selection: WindowTab
@@ -101,6 +102,7 @@ private struct Sidebar: View {
         .init(tab: .logs,       title: "Logs",       symbol: "doc.plaintext"),
         .init(tab: .stats,      title: "Statistics", symbol: "chart.bar"),
         .init(tab: .settings,   title: "Settings",   symbol: "gearshape"),
+        .init(tab: .speedTest,  title: "Speed Test", symbol: "gauge.with.dots.needle.33percent"),
         .init(tab: .tools,      title: "Tools",      symbol: "wrench.and.screwdriver"),
     ]
 

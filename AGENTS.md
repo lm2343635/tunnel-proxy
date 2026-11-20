@@ -27,6 +27,10 @@ release; [cli/README.md](cli/README.md) for the CLI.
 
 ## Build & run
 
+In Codex, treat `/release X.Y.Z` as a request to use the project
+[`release` skill](.agents/skills/release/SKILL.md). Use the same skill when the
+user asks to continue an interrupted TunnelProxy release.
+
 ```bash
 # macOS app
 xcodebuild -project TunnelProxy.xcodeproj -scheme TunnelProxy -configuration Debug build
